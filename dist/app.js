@@ -1,4 +1,4 @@
-const state={score:68,taskDone:false,loginType:'candidate',deckIndex:0,decisions:[]};
+const state={score:68,taskDone:false,loginType:'candidate',deckIndex:0,decisions:[],authenticated:false};
 const candidates=[
  {name:'Aisha Khan',initials:'AK',headline:'Project-trained Data Analyst',location:'Pune · Available in 2 weeks',score:83,confidence:'High evidence confidence',summary:'Turns messy business data into clear decisions through projects, freelance tasks and hackathons.',skills:['SQL','Excel','Power BI','Data storytelling'],proof:[['Retail sales analysis','Cleaned 12,000 records and surfaced category trends'],['Power BI dashboard','Built a decision-ready dashboard from a timed brief'],['Freelance data cleanup','Standardised inconsistent customer and sales data']],gap:'Python is developing; it is not essential for this role.',factors:[['Essential skills',86,35],['Evidence strength',82,25],['Relevant work',76,15],['Transferable skills',91,10],['Recency',88,5],['Preferences',100,10]]},
  {name:'Vikram Joshi',initials:'VJ',headline:'Operations & Reporting Analyst',location:'Pune · Available now',score:80,confidence:'High evidence confidence',summary:'Combines shop-floor operations knowledge with strong spreadsheet reporting and process improvement.',skills:['Advanced Excel','Dashboards','Process mapping','SQL'],proof:[['Inventory tracker','Reduced weekly reconciliation time by 30%'],['Operations role','Two years of hands-on reporting work'],['SQL assessment','Passed the role-aligned query challenge']],gap:'Power BI evidence is basic; adjacent dashboard skills are strong.',factors:[['Essential skills',79,35],['Evidence strength',88,25],['Relevant work',92,15],['Transferable skills',84,10],['Recency',82,5],['Preferences',70,10]]},
@@ -15,21 +15,22 @@ const skills=[['SQL','Advanced','Verified'],['Excel','Advanced','Verified'],['Da
 const factors=[['Essential skill coverage',state.taskDone?82:68,35],['Evidence strength',state.taskDone?78:55,25],['Relevant experience',80,15],['Transferable skills',90,10],['Evidence recency',85,5],['Preferences',100,10]];
 const $=(s)=>document.querySelector(s), $$=(s)=>[...document.querySelectorAll(s)];
 function showToast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600)}
-function go(id){$$('.screen').forEach(x=>x.classList.remove('active'));$('#'+id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
+function go(id){if(['candidate','employer'].includes(id)&&!state.authenticated){state.loginType=id==='employer'?'employer':'candidate';setLoginFields(state.loginType);openModal('loginModal');showToast('Log in to view account data');return}$$('.screen').forEach(x=>x.classList.remove('active'));$('#'+id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
 $$('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 function openModal(id){$('#'+id).classList.add('open');$('#'+id).setAttribute('aria-hidden','false')}
 function closeModal(id){$('#'+id).classList.remove('open');$('#'+id).setAttribute('aria-hidden','true')}
 $$('[data-close]').forEach(b=>b.onclick=()=>closeModal(b.dataset.close));
-$('#loginOpen').onclick=()=>openModal('loginModal');
-$('#tryCandidate').onclick=()=>quickLogin('candidate'); $('#tryEmployer').onclick=()=>quickLogin('employer');
-$('#seeWhy').onclick=()=>{renderMatch();openModal('matchModal')};
-function quickLogin(type){state.loginType=type;setLoginFields(type);closeModal('loginModal');go(type==='candidate'?'candidate':'employer');if(type==='employer'){openEmployerPanel('talent');renderCandidate()}showToast(type==='candidate'?'Logged in as Aisha Khan':'Talent deck ready for BrightForge')}
+$('#loginOpen').onclick=()=>{if(state.authenticated){state.authenticated=false;$('#loginOpen').textContent='Log in';go('home');showToast('Logged out securely')}else openModal('loginModal')};
+function requestLogin(type){state.loginType=type;setLoginFields(type);openModal('loginModal')}
+$('#tryCandidate').onclick=()=>requestLogin('candidate'); $('#tryEmployer').onclick=()=>requestLogin('employer');
+$('#seeWhy').onclick=()=>{if(!state.authenticated){requestLogin('candidate');showToast('Log in to view match details');return}renderMatch();openModal('matchModal')};
+function quickLogin(type){state.loginType=type;state.authenticated=true;setLoginFields(type);closeModal('loginModal');$('#loginOpen').textContent='Log out';go(type==='candidate'?'candidate':'employer');if(type==='employer'){openEmployerPanel('talent');renderCandidate()}showToast(type==='candidate'?'Logged in as Aisha Khan':'Talent deck ready for BrightForge')}
 function setLoginFields(type){$('#emailInput').value=type==='candidate'?'aisha@include.ai':'hr@brightforge.in';$('#passwordInput').value='include123';$$('[data-login-type]').forEach(b=>b.classList.toggle('active',b.dataset.loginType===type))}
 $$('[data-login-type]').forEach(b=>b.onclick=()=>{state.loginType=b.dataset.loginType;setLoginFields(state.loginType)});
 $('#loginSubmit').onclick=()=>{const e=$('#emailInput').value.trim(),p=$('#passwordInput').value;if(p!=='include123'||!['aisha@include.ai','hr@brightforge.in'].includes(e)){showToast('Use one of the accounts shown below');return}quickLogin(e.startsWith('aisha')?'candidate':'employer')};
 function switchPanel(prefix,name){$$(`#${prefix} .panel`).forEach(p=>p.classList.remove('active'));$(`#${name}Panel`).classList.add('active')}
 $$('[data-panel]').forEach(b=>b.onclick=()=>{$$('[data-panel]').forEach(x=>x.classList.remove('active'));b.classList.add('active');switchPanel('candidate',b.dataset.panel)});
-$$('[data-open-panel]').forEach(b=>b.onclick=()=>{go('candidate');switchPanel('candidate',b.dataset.openPanel);$$('[data-panel]').forEach(x=>x.classList.toggle('active',x.dataset.panel===b.dataset.openPanel))});
+$$('[data-open-panel]').forEach(b=>b.onclick=()=>{if(!state.authenticated){requestLogin('candidate');return}go('candidate');switchPanel('candidate',b.dataset.openPanel);$$('[data-panel]').forEach(x=>x.classList.toggle('active',x.dataset.panel===b.dataset.openPanel))});
 function openEmployerPanel(name){switchPanel('employer',name);$$('[data-epanel]').forEach(x=>x.classList.toggle('active',x.dataset.epanel===name));if(name==='decisions')renderDecisions()}
 $$('[data-epanel]').forEach(b=>b.onclick=()=>openEmployerPanel(b.dataset.epanel));
 $$('[data-open-epanel]').forEach(b=>b.onclick=()=>openEmployerPanel(b.dataset.openEpanel));
