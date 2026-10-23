@@ -1,0 +1,2 @@
+.resume-source{display:flex;justify-content:space-between;align-items:center;gap:20px;background:linear-gradient(110deg,var(--cyan),#83dfb5);border-radius:18px;padding:20px 24px;margin-bottom:22px}.resume-source h3{font-size:24px;margin:5px 0}.resume-source p{margin:4px 0;max-width:720px}
+@media(max-width:600px){.resume-source{align-items:flex-start;flex-direction:column}}
