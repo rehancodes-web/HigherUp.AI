@@ -8,7 +8,7 @@ import json
 import os
 import re
 
-MODEL = os.getenv("AICORE_MODEL", "gpt-4o")  # must match a deployment in your AI Launchpad
+MODEL = os.getenv("AICORE_MODEL", "gpt-5-mini")  # must match a deployment in your AI Launchpad
 
 SYSTEM_PROMPT = """You are the Skills Discovery Agent for a skills-first hiring platform.
 Extract job-relevant skills from the candidate's text.
@@ -42,8 +42,9 @@ def _call_llm(text: str) -> str:
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": text},
         ],
-        temperature=0,
-        max_tokens=1500,
+        # GPT-5 reasoning models: no temperature setting, and the budget also
+        # covers hidden reasoning tokens, so keep it generous.
+        max_completion_tokens=4000,
     )
     return response.choices[0].message.content
 

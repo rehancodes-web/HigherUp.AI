@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from hdbcli import dbapi
+from skills_agent import discover
 
 # Load the .env located beside main.py
 load_dotenv(Path(__file__).resolve().parent / ".env")
@@ -89,7 +90,7 @@ class SkillsRequest(BaseModel):
 
 @app.post("/skills/discover")
 def discover_skills(request: SkillsRequest):
-    text = request.candidate_text
+    return discover(request.candidate_text)
 
     skill_keywords = [
         "Python", "SQL", "Excel", "Power BI",
