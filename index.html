@@ -413,6 +413,7 @@ h1,h2,h3{text-wrap:balance}p,li{text-wrap:pretty}
         <div><p class="workspace-persona">Candidate portal</p><h2>Aisha Khan</h2><span>Early-career Data Analyst</span></div>
         <nav aria-label="Candidate sections">
           <button class="active" data-candidate-tab="overview">Overview</button>
+          <button data-candidate-tab="profile">Profile & preferences</button>
           <button data-candidate-tab="passport">Skill Passport</button>
           <button data-candidate-tab="matches">Job matches</button>
           <button data-candidate-tab="apply">Apply Agent</button>
@@ -430,6 +431,25 @@ h1,h2,h3{text-wrap:balance}p,li{text-wrap:pretty}
             <article><span>Next useful step</span><strong>1</strong><p>Power BI proof task</p></article>
           </div>
           <div class="content-block"><div class="block-heading"><div><h2>Top opportunities</h2><p>Recommended from verified evidence and your preferences.</p></div><button class="text-action" data-candidate-tab="matches">See all matches</button></div><div class="job-list" id="overviewJobs"></div></div>
+        </section>
+
+        <section class="tab-panel" id="candidate-profile">
+          <div class="workspace-heading">
+            <div><p class="overline dark">Your account</p><h1>Profile & <em>preferences</em></h1><p>Tell Include.AI what roles, locations and work arrangements suit you. Save to sync your profile with SAP HANA.</p></div>
+            <span class="status-chip">Candidate-controlled</span>
+          </div>
+          <div class="content-block">
+            <div class="block-heading"><div><h2>Job preferences</h2><p>These preferences help explain job-fit recommendations.</p></div></div>
+            <div class="preference-form">
+              <label>Preferred roles<input id="prefRoles" value="Data Analyst, Operations Analyst" maxlength="500"></label>
+              <label>Preferred cities<input id="prefCities" value="Bengaluru, Pune, Remote" maxlength="500"></label>
+              <label>Work mode<select id="prefMode"><option>Hybrid or Remote</option><option>Remote only</option><option>On-site</option><option>Any</option></select></label>
+              <label>Minimum salary<input id="prefSalary" value="₹4.5 LPA" maxlength="100"></label>
+            </div>
+            <p class="criteria-help">Your profile will be saved under the demo candidate account <b>aisha@include.ai</b>. The current login is for demonstration only.</p>
+            <button class="button button-primary" id="savePreferences" type="button">Save preferences</button>
+            <p id="preferencesSaveStatus" role="status" aria-live="polite" style="margin:12px 0 0"></p>
+          </div>
         </section>
 
         <section class="tab-panel" id="candidate-passport">
@@ -567,6 +587,59 @@ if(evidenceOrbit&&orbitTilt){
   evidenceOrbit.addEventListener('pointerleave',()=>{if(!dragging)setTilt(baseX,baseY)});
   evidenceOrbit.addEventListener('dblclick',event=>{if(event.target.closest('button'))return;baseX=0;baseY=0;setTilt(0,0)});
   evidenceOrbit.addEventListener('keydown',event=>{const step=8;if(event.key==='ArrowLeft'){event.preventDefault();baseY-=step}else if(event.key==='ArrowRight'){event.preventDefault();baseY+=step}else if(event.key==='ArrowUp'){event.preventDefault();baseX=clamp(baseX-step,-38,38)}else if(event.key==='ArrowDown'){event.preventDefault();baseX=clamp(baseX+step,-38,38)}else return;setTilt(baseX,baseY)});
+}
+
+// Save candidate preferences to the local FastAPI backend, which writes to SAP HANA.
+const API_BASE = 'http://127.0.0.1:8000';
+const savePreferencesButton = $('#savePreferences');
+if (savePreferencesButton) {
+  savePreferencesButton.addEventListener('click', async () => {
+    if (!state.authenticated || state.role !== 'candidate') {
+      toast('Please log in as the candidate first.');
+      return;
+    }
+
+    const roles = $('#prefRoles').value.trim() || 'Any suitable role';
+    const cities = $('#prefCities').value.trim() || 'Any location';
+    const mode = $('#prefMode').value;
+    const status = $('#preferencesSaveStatus');
+
+    savePreferencesButton.disabled = true;
+    savePreferencesButton.textContent = 'Saving…';
+    status.textContent = 'Connecting to the backend…';
+
+    try {
+      const response = await fetch(
+        `${API_BASE}/candidates/by-email/${encodeURIComponent('aisha@include.ai')}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            full_name: 'Aisha Khan',
+            email: 'aisha@include.ai',
+            preferred_roles: roles,
+            preferred_locations: cities,
+            work_mode: mode
+          })
+        }
+      );
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.detail || `Request failed (${response.status})`);
+      }
+
+      status.textContent = 'Saved successfully to SAP HANA.';
+      toast(`Preferences saved (${result.status}).`);
+    } catch (error) {
+      console.error('Saving preferences failed:', error);
+      status.textContent = 'Could not save. Make sure FastAPI is running at http://127.0.0.1:8000.';
+      toast('Could not save preferences. Check the backend terminal.');
+    } finally {
+      savePreferencesButton.disabled = false;
+      savePreferencesButton.textContent = 'Save preferences';
+    }
+  });
 }
 
 renderCandidate();renderCounts();

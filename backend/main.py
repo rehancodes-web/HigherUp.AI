@@ -2,7 +2,7 @@
 import os
 from pathlib import Path
 from uuid import uuid4
-
+from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -12,6 +12,13 @@ from hdbcli import dbapi
 load_dotenv(Path(__file__).resolve().parent / ".env")
 
 app = FastAPI(title="Include.AI API")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "PUT", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
+)
 
 
 def get_db_connection():
@@ -110,6 +117,94 @@ class CandidateRequest(BaseModel):
     preferred_roles: str = Field(default="", max_length=500)
     preferred_locations: str = Field(default="", max_length=500)
     work_mode: str = Field(default="Flexible", max_length=50)
+
+
+@app.put("/candidates/by-email/{email}")
+def upsert_candidate_by_email(email: str, request: CandidateRequest):
+    if email.strip().lower() != request.email.strip().lower():
+        raise HTTPException(
+            status_code=400,
+            detail="Path email and body email must match"
+        )
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        cursor.execute(
+            "SELECT CANDIDATE_ID FROM CANDIDATE_PROFILE WHERE LOWER(EMAIL) = ?",
+            (request.email.strip().lower(),)
+        )
+        existing = cursor.fetchone()
+
+        if existing:
+            candidate_id = existing[0]
+
+            cursor.execute(
+                """
+                UPDATE CANDIDATE_PROFILE
+                SET FULL_NAME = ?, PREFERRED_ROLES = ?,
+                    PREFERRED_LOCATIONS = ?, WORK_MODE = ?
+                WHERE CANDIDATE_ID = ?
+                """,
+                (
+                    request.full_name,
+                    request.preferred_roles,
+                    request.preferred_locations,
+                    request.work_mode,
+                    candidate_id
+                )
+            )
+            status = "updated"
+
+        else:
+            from uuid import uuid4
+            candidate_id = str(uuid4())
+
+            cursor.execute(
+                """
+                INSERT INTO CANDIDATE_PROFILE
+                    (CANDIDATE_ID, FULL_NAME, EMAIL,
+                     PREFERRED_ROLES, PREFERRED_LOCATIONS, WORK_MODE)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    candidate_id,
+                    request.full_name,
+                    request.email.strip(),
+                    request.preferred_roles,
+                    request.preferred_locations,
+                    request.work_mode
+                )
+            )
+            status = "created"
+
+        connection.commit()
+
+        return {
+            "candidate_id": candidate_id,
+            "status": status,
+            "email": request.email
+        }
+
+    except Exception as exc:
+        if connection is not None:
+            connection.rollback()
+
+        raise HTTPException(
+            status_code=500,
+            detail=f"Could not save candidate: {str(exc)[:300]}"
+        )
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if connection is not None:
+            connection.close()
+
 
 
 @app.post("/candidates", status_code=201)
