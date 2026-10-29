@@ -1131,6 +1131,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 const SUPABASE_URL = 'https://kgubkabyljxawnsonjnj.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_XlsiXHyiKr6D6LZjByRlsQ_ecy7RNV7';
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+const API_BASE = 'http://127.0.0.1:8000';
 
 document.documentElement.classList.add('motion-ready');
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
@@ -1666,7 +1667,6 @@ if(evidenceOrbit&&orbitTilt){
 }
 
 // Save candidate preferences to the local FastAPI backend, which writes to SAP HANA.
-const API_BASE = 'http://127.0.0.1:8000';
 const savePreferencesButton = $('#savePreferences');
 if (savePreferencesButton) {
   savePreferencesButton.addEventListener('click', async () => {
