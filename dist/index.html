@@ -325,6 +325,17 @@ h1,h2,h3{text-wrap:balance}p,li{text-wrap:pretty}
 .auth-message.success{color:#167348}
 .auth-footnote{margin:14px 0 0;font-size:12px}
 
+/* Job preferences form: labels above full-width fields, two columns. */
+.preference-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 18px;margin-top:6px}
+.preference-form label{display:grid;gap:7px;color:var(--ink-soft);font-size:13px;font-weight:650}
+.preference-form input,.preference-form select{width:100%;min-height:46px;padding:10px 13px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;font-size:15px;font-weight:450;box-shadow:var(--shadow-sm);transition:border-color 160ms ease,box-shadow 160ms ease}
+.preference-form select{appearance:none;-webkit-appearance:none;padding-right:40px;cursor:pointer;background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%235d6270' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 14px center}
+.preference-form input:hover,.preference-form select:hover{border-color:var(--muted)}
+.preference-form input:focus,.preference-form select:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(99,102,241,.16);outline:none}
+.criteria-help{margin:18px 0 16px;padding:12px 14px;border-radius:10px;background:var(--bg);border:1px solid var(--line);font-size:14px}
+.criteria-help b{color:var(--ink)}
+@media(max-width:680px){.preference-form{grid-template-columns:1fr}}
+
 /* Editable Skill Passport */
 .skill-row{grid-template-columns:1fr 100px 130px auto;align-items:center}
 .skill-row small{display:block;color:var(--muted);font-size:12px;line-height:1.4}
@@ -472,6 +483,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .audience-card h3{font-family:var(--font-statement)!important;font-weight:700;font-size:23px;letter-spacing:-.025em}
 .audience-card li::marker{color:var(--accent)}
 @media(hover:hover) and (pointer:fine){.audience-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--line-strong)}}
+/* Two audiences: job seekers and employers. */
+#homePage .audience-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.audience-card{display:flex;flex-direction:column;padding:32px}
+.audience-card .text-action{margin-top:auto;align-self:flex-start}
+.audience-card .audience-label{align-self:flex-start}
+.audience-card ul.two-col{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+@media(max-width:760px){#homePage .audience-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.audience-card ul.two-col{grid-template-columns:1fr}}
 
 /* How it works */
 .mechanism{background:var(--dark);position:relative;overflow:hidden}
@@ -581,6 +600,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .human-note{border-radius:10px;background:#181b23;border-left:3px solid #818cf8}
 .candidate-summary-card.entering{animation:deck-in 340ms var(--ease-out)}
 @keyframes deck-in{from{opacity:0;transform:translateY(12px) scale(.98)}}
+/* Stacking order: the candidate card always sits above the score panel,
+   and rises above everything on the page (except the header) while dragged or flying off. */
+.deck-layout{position:relative;isolation:isolate}
+.explanation-panel{position:relative;z-index:1}
+.candidate-summary-card{position:relative;z-index:2}
+.candidate-summary-card.swiping[data-swipe],.candidate-summary-card.flying{z-index:50}
 
 /* Role setup and decisions */
 .field-grid label{border-radius:10px;transition:background-color 160ms ease,border-color 160ms ease}
@@ -678,7 +703,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
       <section class="audiences" id="audiences" aria-labelledby="audienceTitle">
         <div class="section-heading">
-          <h2 id="audienceTitle"><span>One platform.</span> <em>Three perspectives.</em></h2>
+          <h2 id="audienceTitle"><span>One platform.</span> <em>Both sides of hiring.</em></h2>
         </div>
         <div class="audience-grid">
           <article class="audience-card candidate-audience">
@@ -689,18 +714,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
             <button class="text-action" data-login="candidate">Explore candidate portal <span aria-hidden="true">→</span></button>
           </article>
           <article class="audience-card business-audience">
-            <span class="audience-label">For businesses</span>
-            <h3>MSMEs and growing companies</h3>
-            <p>Review consistent one-page summaries and shortlist efficiently without a large recruiting team.</p>
-            <ul><li>Role-ready job templates</li><li>Fast evidence review</li><li>Simple decision history</li></ul>
+            <span class="audience-label">For employers</span>
+            <h3>MSMEs, startups and HR teams</h3>
+            <p>Post roles, review consistent one-page summaries and shortlist efficiently, even without a large recruiting team. Configure what matters, audit exclusion risks and keep every consequential decision human-led.</p>
+            <ul class="two-col"><li>Role-ready job templates</li><li>Custom summary fields</li><li>Fast evidence review</li><li>Explainable scoring</li><li>Simple decision history</li><li>Bias audit trail</li></ul>
             <button class="text-action" data-login="recruiter">Explore employer tools <span aria-hidden="true">→</span></button>
-          </article>
-          <article class="audience-card hr-audience">
-            <span class="audience-label">For HR teams</span>
-            <h3>Recruiters and talent leaders</h3>
-            <p>Configure what matters, audit exclusion risks and keep every consequential decision human-led.</p>
-            <ul><li>Custom summary fields</li><li>Explainable scoring</li><li>Bias audit trail</li></ul>
-            <button class="text-action" data-login="recruiter">Open HR workspace <span aria-hidden="true">→</span></button>
           </article>
         </div>
       </section>
