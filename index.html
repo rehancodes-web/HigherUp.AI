@@ -567,8 +567,33 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .cta-actions{display:flex;gap:12px;flex-wrap:wrap}
 .cta-band .button-outline-light{background:transparent;color:#fff;border-color:rgba(255,255,255,.28);box-shadow:none}
 .cta-band .button-outline-light:hover{border-color:#fff;background:rgba(255,255,255,.06)}
-.site-footer{display:flex;align-items:center;justify-content:space-between;gap:12px 24px;flex-wrap:wrap;padding:28px clamp(18px,5vw,82px) 40px;border-top:1px solid var(--line)}
-.site-footer p{margin:0;font-size:14px}
+/* Site footer: shown on public pages, hidden inside the candidate and recruiter workspaces. */
+.site-footer{padding:48px clamp(18px,5vw,82px) 28px;border-top:1px solid var(--line);background:var(--surface)}
+body:has(.workspace.active) .site-footer{display:none}
+.footer-top{display:grid;grid-template-columns:minmax(220px,1.6fr) repeat(3,minmax(140px,1fr));gap:32px}
+.footer-about p{max-width:36ch;margin:12px 0 0;font-size:14px}
+.footer-col{display:grid;align-content:start;gap:8px}
+.footer-col h2{margin:0 0 4px;color:var(--ink);font-family:var(--font-ui);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.footer-col button,.footer-col a{justify-self:start;padding:2px 0;border:0;background:none;color:var(--muted);font:inherit;font-size:14px;text-align:left;text-decoration:none;cursor:pointer;transition:color 160ms ease}
+.footer-col button:hover,.footer-col a:hover{color:var(--brand)}
+.footer-text{color:var(--muted);font-size:14px}
+.footer-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 24px;margin-top:36px;padding-top:20px;border-top:1px solid var(--line)}
+.footer-bottom p{margin:0;font-size:13px}
+@media(max-width:860px){.footer-top{grid-template-columns:1fr 1fr}.footer-about{grid-column:1/-1}}
+@media(max-width:480px){.footer-top{grid-template-columns:1fr}}
+
+/* Privacy policy and Terms of use */
+.legal-page{padding:64px clamp(18px,5vw,82px) 80px;background:var(--bg)}
+.legal-wrap{max-width:760px;margin:0 auto}
+.legal-wrap h1{margin:0 0 6px;font-family:var(--font-statement);font-size:clamp(2.2rem,4vw,3.2rem);font-weight:750;letter-spacing:-.04em}
+.legal-meta{margin:0 0 20px;font-size:14px}
+.legal-note{padding:14px 16px;border:1px solid var(--brand-line);border-radius:12px;background:var(--brand-bg);color:var(--brand-dark)!important;font-size:15px}
+.legal-wrap h2{margin:32px 0 10px;font-family:var(--font-statement);font-size:21px;font-weight:700;letter-spacing:-.02em}
+.legal-wrap ul{margin:0;padding-left:20px;color:var(--ink-soft)}
+.legal-wrap li{margin:7px 0;line-height:1.6}
+.legal-wrap li::marker{color:var(--brand)}
+.legal-wrap p{line-height:1.65}
+.legal-wrap .button{margin-top:32px}
 .footer-brand{display:inline-flex;align-items:center;gap:9px;font-family:var(--font-statement);font-size:19px;font-weight:800;letter-spacing:-.035em}
 .footer-brand .brand-mark{width:26px;height:26px;display:grid;place-items:center;font-weight:900}
 
@@ -798,11 +823,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
           <button class="button button-outline-light button-large" data-login="recruiter">Hire talent</button>
         </div>
       </section>
-
-      <footer class="site-footer">
-        <span class="footer-brand"><span class="brand-mark" aria-hidden="true">i</span>include.ai</span>
-        <p>Skills-first hiring for students, job seekers and growing businesses.</p>
-      </footer>
     </section>
 
     <section class="page workspace" id="candidatePage" aria-label="Candidate workspace">
@@ -959,7 +979,99 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     </section>
 
     <section class="page about-page" id="aboutPage"><div class="section-heading"><p class="overline dark">Six specialist agents, one accountable process</p><h1>AI supports the work. People own the decision.</h1><p>Each agent has a narrow responsibility and every important action stays visible, correctable and auditable.</p></div><div class="agent-list"><article><span>01</span><div><h2>Skills Discovery Agent</h2><p>Creates the editable Skill Passport from resumes and real-world evidence.</p></div></article><article><span>02</span><div><h2>Market Intelligence Agent</h2><p>Finds suitable roles and recurring skills, salary, location and work-mode patterns.</p></div></article><article><span>03</span><div><h2>Inclusive Matching Agent</h2><p>Calculates explainable fit while keeping evidence confidence separate.</p></div></article><article><span>04</span><div><h2>Learning Pathway Agent</h2><p>Turns repeated gaps into a focused course or practical proof task.</p></div></article><article><span>05</span><div><h2>Employer Readiness Agent</h2><p>Improves job criteria and configures role-specific one-page summaries.</p></div></article><article><span>06</span><div><h2>Bias Audit Agent</h2><p>Checks criteria, scoring factors and decision patterns for human review.</p></div></article></div><button class="button button-primary button-large" data-route="home">Return home</button></section>
+
+    <section class="page legal-page" id="privacyPage" aria-labelledby="privacyTitle">
+      <div class="legal-wrap">
+        <p class="overline dark">Legal</p>
+        <h1 id="privacyTitle">Privacy policy</h1>
+        <p class="legal-meta">Last updated 30 October 2026</p>
+        <p class="legal-note">Include.AI is a hackathon prototype. This policy explains in plain language how the prototype handles information. It will be reviewed before any public launch.</p>
+        <h2>What we collect</h2>
+        <ul>
+          <li><b>Account details:</b> your email address, name and whether you are a candidate or a recruiter.</li>
+          <li><b>Profile details you choose to add:</b> headline, phone, city, availability, education, links and a short bio.</li>
+          <li><b>Documents you upload:</b> resume or CV, cover letter, certificates and other proof of your skills.</li>
+          <li><b>Job preferences:</b> preferred roles, locations, work mode and salary expectations.</li>
+          <li><b>Recruiter activity:</b> role criteria, scoring weights, shortlist and pass decisions, and audit events.</li>
+        </ul>
+        <h2>How we use it</h2>
+        <ul>
+          <li>To build your Skill Passport, suggest suitable jobs and internships, and explain every match score.</li>
+          <li>To show recruiters a role-specific one-page summary containing only the fields they selected.</li>
+          <li>To keep an audit trail of criteria changes and hiring decisions so they can be reviewed for fairness.</li>
+        </ul>
+        <h2>What never affects your score</h2>
+        <p>Gender, age, caste, religion, disability, college name, degree status and payment status have zero weight in matching. Missing information lowers confidence; it is never guessed. AI supports screening, but people make every hiring decision.</p>
+        <h2>Where it is stored</h2>
+        <p>Accounts, profile details and documents are stored with Supabase. Documents are kept in a private storage area that only your account can access. Job preferences are stored in an SAP HANA database. We do not sell your information.</p>
+        <h2>Your choices</h2>
+        <ul>
+          <li>You can view, correct or remove your profile details, documents and Skill Passport entries at any time.</li>
+          <li>Applications prepared by the Apply Agent are only submitted after you approve them.</li>
+          <li>To delete your account and data, contact the team through the project’s GitHub page.</li>
+        </ul>
+        <button class="button button-outline-light" data-route="home" type="button">Return home</button>
+      </div>
+    </section>
+
+    <section class="page legal-page" id="termsPage" aria-labelledby="termsTitle">
+      <div class="legal-wrap">
+        <p class="overline dark">Legal</p>
+        <h1 id="termsTitle">Terms of use</h1>
+        <p class="legal-meta">Last updated 30 October 2026</p>
+        <p class="legal-note">Include.AI is a hackathon prototype provided for demonstration and evaluation. Sample candidates, companies and jobs shown in the product are fictional.</p>
+        <h2>Using Include.AI</h2>
+        <ul>
+          <li>Keep your login details private and provide information that is accurate and your own.</li>
+          <li>Only upload documents you have the right to share. Do not upload other people’s personal information.</li>
+          <li>Do not misuse the service, attempt to access other accounts, or upload harmful files.</li>
+        </ul>
+        <h2>For employers and recruiters</h2>
+        <ul>
+          <li>Use job-relevant criteria only. Do not use the platform to discriminate on protected characteristics.</li>
+          <li>Match scores and summaries support your review. You remain responsible for every hiring decision.</li>
+        </ul>
+        <h2>For candidates</h2>
+        <ul>
+          <li>Essential candidate features are free. Paying never increases a candidate’s ranking.</li>
+          <li>Match scores are guidance, not a guarantee of an interview or a job offer.</li>
+        </ul>
+        <h2>The prototype</h2>
+        <p>The service is provided “as is” while it is being developed. Features may change, and data may be reset. These terms may be updated; the date above shows the latest version.</p>
+        <button class="button button-outline-light" data-route="home" type="button">Return home</button>
+      </div>
+    </section>
   </main>
+
+  <footer class="site-footer" aria-label="Site footer">
+    <div class="footer-top">
+      <div class="footer-about">
+        <span class="footer-brand"><span class="brand-mark" aria-hidden="true">i</span>include.ai</span>
+        <p>Skills-first hiring for students, job seekers and growing businesses. AI prepares the context; people make the decision.</p>
+      </div>
+      <nav class="footer-col" aria-label="Product">
+        <h2>Product</h2>
+        <button type="button" data-route="about">How it works</button>
+        <button type="button" data-scroll="audiences">Who it’s for</button>
+        <button type="button" data-login="candidate">For job seekers</button>
+        <button type="button" data-login="recruiter">For employers</button>
+      </nav>
+      <nav class="footer-col" aria-label="Legal">
+        <h2>Legal</h2>
+        <button type="button" data-route="privacy">Privacy policy</button>
+        <button type="button" data-route="terms">Terms of use</button>
+      </nav>
+      <nav class="footer-col" aria-label="Project">
+        <h2>Project</h2>
+        <a href="https://github.com/rehancodes-web/include.ai" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+        <span class="footer-text">SAP Inclusive Workforce hackathon</span>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <p>© <span id="footerYear">2026</span> Include.AI. All rights reserved.</p>
+      <p>Protected characteristics have zero weight in matching. Sample people and companies shown are fictional.</p>
+    </div>
+  </footer>
 
   <div class="dialog-backdrop" id="loginDialog" role="dialog" aria-modal="true" aria-labelledby="loginTitle" aria-hidden="true">
     <div class="dialog-card auth-dialog">
@@ -1087,13 +1199,24 @@ function applyRoute(){
   }
   try{
     if(workspaces.includes(page)){showPage(page);activateTab(page,validTab(page,tab))}
-    else showPage(['home','about'].includes(page)?page:'home');
+    else showPage(['home','about','privacy','terms'].includes(page)?page:'home');
   }finally{state.routing=false;syncRoute(true)}
 }
 window.addEventListener('popstate',()=>{if($('.dialog-backdrop.open'))$$('.dialog-backdrop.open').forEach(closeDialog);applyRoute()});
 function route(name){if(['candidate','recruiter'].includes(name)&&!state.authenticated){openLogin(name);return}showPage(name)}
 $$('[data-route]').forEach(button=>button.addEventListener('click',()=>route(button.dataset.route)));
-$$('[data-scroll]').forEach(button=>button.addEventListener('click',()=>{showPage('home');setTimeout(()=>document.getElementById(button.dataset.scroll).scrollIntoView({behavior:'smooth'}),0)}));
+// Scroll to a home-page section. If another page is open, switch to home first and jump straight there
+// (showPage scrolls to the top, which would otherwise cancel this scroll).
+$$('[data-scroll]').forEach(button=>button.addEventListener('click',()=>{
+  const wasHome=state.page==='home';
+  if(!wasHome)showPage('home');
+  setTimeout(()=>{
+    const target=document.getElementById(button.dataset.scroll);
+    const top=target.getBoundingClientRect().top+window.scrollY-$('#siteHeader').offsetHeight;
+    const smooth=wasHome&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({top,behavior:smooth?'smooth':'instant'});
+  },0);
+}));
 
 function openDialog(dialog){state.lastFocus=document.activeElement;dialog.classList.add('open');dialog.setAttribute('aria-hidden','false');requestAnimationFrame(()=>dialog.querySelector('button').focus())}
 function closeDialog(dialog){if(!dialog.classList.contains('open')||dialog.classList.contains('closing'))return;const finish=()=>{dialog.classList.remove('open','closing');dialog.setAttribute('aria-hidden','true');if(state.lastFocus?.focus)state.lastFocus.focus()};if(matchMedia('(prefers-reduced-motion: reduce)').matches){finish();return}dialog.classList.add('closing');setTimeout(finish,240)}
@@ -1596,6 +1719,7 @@ if (savePreferencesButton) {
 }
 
 renderCandidate();renderCounts();
+$('#footerYear').textContent=new Date().getFullYear();
 applyRoute();
 
 </script>
