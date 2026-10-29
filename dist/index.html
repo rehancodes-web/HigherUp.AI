@@ -462,6 +462,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .system-principle>span{background:#818cf8}
 .system-principle em{color:var(--brand-line)}
 .evidence-orbit{top:22px;right:22px}
+/* Keep the orbit's helper text from overlapping the steps: hide it visually (screen readers still
+   read it via aria-describedby) and keep the first step's text clear of the orbit. */
+.evidence-orbit>p{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.evidence-orbit{width:170px;height:170px}.orbit-tilt{width:132px;height:132px}.orbit-plane{inset:12px}.orbit-core{width:66px;height:66px}
+#homePage .system-role,#homePage .system-step:first-child div{padding-right:165px}
+@media(max-width:680px){#homePage .system-role,#homePage .system-step:first-child div{padding-right:0}}
 .orbit-plane{border-color:rgba(165,180,252,.45)}
 .orbit-plane i{background:var(--brand-hi);box-shadow:0 0 0 4px rgba(165,180,252,.12)}
 .orbit-core{border-color:#818cf8;background:var(--dark)}
