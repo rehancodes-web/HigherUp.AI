@@ -308,6 +308,19 @@ h1,h2,h3{text-wrap:balance}p,li{text-wrap:pretty}
   }
 }
 
+
+
+/* Supabase login and registration */
+.auth-dialog{width:min(500px,100%)}
+.auth-mode{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px;margin:18px 0 20px;border-radius:10px;background:#f0f3f6}
+.auth-mode button{min-height:42px;border:0;border-radius:7px;background:transparent;color:#526477;font-weight:750}
+.auth-mode button.active{background:#fff;color:#102235;box-shadow:0 1px 5px rgba(16,34,53,.12)}
+.auth-dialog form{display:grid;gap:9px}
+.auth-label{margin-top:5px;color:#34495c;font-size:13px;font-weight:750}
+.auth-dialog input,.auth-dialog select{width:100%;min-height:46px;padding:10px 12px;border:1px solid #cbd5df;border-radius:8px;background:#fff;color:#102235}
+.auth-message{min-height:20px;margin:3px 0;color:#b42318;font-size:13px}
+.auth-message.success{color:#167348}
+.auth-footnote{margin:14px 0 0;font-size:12px}
 </style>
 </head>
 <body>
@@ -324,6 +337,7 @@ h1,h2,h3{text-wrap:balance}p,li{text-wrap:pretty}
     <div class="header-actions">
       <button class="button button-ghost" id="candidateLogin">Candidate login</button>
       <button class="button button-light" id="recruiterLogin">Recruiter login</button>
+      <button class="button button-ghost" id="logoutButton" type="button" hidden>Log out</button>
       <button class="profile-button" id="profileButton" type="button" hidden>
         <span class="profile-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5"></circle><path d="M5.5 19c.7-3.4 3.1-5.2 6.5-5.2s5.8 1.8 6.5 5.2"></path></svg></span>
         <span class="profile-copy"><small id="profileRole">Candidate profile</small><b id="profileLabel">Aisha Khan</b></span>
@@ -410,7 +424,7 @@ h1,h2,h3{text-wrap:balance}p,li{text-wrap:pretty}
 
     <section class="page workspace" id="candidatePage" aria-label="Candidate workspace">
       <aside class="workspace-nav">
-        <div><p class="workspace-persona">Candidate portal</p><h2>Aisha Khan</h2><span>Early-career Data Analyst</span></div>
+        <div><p class="workspace-persona">Candidate portal</p><h2 id="candidateName">Aisha Khan</h2><span>Early-career Data Analyst</span></div>
         <nav aria-label="Candidate sections">
           <button class="active" data-candidate-tab="overview">Overview</button>
           <button data-candidate-tab="profile">Profile & preferences</button>
@@ -423,7 +437,7 @@ h1,h2,h3{text-wrap:balance}p,li{text-wrap:pretty}
       </aside>
       <div class="workspace-content">
         <section class="tab-panel active" id="candidate-overview">
-          <div class="workspace-heading"><div><p class="overline dark">Candidate overview</p><h1>Good morning, <em>Aisha.</em></h1><p>Your evidence is strong. One focused Power BI task could improve 11 current matches.</p></div><span class="status-chip success">Profile verified</span></div>
+          <div class="workspace-heading"><div><p class="overline dark">Candidate overview</p><h1>Good morning, <em id="candidateGreeting">Aisha.</em></h1><p>Your evidence is strong. One focused Power BI task could improve 11 current matches.</p></div><span class="status-chip success">Profile verified</span></div>
           <div class="summary-grid">
             <article class="summary-feature"><span>Profile strength</span><strong>78%</strong><p>7 of 9 skills have verified evidence.</p></article>
             <article><span>Best match</span><strong>83%</strong><p>Junior Data Analyst</p></article>
@@ -446,7 +460,7 @@ h1,h2,h3{text-wrap:balance}p,li{text-wrap:pretty}
               <label>Work mode<select id="prefMode"><option>Hybrid or Remote</option><option>Remote only</option><option>On-site</option><option>Any</option></select></label>
               <label>Minimum salary<input id="prefSalary" value="₹4.5 LPA" maxlength="100"></label>
             </div>
-            <p class="criteria-help">Your profile will be saved under the demo candidate account <b>aisha@include.ai</b>. The current login is for demonstration only.</p>
+            <p class="criteria-help">Your preferences are saved under your account <b id="prefEmail">your email</b>.</p>
             <button class="button button-primary" id="savePreferences" type="button">Save preferences</button>
             <p id="preferencesSaveStatus" role="status" aria-live="polite" style="margin:12px 0 0"></p>
           </div>
@@ -502,12 +516,44 @@ h1,h2,h3{text-wrap:balance}p,li{text-wrap:pretty}
   </main>
 
   <div class="dialog-backdrop" id="loginDialog" role="dialog" aria-modal="true" aria-labelledby="loginTitle" aria-hidden="true">
-    <div class="dialog-card"><button class="dialog-close" id="closeDialog" aria-label="Close login dialog">×</button><p class="overline dark">Private workspace</p><h2 id="loginTitle">Choose how you want to explore</h2><p>Private profiles, matches and applicant data only appear after login.</p><div class="login-options"><button id="demoCandidate"><span>Candidate demo</span><b>Aisha Khan</b><small>Skill Passport, matches, Apply Agent and ScaleUp</small></button><button id="demoRecruiter"><span>Recruiter demo</span><b>BrightForge HR</b><small>Talent Deck, role setup, decisions and fairness review</small></button></div></div>
+    <div class="dialog-card auth-dialog">
+      <button class="dialog-close" id="closeDialog" aria-label="Close authentication dialog">×</button>
+      <p class="overline dark">Secure account access</p>
+      <h2 id="loginTitle">Welcome to Include.AI</h2>
+      <p id="authDescription">Log in to access your workspace, or create a new account.</p>
+      <div class="auth-mode" role="group" aria-label="Authentication mode">
+        <button type="button" id="showLogin" class="active">Log in</button>
+        <button type="button" id="showRegister">Create account</button>
+      </div>
+      <form id="authForm">
+        <label class="auth-label" for="authRole">I am a</label>
+        <select id="authRole" required>
+          <option value="candidate">Candidate</option>
+          <option value="recruiter">Recruiter</option>
+        </select>
+        <label class="auth-label" id="authNameLabel" for="authName" hidden>Full name</label>
+        <input id="authName" type="text" autocomplete="name" maxlength="80" placeholder="Your full name" hidden>
+        <label class="auth-label" for="authEmail">Email address</label>
+        <input id="authEmail" type="email" autocomplete="email" placeholder="you@example.com" required>
+        <label class="auth-label" for="authPassword">Password</label>
+        <input id="authPassword" type="password" autocomplete="current-password" minlength="8" placeholder="At least 8 characters" required>
+        <p id="authMessage" class="auth-message" role="status" aria-live="polite"></p>
+        <button type="submit" id="authSubmit" class="button button-primary button-large" style="width:100%">Log in</button>
+      </form>
+      <p class="auth-footnote">Use your own account. No demo credentials are provided.</p>
+    </div>
   </div>
 
   <div class="dialog-backdrop" id="matchDialog" role="dialog" aria-modal="true" aria-labelledby="matchTitle" aria-hidden="true"><div class="dialog-card match-dialog"><button class="dialog-close" data-close-match aria-label="Close match explanation">×</button><p class="overline dark">Inclusive Matching Agent</p><h2 id="matchTitle">Why this role matches</h2><div class="dialog-score">83% <span>fit · high evidence confidence</span></div><div class="dialog-factors"><div><span>Essential skill coverage</span><b>86 / 100</b></div><div><span>Evidence strength</span><b>82 / 100</b></div><div><span>Relevant experience</span><b>76 / 100</b></div><div><span>Transferable skills</span><b>91 / 100</b></div><div><span>Preferences</span><b>100 / 100</b></div></div><p class="dialog-note"><b>Missing proof:</b> Power BI dashboard evidence. Missing information lowers confidence; it is never guessed.</p></div></div>
 
-  <script>
+  <script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+// Replace these two values with your own Supabase Project URL and Publishable key.
+const SUPABASE_URL = 'https://kgubkabyljxawnsonjnj.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_XlsiXHyiKr6D6LZjByRlsQ_ecy7RNV7';
+const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
 document.documentElement.classList.add('motion-ready');
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const state={authenticated:false,role:null,deckIndex:0,decisions:[],lastFocus:null};
@@ -534,15 +580,104 @@ $$('[data-scroll]').forEach(button=>button.addEventListener('click',()=>{showPag
 
 function openDialog(dialog){state.lastFocus=document.activeElement;dialog.classList.add('open');dialog.setAttribute('aria-hidden','false');requestAnimationFrame(()=>dialog.querySelector('button').focus())}
 function closeDialog(dialog){if(!dialog.classList.contains('open')||dialog.classList.contains('closing'))return;const finish=()=>{dialog.classList.remove('open','closing');dialog.setAttribute('aria-hidden','true');if(state.lastFocus?.focus)state.lastFocus.focus()};if(matchMedia('(prefers-reduced-motion: reduce)').matches){finish();return}dialog.classList.add('closing');setTimeout(finish,240)}
-function openLogin(preferred){openDialog($('#loginDialog'));if(preferred)toast(`Choose the ${preferred} demo to continue`)}
+let authMode='login';
+function setAuthMode(mode){
+  authMode=mode;
+  $('#showLogin').classList.toggle('active',mode==='login');
+  $('#showRegister').classList.toggle('active',mode==='register');
+  $('#loginTitle').textContent=mode==='login'?'Welcome back':'Create your Include.AI account';
+  $('#authDescription').textContent=mode==='login'?'Log in to access your workspace.':'Register with your email and create a password.';
+  $('#authSubmit').textContent=mode==='login'?'Log in':'Create account';
+  $('#authPassword').autocomplete=mode==='login'?'current-password':'new-password';
+  $('#authName').hidden=$('#authNameLabel').hidden=mode==='login';
+  $('#authName').required=mode==='register';
+  $('#authMessage').textContent='';
+  $('#authMessage').classList.remove('success');
+}
+function openLogin(preferred){
+  setAuthMode('login');
+  if(preferred)$('#authRole').value=preferred==='recruiter'?'recruiter':'candidate';
+  $('#authEmail').value='';
+  $('#authPassword').value='';
+  $('#authName').value='';
+  openDialog($('#loginDialog'));
+}
 $('#candidateLogin').onclick=$('#startCandidate').onclick=()=>openLogin('candidate');
 $('#recruiterLogin').onclick=$('#startRecruiter').onclick=()=>openLogin('recruiter');
 $$('[data-login]').forEach(button=>button.onclick=()=>openLogin(button.dataset.login));
+$('#showLogin').onclick=()=>setAuthMode('login');
+$('#showRegister').onclick=()=>setAuthMode('register');
 $('#closeDialog').onclick=()=>closeDialog($('#loginDialog'));
 $('#loginDialog').onclick=e=>{if(e.target===e.currentTarget)closeDialog(e.currentTarget)};
-$('#demoCandidate').onclick=()=>loginAs('candidate');$('#demoRecruiter').onclick=()=>loginAs('recruiter');
-function loginAs(role){state.authenticated=true;state.role=role;$('#candidateLogin').hidden=true;$('#recruiterLogin').hidden=true;$('#profileButton').hidden=false;$('#profileRole').textContent=role==='candidate'?'Candidate profile':'Recruiter profile';$('#profileLabel').textContent=role==='candidate'?'Aisha Khan':'BrightForge';$('#profileButton').setAttribute('aria-label',`Open ${role} profile`);closeDialog($('#loginDialog'));showPage(role);toast(role==='candidate'?'Candidate workspace ready':'Recruiter workspace ready')}
+
+function setAuthenticatedUser(user){
+  if(!user){state.authenticated=false;state.role=null;state.email=null;state.name=null;$('#candidateLogin').hidden=false;$('#recruiterLogin').hidden=false;$('#profileButton').hidden=true;$('#logoutButton').hidden=true;return}
+  const metaRole=user.user_metadata?.role;
+  state.authenticated=true;
+  state.role=metaRole==='recruiter'?'recruiter':'candidate';
+  state.email=user.email;
+  state.name=user.user_metadata?.full_name||user.email;
+  const firstName=state.name.split(/[\s@]/)[0];
+  $('#candidateName').textContent=state.name;
+  $('#candidateGreeting').textContent=firstName+'.';
+  $('#prefEmail').textContent=user.email;
+  $('#candidateLogin').hidden=true;$('#recruiterLogin').hidden=true;
+  $('#profileButton').hidden=false;$('#logoutButton').hidden=false;
+  $('#profileRole').textContent=state.role==='candidate'?'Candidate profile':'Recruiter profile';
+  $('#profileLabel').textContent=user.user_metadata?.full_name||user.email||'Account';
+  $('#profileButton').setAttribute('aria-label',`Open ${state.role} workspace`);
+}
+async function enterWorkspace(user){
+  setAuthenticatedUser(user);
+  closeDialog($('#loginDialog'));
+  showPage(state.role);
+  activateTab(state.role,state.role==='candidate'?'overview':'deck');
+  toast(state.role==='candidate'?'Logged in successfully':'Recruiter logged in successfully');
+}
+$('#authForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const email=$('#authEmail').value.trim().toLowerCase();
+  const password=$('#authPassword').value;
+  const role=$('#authRole').value;
+  const message=$('#authMessage');
+  const submit=$('#authSubmit');
+  message.textContent='';message.classList.remove('success');
+  submit.disabled=true;submit.textContent=authMode==='login'?'Logging in…':'Creating account…';
+  try{
+        if(authMode==='register'){
+      const {data,error}=await supabase.auth.signUp({email,password,options:{data:{role,full_name:$('#authName').value.trim()}}});
+      if(error)throw error;
+      if(data.session&&data.user){await enterWorkspace(data.user)}
+      else{
+        setAuthMode('login');
+        message.classList.add('success');
+        message.textContent='Account created. Check your email to confirm it, then log in.';
+        toast('Check your email to confirm registration.');
+      }
+    }else{
+      const {data,error}=await supabase.auth.signInWithPassword({email,password});
+      if(error)throw error;
+      if(!data.user)throw new Error('Login did not return a user. Please try again.');
+      await enterWorkspace(data.user);
+    }
+  }catch(error){
+    console.error('Authentication error:',error);
+    message.textContent=error.message||'Authentication failed. Please try again.';
+  }finally{
+    submit.disabled=false;submit.textContent=authMode==='login'?'Log in':'Create account';
+  }
+});
 $('#profileButton').onclick=()=>{if(!state.authenticated||!state.role)return;showPage(state.role);activateTab(state.role,state.role==='candidate'?'overview':'deck')};
+$('#logoutButton').onclick=async()=>{
+  const {error}=await supabase.auth.signOut();
+  if(error){toast('Could not log out. Please try again.');return}
+  setAuthenticatedUser(null);showPage('home');toast('Logged out successfully');
+};
+const {data:{session:initialSession}}=await supabase.auth.getSession();
+if(initialSession?.user){
+  setAuthenticatedUser(initialSession.user);
+}
+supabase.auth.onAuthStateChange((_event,session)=>{setAuthenticatedUser(session?.user||null)});
 
 function activateTab(type,name){$$(`[data-${type}-tab]`).forEach(button=>button.classList.toggle('active',button.dataset[`${type}Tab`]===name));$$(`#${type}Page .tab-panel`).forEach(panel=>panel.classList.toggle('active',panel.id===`${type}-${name}`));window.scrollTo({top:0,behavior:'auto'});if(name==='decisions')renderDecisions()}
 $$('[data-candidate-tab]').forEach(button=>button.onclick=()=>activateTab('candidate',button.dataset.candidateTab));
@@ -610,13 +745,13 @@ if (savePreferencesButton) {
 
     try {
       const response = await fetch(
-        `${API_BASE}/candidates/by-email/${encodeURIComponent('aisha@include.ai')}`,
+        `${API_BASE}/candidates/by-email/${encodeURIComponent(state.email)}`,
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            full_name: 'Aisha Khan',
-            email: 'aisha@include.ai',
+            full_name: state.name,
+            email: state.email,
             preferred_roles: roles,
             preferred_locations: cities,
             work_mode: mode
