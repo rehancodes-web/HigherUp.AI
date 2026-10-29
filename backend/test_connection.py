@@ -45,7 +45,9 @@ try:
         port=port,
         user=user,
         password=password,
-        connectTimeout=15,
+        encrypt=True,
+        sslValidateCertificate=True,
+        connectTimeout=30000,
     )
 
     print("SUCCESS: Connected to SAP HANA!")
