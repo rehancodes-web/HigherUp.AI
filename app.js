@@ -1,4 +1,22 @@
-const state={score:68,taskDone:false,loginType:'candidate',deckIndex:0,decisions:[],authenticated:false,summaryFields:['skills','projects','internships','experience','hackathons','certifications','location','gaps']};
+const state = {
+  score: 68,
+  taskDone: false,
+  loginType: 'candidate',
+  currentEmail: '',
+  deckIndex: 0,
+  decisions: [],
+  authenticated: false,
+  summaryFields: [
+    'skills',
+    'projects',
+    'internships',
+    'experience',
+    'hackathons',
+    'certifications',
+    'location',
+    'gaps'
+  ]
+};
 const candidates=[
  {name:'Aisha Khan',initials:'AK',headline:'Project-trained Data Analyst',location:'Pune · Available in 2 weeks',score:83,confidence:'High evidence confidence',summary:'Turns messy business data into clear decisions through projects, freelance tasks and hackathons.',skills:['SQL','Excel','Power BI','Data storytelling'],proof:[['Retail sales analysis','Cleaned 12,000 records and surfaced category trends'],['Power BI dashboard','Built a decision-ready dashboard from a timed brief'],['Freelance data cleanup','Standardised inconsistent customer and sales data']],gap:'Python is developing; it is not essential for this role.',factors:[['Essential skills',86,35],['Evidence strength',82,25],['Relevant work',76,15],['Transferable skills',91,10],['Recency',88,5],['Preferences',100,10]]},
  {name:'Vikram Joshi',initials:'VJ',headline:'Operations & Reporting Analyst',location:'Pune · Available now',score:80,confidence:'High evidence confidence',summary:'Combines shop-floor operations knowledge with strong spreadsheet reporting and process improvement.',skills:['Advanced Excel','Dashboards','Process mapping','SQL'],proof:[['Inventory tracker','Reduced weekly reconciliation time by 30%'],['Operations role','Two years of hands-on reporting work'],['SQL assessment','Passed the role-aligned query challenge']],gap:'Power BI evidence is basic; adjacent dashboard skills are strong.',factors:[['Essential skills',79,35],['Evidence strength',88,25],['Relevant work',92,15],['Transferable skills',84,10],['Recency',82,5],['Preferences',70,10]]},
@@ -30,7 +48,34 @@ $('#loginOpen').onclick=()=>{if(state.authenticated){state.authenticated=false;$
 function requestLogin(type){state.loginType=type;setLoginFields(type);openModal('loginModal')}
 $('#tryCandidate').onclick=()=>requestLogin('candidate'); $('#tryEmployer').onclick=()=>requestLogin('employer');
 $('#seeWhy').onclick=()=>{if(!state.authenticated){requestLogin('candidate');showToast('Log in to view match details');return}renderMatch();openModal('matchModal')};
-function quickLogin(type){state.loginType=type;state.authenticated=true;setLoginFields(type);closeModal('loginModal');$('#loginOpen').textContent='Log out';go(type==='candidate'?'candidate':'employer');if(type==='employer'){openEmployerPanel('talent');renderCandidate()}showToast(type==='candidate'?'Logged in as Aisha Khan':'Talent deck ready for BrightForge')}
+function quickLogin(type) {
+  state.loginType = type;
+
+  state.currentEmail =
+    type === 'candidate'
+      ? 'aisha@include.ai'
+      : 'hr@brightforge.in';
+
+  state.authenticated = true;
+
+  setLoginFields(type);
+  closeModal('loginModal');
+
+  $('#loginOpen').textContent = 'Log out';
+
+  go(type === 'candidate' ? 'candidate' : 'employer');
+
+  if (type === 'employer') {
+    openEmployerPanel('talent');
+    renderCandidate();
+  }
+
+  showToast(
+    type === 'candidate'
+      ? 'Logged in as Aisha Khan'
+      : 'Talent deck ready for BrightForge'
+  );
+}
 function setLoginFields(type){$('#emailInput').value=type==='candidate'?'aisha@include.ai':'hr@brightforge.in';$('#passwordInput').value='include123';$$('[data-login-type]').forEach(b=>b.classList.toggle('active',b.dataset.loginType===type))}
 $$('[data-login-type]').forEach(b=>b.onclick=()=>{state.loginType=b.dataset.loginType;setLoginFields(state.loginType)});
 $('#loginSubmit').onclick=()=>{const e=$('#emailInput').value.trim(),p=$('#passwordInput').value;if(p!=='include123'||!['aisha@include.ai','hr@brightforge.in'].includes(e)){showToast('Use one of the accounts shown below');return}quickLogin(e.startsWith('aisha')?'candidate':'employer')};
@@ -65,7 +110,99 @@ $$('.fixCriteria').forEach(b=>b.onclick=()=>{b.textContent='Suggestion accepted 
 function readSummaryFields(){return $$('[data-summary-field]:checked').map(x=>x.dataset.summaryField)}
 function updateFieldCount(){const n=readSummaryFields().length;$('#selectedFieldCount').textContent=`${n} field${n===1?'':'s'} selected`}
 $$('[data-summary-field]').forEach(x=>x.onchange=updateFieldCount);
-$('#saveSummaryTemplate').onclick=()=>{const fields=readSummaryFields();if(!fields.length){showToast('Select at least one summary field');return}state.summaryFields=fields;renderCandidate();showToast('One-page summary template saved')};
+const API_BASE = 'http://127.0.0.1:8000';
+
+async function saveCandidatePreferences() {
+  const roles =
+    $('#prefRoles').value.trim() || 'Any suitable role';
+
+  const cities =
+    $('#prefCities').value.trim() || 'Any location';
+
+  const mode = $('#prefMode').value;
+
+  const salary =
+    $('#prefSalary').value.trim() || 'Not specified';
+
+  // Update the preference cards in the interface.
+  const cards = $$('.preference-grid article b');
+
+  if (cards.length >= 4) {
+    cards[0].textContent = roles;
+    cards[1].textContent = cities;
+    cards[2].textContent = mode;
+    cards[3].textContent = salary;
+  }
+
+  $('#agentToggle').checked = $('#prefAutoApply').checked;
+
+  $('#agentStatus').textContent =
+    $('#prefAutoApply').checked ? 'Active' : 'Paused';
+
+  // Require a candidate demo login.
+  if (
+    !state.authenticated ||
+    state.loginType !== 'candidate' ||
+    !state.currentEmail
+  ) {
+    showToast('Log in as a candidate before saving to the database');
+    return;
+  }
+
+  const button = $('#savePreferences');
+
+  button.disabled = true;
+  button.textContent = 'Saving…';
+
+  try {
+    const response = await fetch(
+      `${API_BASE}/candidates/by-email/${encodeURIComponent(
+        state.currentEmail
+      )}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          full_name: 'Aisha Khan',
+          email: state.currentEmail,
+          preferred_roles: roles,
+          preferred_locations: cities,
+          work_mode: mode
+        })
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.detail || `Request failed (${response.status})`
+      );
+    }
+
+    showToast(
+      `Preferences saved to SAP HANA (${result.status})`
+    );
+
+  } catch (error) {
+    console.error(
+      'Could not save candidate preferences:',
+      error
+    );
+
+    showToast(
+      'Could not save to SAP HANA. Check whether FastAPI is running.'
+    );
+
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Save preferences';
+  }
+}
+
+$('#savePreferences').onclick = saveCandidatePreferences;
 $('#previewSummary').onclick=()=>{const fields=readSummaryFields();if(!fields.length){showToast('Select at least one summary field');return}state.summaryFields=fields;renderCandidate();openEmployerPanel('talent');showToast('Candidate cards updated to your template')};
 $('#downloadResume').onclick=()=>{const html=`<!doctype html><meta charset="utf-8"><title>Aisha Khan Resume</title><style>body{font:16px Arial;max-width:760px;margin:50px auto;line-height:1.5}h1{border-bottom:4px solid #111;padding-bottom:10px}h2{color:#d52e67;font-size:17px;margin-top:25px}</style><h1>Aisha Khan</h1><p>Early-career Data Analyst · Pune · aisha@include.ai</p><h2>PROFILE</h2><p>Data-focused problem solver with project experience in SQL, dashboards and retail analysis.</p><h2>SKILLS</h2><p>SQL · Excel · Power BI · Data storytelling · Python</p><h2>PROJECTS</h2><b>Retail Sales Analysis</b><p>Cleaned 12,000 sales records and identified category-level patterns.</p><b>Hackathon Workforce Pitch</b><p>Designed and presented an inclusive hiring concept.</p><h2>EDUCATION</h2><p>B.Com coursework, 2023–2024. Continued learning through projects and short courses.</p>`;const blob=new Blob([html],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Aisha_Khan_Resume.html';a.click();URL.revokeObjectURL(a.href);showToast('Resume downloaded')};
 window.onclick=e=>{if(e.target.classList.contains('modal'))closeModal(e.target.id)};
