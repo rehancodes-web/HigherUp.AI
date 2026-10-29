@@ -336,6 +336,50 @@ h1,h2,h3{text-wrap:balance}p,li{text-wrap:pretty}
 .criteria-help b{color:var(--ink)}
 @media(max-width:680px){.preference-form{grid-template-columns:1fr}}
 
+/* Edit profile: personal details, links and document uploads. */
+.workspace-edit{display:inline-flex;align-items:center;gap:6px;margin:12px 10px 0;padding:6px 12px;border:1px solid rgba(255,255,255,.18);border-radius:8px;background:transparent;color:#e0e4ec;font-size:13px;font-weight:600}
+.workspace-edit:hover{background:rgba(255,255,255,.08);color:#fff}
+.workspace-edit::before{content:"✎";font-size:12px}
+.profile-editor{margin-bottom:16px}
+.profile-head{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;margin-bottom:20px}
+.profile-head h2{margin:0 0 2px}.profile-head p{margin:0}
+.profile-avatar{width:56px;height:56px;display:grid;place-items:center;border-radius:14px;background:var(--brand-bg);color:var(--brand);font-family:var(--font-statement);font-size:19px;font-weight:750}
+.profile-complete{padding:6px 11px;border-radius:999px;background:var(--surface-2);color:var(--ink-soft);font-size:12px;font-weight:700;white-space:nowrap}
+.profile-complete.done{background:var(--green-bg);color:var(--green)}
+.preference-form label small{color:var(--muted);font-weight:500}
+.preference-form .span-2{grid-column:1/-1}
+.preference-form textarea{width:100%;padding:10px 13px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;font-size:15px;font-weight:450;resize:vertical;box-shadow:var(--shadow-sm)}
+.preference-form textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(99,102,241,.16);outline:none}
+.preference-form input[readonly]{background:var(--surface-2);color:var(--muted);cursor:not-allowed}
+.preference-form input.invalid{border-color:var(--rose);box-shadow:0 0 0 3px rgba(190,18,60,.12)}
+.char-count{justify-self:end;color:var(--muted)!important;font-weight:500!important}
+.documents-head{margin:26px 0 12px}
+.documents-head h3{margin:0 0 3px;font-family:var(--font-statement);font-size:19px;letter-spacing:-.02em}
+.documents-head p{margin:0;font-size:14px}
+.upload-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.upload-zone{display:grid;justify-items:center;gap:6px;padding:20px 14px;border:1.5px dashed var(--line-strong);border-radius:12px;background:var(--bg);text-align:center;transition:border-color 160ms ease,background-color 160ms ease}
+.upload-zone b{font-size:14px}.upload-zone b em{color:var(--muted);font-style:normal;font-weight:500}
+.upload-zone span,.upload-zone small{color:var(--muted);font-size:12px}
+.upload-zone.dragover{border-color:var(--brand);background:var(--brand-bg)}
+.upload-button{display:inline-flex;align-items:center;min-height:38px;margin-top:4px;padding:8px 14px;border:1px solid var(--line-strong);border-radius:8px;background:var(--surface);color:var(--ink);font-size:13px;font-weight:650;cursor:pointer;box-shadow:var(--shadow-sm)}
+.upload-button:hover{border-color:var(--ink-soft)}
+.upload-button:focus-within{outline:2px solid var(--brand);outline-offset:2px}
+.file-list{display:grid;gap:8px;margin:14px 0 0;padding:0;list-style:none}
+.file-list:empty{display:none}
+.file-list li{display:grid;grid-template-columns:auto 1fr auto auto;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.file-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:8px;background:var(--brand-bg);color:var(--brand);font-size:10px;font-weight:800;text-transform:uppercase}
+.file-list b{display:block;overflow:hidden;font-size:14px;text-overflow:ellipsis;white-space:nowrap}
+.file-list small{color:var(--muted);font-size:12px}
+.file-state{font-size:12px;font-weight:700;white-space:nowrap}
+.file-state.saved{color:var(--green)}.file-state.pending{color:var(--brand)}.file-state.failed{color:var(--rose)}
+.file-list button{min-height:34px;padding:5px 10px;border:1px solid var(--line-strong);border-radius:8px;background:var(--surface);color:var(--ink);font-size:12px;font-weight:600}
+.file-list button:hover{background:var(--surface-2)}
+.file-buttons{display:flex;gap:6px}
+.profile-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px 16px;margin-top:22px}
+.profile-actions p{margin:0;font-size:14px}
+@media(max-width:860px){.upload-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.profile-head{grid-template-columns:auto 1fr}.profile-complete{grid-column:1/-1;justify-self:start}.file-list li{grid-template-columns:auto 1fr}.file-state,.file-buttons{grid-column:2}}
+
 /* Editable Skill Passport */
 .skill-row{grid-template-columns:1fr 100px 130px auto;align-items:center}
 .skill-row small{display:block;color:var(--muted);font-size:12px;line-height:1.4}
@@ -763,7 +807,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
     <section class="page workspace" id="candidatePage" aria-label="Candidate workspace">
       <aside class="workspace-nav">
-        <div><p class="workspace-persona">Candidate portal</p><h2 id="candidateName">Aisha Khan</h2><span>Early-career Data Analyst</span></div>
+        <div><p class="workspace-persona">Candidate portal</p><h2 id="candidateName">Aisha Khan</h2><span id="candidateHeadline">Early-career Data Analyst</span><button class="workspace-edit" id="editProfileNav" type="button">Edit profile</button></div>
         <nav aria-label="Candidate sections">
           <button class="active" data-candidate-tab="overview">Overview</button>
           <button data-candidate-tab="profile">Profile & preferences</button>
@@ -790,6 +834,55 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
           <div class="workspace-heading">
             <div><p class="overline dark">Your account</p><h1>Profile & <em>preferences</em></h1><p>Tell Include.AI what roles, locations and work arrangements suit you. Save to sync your profile with SAP HANA.</p></div>
             <span class="status-chip">Candidate-controlled</span>
+          </div>
+          <div class="content-block profile-editor" id="profileEditor">
+            <div class="profile-head">
+              <div class="profile-avatar" id="profileAvatar" aria-hidden="true">AK</div>
+              <div><h2>Your profile</h2><p>This is what employers see next to your evidence. Only you can edit it.</p></div>
+              <span class="profile-complete" id="profileComplete">Profile 0% complete</span>
+            </div>
+            <form id="profileForm" novalidate>
+              <div class="preference-form">
+                <label>Full name<input id="profName" autocomplete="name" maxlength="80" required placeholder="Your full name"></label>
+                <label>Headline<input id="profHeadline" maxlength="80" placeholder="e.g. Aspiring Data Analyst"></label>
+                <label><span>Email <small>· from your account</small></span><input id="profEmail" type="email" readonly></label>
+                <label>Phone<input id="profPhone" type="tel" autocomplete="tel" maxlength="20" placeholder="+91 98765 43210"></label>
+                <label>Current city<input id="profCity" autocomplete="address-level2" maxlength="60" placeholder="e.g. Pune"></label>
+                <label>Looking for<select id="profLooking"><option>Jobs and internships</option><option>Full-time jobs</option><option>Internships</option><option>Part-time or freelance</option></select></label>
+                <label>Available<select id="profAvailable"><option>Immediately</option><option>Within 2 weeks</option><option>Within a month</option><option>After my course ends</option></select></label>
+                <label><span>Education <small>· optional</small></span><input id="profEducation" maxlength="120" placeholder="e.g. B.Com, 3rd year, or self-taught"></label>
+                <label>LinkedIn<input id="profLinkedin" type="url" inputmode="url" maxlength="200" placeholder="https://linkedin.com/in/…"></label>
+                <label>GitHub<input id="profGithub" type="url" inputmode="url" maxlength="200" placeholder="https://github.com/…"></label>
+                <label class="span-2">Portfolio or website<input id="profPortfolio" type="url" inputmode="url" maxlength="200" placeholder="https://…"></label>
+                <label class="span-2">About me<textarea id="profBio" rows="4" maxlength="600" placeholder="A few lines about what you enjoy working on and what you're looking for."></textarea><small class="char-count" id="profBioCount">0 / 600</small></label>
+              </div>
+              <p class="criteria-help">Education, college name and personal details are shown for context only. They have <b>zero weight</b> in your match score.</p>
+
+              <div class="documents-head"><h3>Resume, CV and documents</h3><p>The Skills Discovery Agent will use your resume to suggest Skill Passport entries. You confirm every one.</p></div>
+              <div class="upload-grid">
+                <div class="upload-zone" data-kind="resume" data-multiple="false" data-accept=".pdf,.doc,.docx">
+                  <b>Resume / CV</b><span>PDF, DOC or DOCX · up to 5 MB</span>
+                  <label class="upload-button">Choose file<input type="file" accept=".pdf,.doc,.docx" hidden></label>
+                  <small>or drag and drop here</small>
+                </div>
+                <div class="upload-zone" data-kind="cover" data-multiple="false" data-accept=".pdf,.doc,.docx">
+                  <b>Cover letter <em>optional</em></b><span>PDF, DOC or DOCX · up to 5 MB</span>
+                  <label class="upload-button">Choose file<input type="file" accept=".pdf,.doc,.docx" hidden></label>
+                  <small>or drag and drop here</small>
+                </div>
+                <div class="upload-zone" data-kind="proof" data-multiple="true" data-accept=".pdf,.jpg,.jpeg,.png">
+                  <b>Certificates and proof <em>optional</em></b><span>PDF, JPG or PNG · up to 5 MB each · max 5</span>
+                  <label class="upload-button">Choose files<input type="file" accept=".pdf,.jpg,.jpeg,.png" multiple hidden></label>
+                  <small>or drag and drop here</small>
+                </div>
+              </div>
+              <ul class="file-list" id="fileList" aria-live="polite"></ul>
+
+              <div class="profile-actions">
+                <button class="button button-primary" id="saveProfile" type="submit">Save profile</button>
+                <p id="profileSaveStatus" role="status" aria-live="polite"></p>
+              </div>
+            </form>
           </div>
           <div class="content-block">
             <div class="block-heading"><div><h2>Job preferences</h2><p>These preferences help explain job-fit recommendations.</p></div></div>
@@ -1034,17 +1127,135 @@ $('#showRegister').onclick=()=>setAuthMode('register');
 $('#closeDialog').onclick=()=>closeDialog($('#loginDialog'));
 $('#loginDialog').onclick=e=>{if(e.target===e.currentTarget)closeDialog(e.currentTarget)};
 
+// ---------- Edit profile: details are saved to the Supabase account (user metadata);
+// documents go to the private Storage bucket below, in a folder named after the user's id.
+const DOCS_BUCKET='candidate-documents';
+const MAX_FILE_BYTES=5*1024*1024;
+const DOC_RULES={resume:{label:'Resume / CV',exts:['pdf','doc','docx'],max:1},cover:{label:'Cover letter',exts:['pdf','doc','docx'],max:1},proof:{label:'Certificate / proof',exts:['pdf','jpg','jpeg','png'],max:5}};
+let profileDocs=[];   // {id,kind,name,size,path?,uploadedAt?,file?,status:'saved'|'pending'|'failed',error?}
+let docSeq=0;
+const profileFields=['profName','profHeadline','profPhone','profCity','profLooking','profAvailable','profEducation','profLinkedin','profGithub','profPortfolio','profBio'];
+const initialsOf=name=>(name||'?').replace(/@.*/,'').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('')||'?';
+const formatSize=bytes=>bytes<1024*1024?`${Math.max(1,Math.round(bytes/1024))} KB`:`${(bytes/1024/1024).toFixed(1)} MB`;
+const extOf=name=>(name.split('.').pop()||'').toLowerCase();
+
+function applyNameEverywhere(name,headline){
+  const display=name||state.email||'Account';
+  state.name=display;
+  $('#candidateName').textContent=display;
+  $('#candidateGreeting').textContent=display.split(/[\s@]/)[0]+'.';
+  $('#profileLabel').textContent=display;
+  $('#profileAvatar').textContent=initialsOf(display);
+  if(headline!==undefined)$('#candidateHeadline').textContent=headline||'Early-career candidate';
+}
+function updateProfileCompleteness(){
+  const checks=[$('#profName').value.trim(),$('#profHeadline').value.trim(),$('#profPhone').value.trim(),$('#profCity').value.trim(),$('#profBio').value.trim(),($('#profLinkedin').value+$('#profGithub').value+$('#profPortfolio').value).trim(),profileDocs.some(d=>d.kind==='resume')];
+  const pct=Math.round(checks.filter(Boolean).length/checks.length*100);
+  const chip=$('#profileComplete');chip.textContent=`Profile ${pct}% complete`;chip.classList.toggle('done',pct===100);
+  $('#profBioCount').textContent=`${$('#profBio').value.length} / 600`;
+}
+function fillProfile(user){
+  const meta=user?.user_metadata||{},p=meta.profile||{};
+  $('#profName').value=meta.full_name||'';
+  $('#profEmail').value=user?.email||'';
+  const map={profHeadline:'headline',profPhone:'phone',profCity:'city',profLooking:'lookingFor',profAvailable:'available',profEducation:'education',profLinkedin:'linkedin',profGithub:'github',profPortfolio:'portfolio',profBio:'bio'};
+  Object.entries(map).forEach(([id,key])=>{const el=$('#'+id);if(el.tagName==='SELECT'){if(p[key])el.value=p[key]}else el.value=p[key]||''});
+  profileDocs=(Array.isArray(meta.documents)?meta.documents:[]).map(d=>({...d,id:++docSeq,status:'saved'}));
+  applyNameEverywhere(meta.full_name||user?.email||'',p.headline);
+  renderDocs();updateProfileCompleteness();
+}
+function renderDocs(){
+  const order={resume:0,cover:1,proof:2};
+  const docs=[...profileDocs].sort((a,b)=>order[a.kind]-order[b.kind]);
+  $('#fileList').innerHTML=docs.map(d=>{
+    const badge=d.status==='saved'?'<span class="file-state saved">Saved</span>':d.status==='failed'?`<span class="file-state failed" title="${esc(d.error||'')}">Not uploaded</span>`:'<span class="file-state pending">Ready to save</span>';
+    const view=d.status==='saved'&&d.path?`<button type="button" data-view-doc="${d.id}">View</button>`:'';
+    return `<li><span class="file-icon">${esc(extOf(d.name))}</span><div><b>${esc(d.name)}</b><small>${DOC_RULES[d.kind].label} · ${formatSize(d.size)}</small></div>${badge}<span class="file-buttons">${view}<button type="button" data-remove-doc="${d.id}" aria-label="Remove ${esc(d.name)}">Remove</button></span></li>`;
+  }).join('');
+  $$('[data-remove-doc]').forEach(b=>b.onclick=()=>removeDoc(Number(b.dataset.removeDoc)));
+  $$('[data-view-doc]').forEach(b=>b.onclick=()=>viewDoc(Number(b.dataset.viewDoc)));
+}
+function addFiles(kind,fileList){
+  const rule=DOC_RULES[kind];const problems=[];
+  for(const file of fileList){
+    if(!rule.exts.includes(extOf(file.name))){problems.push(`${file.name}: use ${rule.exts.join(', ').toUpperCase()}`);continue}
+    if(file.size>MAX_FILE_BYTES){problems.push(`${file.name}: larger than 5 MB`);continue}
+    if(rule.max===1){profileDocs.filter(d=>d.kind===kind&&d.path).forEach(d=>state.docsToDelete.push(d.path));profileDocs=profileDocs.filter(d=>d.kind!==kind)}
+    else if(profileDocs.filter(d=>d.kind===kind).length>=rule.max){problems.push(`Only ${rule.max} certificates allowed`);break}
+    profileDocs.push({id:++docSeq,kind,name:file.name,size:file.size,file,status:'pending'});
+  }
+  renderDocs();updateProfileCompleteness();
+  if(problems.length)toast(problems[0]);else if(fileList.length)toast(`${rule.label} added. Save your profile to upload it.`);
+}
+function removeDoc(id){
+  const doc=profileDocs.find(d=>d.id===id);if(!doc)return;
+  if(doc.path)state.docsToDelete.push(doc.path);
+  profileDocs=profileDocs.filter(d=>d.id!==id);
+  renderDocs();updateProfileCompleteness();
+  toast(doc.path?`${doc.name} will be removed when you save`:`${doc.name} removed`);
+}
+async function viewDoc(id){
+  const doc=profileDocs.find(d=>d.id===id);if(!doc?.path)return;
+  const {data,error}=await supabase.storage.from(DOCS_BUCKET).createSignedUrl(doc.path,300);
+  if(error){toast('Could not open the file. Please try again.');return}
+  window.open(data.signedUrl,'_blank','noopener');
+}
+state.docsToDelete=[];
+$$('.upload-zone').forEach(zone=>{
+  const kind=zone.dataset.kind,input=zone.querySelector('input[type=file]');
+  input.addEventListener('change',()=>{addFiles(kind,[...input.files]);input.value=''});
+  ['dragenter','dragover'].forEach(t=>zone.addEventListener(t,e=>{e.preventDefault();zone.classList.add('dragover')}));
+  ['dragleave','drop'].forEach(t=>zone.addEventListener(t,e=>{e.preventDefault();zone.classList.remove('dragover')}));
+  zone.addEventListener('drop',e=>addFiles(kind,[...e.dataTransfer.files]));
+});
+profileFields.forEach(id=>$('#'+id).addEventListener('input',()=>{$('#'+id).classList.remove('invalid');updateProfileCompleteness()}));
+$('#editProfileNav').onclick=()=>{activateTab('candidate','profile');requestAnimationFrame(()=>{$('#profileEditor').scrollIntoView({behavior:'smooth',block:'start'});$('#profName').focus({preventScroll:true})})};
+$('#profileForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const status=$('#profileSaveStatus'),button=$('#saveProfile');
+  if(!state.authenticated||!state.userId){status.textContent='Please log in to save your profile.';toast('Please log in first');return}
+  profileFields.forEach(id=>$('#'+id).classList.remove('invalid'));
+  const name=$('#profName').value.trim();
+  if(!name){$('#profName').classList.add('invalid');$('#profName').focus();status.textContent='Please enter your full name.';return}
+  const badUrl=['profLinkedin','profGithub','profPortfolio'].find(id=>{const v=$('#'+id).value.trim();if(!v)return false;try{const u=new URL(v);return !/^https?:$/.test(u.protocol)}catch{return true}});
+  if(badUrl){$('#'+badUrl).classList.add('invalid');$('#'+badUrl).focus();status.textContent='Links must start with https://';return}
+  button.disabled=true;button.textContent='Saving…';status.textContent='';
+  // 1. Upload new files. A failed upload is reported and kept in the list so it can be retried.
+  for(const doc of profileDocs.filter(d=>d.file&&d.status!=='saved')){
+    const safe=doc.name.replace(/[^\w.\-]+/g,'_').slice(-80);
+    const path=`${state.userId}/${doc.kind}/${Date.now()}-${safe}`;
+    const {error}=await supabase.storage.from(DOCS_BUCKET).upload(path,doc.file,{upsert:false,contentType:doc.file.type||undefined});
+    if(error){doc.status='failed';doc.error=error.message}else{Object.assign(doc,{path,uploadedAt:new Date().toISOString(),status:'saved',error:undefined});delete doc.file}
+  }
+  // 2. Delete files the candidate removed or replaced.
+  if(state.docsToDelete.length){const {error}=await supabase.storage.from(DOCS_BUCKET).remove(state.docsToDelete);if(!error)state.docsToDelete=[]}
+  // 3. Save the details and the list of saved documents to the account.
+  const profile={headline:$('#profHeadline').value.trim(),phone:$('#profPhone').value.trim(),city:$('#profCity').value.trim(),lookingFor:$('#profLooking').value,available:$('#profAvailable').value,education:$('#profEducation').value.trim(),linkedin:$('#profLinkedin').value.trim(),github:$('#profGithub').value.trim(),portfolio:$('#profPortfolio').value.trim(),bio:$('#profBio').value.trim()};
+  const documents=profileDocs.filter(d=>d.status==='saved'&&d.path).map(({kind,name,size,path,uploadedAt})=>({kind,name,size,path,uploadedAt}));
+  const {error}=await supabase.auth.updateUser({data:{full_name:name,profile,documents}});
+  button.disabled=false;button.textContent='Save profile';
+  renderDocs();updateProfileCompleteness();
+  if(error){status.textContent=`Could not save: ${error.message}`;toast('Could not save your profile');return}
+  applyNameEverywhere(name,profile.headline);
+  const failed=profileDocs.filter(d=>d.status==='failed');
+  if(failed.length){status.textContent=`Details saved, but ${failed.length} file${failed.length>1?'s':''} could not be uploaded (${failed[0].error}). Check that the "${DOCS_BUCKET}" storage bucket exists, then save again.`;toast('Details saved. Some files were not uploaded.')}
+  else{status.textContent='Profile saved.';toast('Profile saved')}
+});
+
 function setAuthenticatedUser(user){
-  if(!user){state.authenticated=false;state.role=null;state.email=null;state.name=null;$('#candidateLogin').hidden=false;$('#recruiterLogin').hidden=false;$('#profileButton').hidden=true;$('#logoutButton').hidden=true;return}
+  if(!user){state.authenticated=false;state.role=null;state.email=null;state.name=null;state.userId=null;state.profileLoadedFor=null;profileDocs=[];state.docsToDelete=[];renderDocs();$('#candidateLogin').hidden=false;$('#recruiterLogin').hidden=false;$('#profileButton').hidden=true;$('#logoutButton').hidden=true;return}
   const metaRole=user.user_metadata?.role;
   state.authenticated=true;
   state.role=metaRole==='recruiter'?'recruiter':'candidate';
   state.email=user.email;
+  state.userId=user.id;
   state.name=user.user_metadata?.full_name||user.email;
   const firstName=state.name.split(/[\s@]/)[0];
   $('#candidateName').textContent=state.name;
   $('#candidateGreeting').textContent=firstName+'.';
   $('#prefEmail').textContent=user.email;
+  // Load the form once per signed-in user, so background session refreshes never wipe unsaved edits.
+  if(state.profileLoadedFor!==user.id){state.profileLoadedFor=user.id;fillProfile(user)}
   $('#candidateLogin').hidden=true;$('#recruiterLogin').hidden=true;
   $('#profileButton').hidden=false;$('#logoutButton').hidden=false;
   $('#profileRole').textContent=state.role==='candidate'?'Candidate profile':'Recruiter profile';
