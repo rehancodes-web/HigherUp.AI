@@ -115,6 +115,16 @@ def discover_skills(request: SkillsRequest):
 class CandidateRequest(BaseModel):
     full_name: str = Field(min_length=1, max_length=120)
     email: str = Field(min_length=3, max_length=255)
+    headline: str = Field(default="", max_length=200)
+    phone: str = Field(default="", max_length=40)
+    city: str = Field(default="", max_length=100)
+    looking_for: str = Field(default="", max_length=100)
+    available: str = Field(default="", max_length=100)
+    education: str = Field(default="", max_length=250)
+    linkedin: str = Field(default="", max_length=500)
+    github: str = Field(default="", max_length=500)
+    portfolio: str = Field(default="", max_length=500)
+    bio: str = Field(default="", max_length=1200)
     preferred_roles: str = Field(default="", max_length=500)
     preferred_locations: str = Field(default="", max_length=500)
     work_mode: str = Field(default="Flexible", max_length=50)
@@ -147,12 +157,24 @@ def upsert_candidate_by_email(email: str, request: CandidateRequest):
             cursor.execute(
                 """
                 UPDATE CANDIDATE_PROFILE
-                SET FULL_NAME = ?, PREFERRED_ROLES = ?,
-                    PREFERRED_LOCATIONS = ?, WORK_MODE = ?
+                SET FULL_NAME = ?, HEADLINE = ?, PHONE = ?, CITY = ?,
+                    LOOKING_FOR = ?, AVAILABLE = ?, EDUCATION = ?,
+                    LINKEDIN = ?, GITHUB = ?, PORTFOLIO = ?, BIO = ?,
+                    PREFERRED_ROLES = ?, PREFERRED_LOCATIONS = ?, WORK_MODE = ?
                 WHERE CANDIDATE_ID = ?
                 """,
                 (
                     request.full_name,
+                    request.headline,
+                    request.phone,
+                    request.city,
+                    request.looking_for,
+                    request.available,
+                    request.education,
+                    request.linkedin,
+                    request.github,
+                    request.portfolio,
+                    request.bio,
                     request.preferred_roles,
                     request.preferred_locations,
                     request.work_mode,
@@ -168,14 +190,26 @@ def upsert_candidate_by_email(email: str, request: CandidateRequest):
             cursor.execute(
                 """
                 INSERT INTO CANDIDATE_PROFILE
-                    (CANDIDATE_ID, FULL_NAME, EMAIL,
-                     PREFERRED_ROLES, PREFERRED_LOCATIONS, WORK_MODE)
-                VALUES (?, ?, ?, ?, ?, ?)
+                    (CANDIDATE_ID, FULL_NAME, EMAIL, HEADLINE, PHONE, CITY,
+                     LOOKING_FOR, AVAILABLE, EDUCATION, LINKEDIN, GITHUB,
+                     PORTFOLIO, BIO, PREFERRED_ROLES, PREFERRED_LOCATIONS,
+                     WORK_MODE)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     candidate_id,
                     request.full_name,
                     request.email.strip(),
+                    request.headline,
+                    request.phone,
+                    request.city,
+                    request.looking_for,
+                    request.available,
+                    request.education,
+                    request.linkedin,
+                    request.github,
+                    request.portfolio,
+                    request.bio,
                     request.preferred_roles,
                     request.preferred_locations,
                     request.work_mode
@@ -200,6 +234,50 @@ def upsert_candidate_by_email(email: str, request: CandidateRequest):
             detail=f"Could not save candidate: {str(exc)[:300]}"
         )
 
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if connection is not None:
+            connection.close()
+
+
+@app.get("/candidates/by-email/{email}")
+def get_candidate_by_email(email: str):
+    connection = None
+    cursor = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute(
+            """
+            SELECT CANDIDATE_ID, FULL_NAME, EMAIL, HEADLINE, PHONE, CITY,
+                   LOOKING_FOR, AVAILABLE, EDUCATION, LINKEDIN, GITHUB,
+                   PORTFOLIO, BIO, PREFERRED_ROLES, PREFERRED_LOCATIONS,
+                   WORK_MODE
+            FROM CANDIDATE_PROFILE
+            WHERE LOWER(EMAIL) = ?
+            """,
+            (email.strip().lower(),),
+        )
+        row = cursor.fetchone()
+        if row is None:
+            raise HTTPException(status_code=404, detail="Candidate not found")
+        return {
+            "candidate_id": row[0], "full_name": row[1], "email": row[2],
+            "headline": row[3] or "", "phone": row[4] or "", "city": row[5] or "",
+            "looking_for": row[6] or "", "available": row[7] or "",
+            "education": row[8] or "", "linkedin": row[9] or "",
+            "github": row[10] or "", "portfolio": row[11] or "", "bio": row[12] or "",
+            "preferred_roles": row[13] or "", "preferred_locations": row[14] or "",
+            "work_mode": row[15] or "Flexible",
+        }
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Could not retrieve candidate: {str(exc)[:300]}"
+        )
     finally:
         if cursor is not None:
             cursor.close()
