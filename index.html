@@ -1003,7 +1003,7 @@ body:has(.workspace.active) .site-footer{display:none}
         <h2>What never affects your score</h2>
         <p>Gender, age, caste, religion, disability, college name, degree status and payment status have zero weight in matching. Missing information lowers confidence; it is never guessed. AI supports screening, but people make every hiring decision.</p>
         <h2>Where it is stored</h2>
-        <p>Accounts, profile details and documents are stored with Supabase. Documents are kept in a private storage area that only your account can access. Job preferences are stored in an SAP HANA database. We do not sell your information.</p>
+        <p>Your login account is managed by Supabase. Candidate profile details, job preferences and uploaded documents are stored in SAP HANA. We do not sell your information.</p>
         <h2>Your choices</h2>
         <ul>
           <li>You can view, correct or remove your profile details, documents and Skill Passport entries at any time.</li>
@@ -1251,9 +1251,7 @@ $('#showRegister').onclick=()=>setAuthMode('register');
 $('#closeDialog').onclick=()=>closeDialog($('#loginDialog'));
 $('#loginDialog').onclick=e=>{if(e.target===e.currentTarget)closeDialog(e.currentTarget)};
 
-// ---------- Edit profile: details are saved to the Supabase account (user metadata);
-// documents go to the private Storage bucket below, in a folder named after the user's id.
-const DOCS_BUCKET='candidate-documents';
+// ---------- Profile details and documents are stored in SAP HANA.
 const MAX_FILE_BYTES=5*1024*1024;
 const DOC_RULES={resume:{label:'Resume / CV',exts:['pdf','doc','docx'],max:1},cover:{label:'Cover letter',exts:['pdf','doc','docx'],max:1},proof:{label:'Certificate / proof',exts:['pdf','jpg','jpeg','png'],max:5}};
 let profileDocs=[];   // {id,kind,name,size,path?,uploadedAt?,file?,status:'saved'|'pending'|'failed',error?}
@@ -1284,7 +1282,7 @@ function fillProfile(user){
   $('#profEmail').value=user?.email||'';
   const map={profHeadline:'headline',profPhone:'phone',profCity:'city',profLooking:'lookingFor',profAvailable:'available',profEducation:'education',profLinkedin:'linkedin',profGithub:'github',profPortfolio:'portfolio',profBio:'bio'};
   Object.entries(map).forEach(([id,key])=>{const el=$('#'+id);if(el.tagName==='SELECT'){if(p[key])el.value=p[key]}else el.value=p[key]||''});
-  profileDocs=(Array.isArray(meta.documents)?meta.documents:[]).map(d=>({...d,id:++docSeq,status:'saved'}));
+  profileDocs=[];
   applyNameEverywhere(meta.full_name||user?.email||'',p.headline);
   renderDocs();updateProfileCompleteness();
 }
@@ -1304,18 +1302,28 @@ async function loadCandidateProfileFromHana(user){
     if(candidate.preferred_locations)$('#prefCities').value=candidate.preferred_locations;
     if(candidate.work_mode)$('#prefMode').value=candidate.work_mode;
     applyNameEverywhere(candidate.full_name,candidate.headline);
+    const docsResponse=await fetch(`${API_BASE}/candidates/by-email/${encodeURIComponent(user.email)}/documents`,{headers:await candidateAuthHeaders()});
+    const docsResult=await docsResponse.json();
+    if(!docsResponse.ok)throw new Error(docsResult.detail||`Could not load documents (${docsResponse.status})`);
+    profileDocs=docsResult.map(d=>({id:++docSeq,documentId:d.id,kind:d.kind,name:d.name,size:d.size,uploadedAt:d.uploaded_at,status:'saved'}));
+    renderDocs();
     updateProfileCompleteness();
   }catch(error){
     console.error('Could not load candidate profile from SAP HANA:',error);
     $('#profileSaveStatus').textContent='Could not load your HANA profile. Check that FastAPI is running.';
   }
 }
+async function candidateAuthHeaders(extra={}){
+  const {data:{session}}=await supabase.auth.getSession();
+  if(!session?.access_token)throw new Error('Please log in again to manage documents.');
+  return {...extra,Authorization:`Bearer ${session.access_token}`};
+}
 function renderDocs(){
   const order={resume:0,cover:1,proof:2};
   const docs=[...profileDocs].sort((a,b)=>order[a.kind]-order[b.kind]);
   $('#fileList').innerHTML=docs.map(d=>{
     const badge=d.status==='saved'?'<span class="file-state saved">Saved</span>':d.status==='failed'?`<span class="file-state failed" title="${esc(d.error||'')}">Not uploaded</span>`:'<span class="file-state pending">Ready to save</span>';
-    const view=d.status==='saved'&&d.path?`<button type="button" data-view-doc="${d.id}">View</button>`:'';
+    const view=d.status==='saved'&&d.documentId?`<button type="button" data-view-doc="${d.id}">View</button>`:'';
     return `<li><span class="file-icon">${esc(extOf(d.name))}</span><div><b>${esc(d.name)}</b><small>${DOC_RULES[d.kind].label} · ${formatSize(d.size)}</small></div>${badge}<span class="file-buttons">${view}<button type="button" data-remove-doc="${d.id}" aria-label="Remove ${esc(d.name)}">Remove</button></span></li>`;
   }).join('');
   $$('[data-remove-doc]').forEach(b=>b.onclick=()=>removeDoc(Number(b.dataset.removeDoc)));
@@ -1326,7 +1334,7 @@ function addFiles(kind,fileList){
   for(const file of fileList){
     if(!rule.exts.includes(extOf(file.name))){problems.push(`${file.name}: use ${rule.exts.join(', ').toUpperCase()}`);continue}
     if(file.size>MAX_FILE_BYTES){problems.push(`${file.name}: larger than 5 MB`);continue}
-    if(rule.max===1){profileDocs.filter(d=>d.kind===kind&&d.path).forEach(d=>state.docsToDelete.push(d.path));profileDocs=profileDocs.filter(d=>d.kind!==kind)}
+    if(rule.max===1){profileDocs.filter(d=>d.kind===kind&&d.documentId).forEach(d=>state.docsToDelete.push(d.documentId));profileDocs=profileDocs.filter(d=>d.kind!==kind)}
     else if(profileDocs.filter(d=>d.kind===kind).length>=rule.max){problems.push(`Only ${rule.max} certificates allowed`);break}
     profileDocs.push({id:++docSeq,kind,name:file.name,size:file.size,file,status:'pending'});
   }
@@ -1335,16 +1343,14 @@ function addFiles(kind,fileList){
 }
 function removeDoc(id){
   const doc=profileDocs.find(d=>d.id===id);if(!doc)return;
-  if(doc.path)state.docsToDelete.push(doc.path);
+  if(doc.documentId)state.docsToDelete.push(doc.documentId);
   profileDocs=profileDocs.filter(d=>d.id!==id);
   renderDocs();updateProfileCompleteness();
-  toast(doc.path?`${doc.name} will be removed when you save`:`${doc.name} removed`);
+  toast(doc.documentId?`${doc.name} will be removed when you save`:`${doc.name} removed`);
 }
 async function viewDoc(id){
-  const doc=profileDocs.find(d=>d.id===id);if(!doc?.path)return;
-  const {data,error}=await supabase.storage.from(DOCS_BUCKET).createSignedUrl(doc.path,300);
-  if(error){toast('Could not open the file. Please try again.');return}
-  window.open(data.signedUrl,'_blank','noopener');
+  const doc=profileDocs.find(d=>d.id===id);if(!doc?.documentId)return;
+  try{const response=await fetch(`${API_BASE}/candidates/by-email/${encodeURIComponent(state.email)}/documents/${encodeURIComponent(doc.documentId)}`,{headers:await candidateAuthHeaders()});if(!response.ok)throw new Error(`Request failed (${response.status})`);const url=URL.createObjectURL(await response.blob());window.open(url,'_blank','noopener');setTimeout(()=>URL.revokeObjectURL(url),60000)}catch(error){toast(error.message||'Could not open the file. Please try again.')}
 }
 state.docsToDelete=[];
 $$('.upload-zone').forEach(zone=>{
@@ -1366,20 +1372,8 @@ $('#profileForm').addEventListener('submit',async e=>{
   const badUrl=['profLinkedin','profGithub','profPortfolio'].find(id=>{const v=$('#'+id).value.trim();if(!v)return false;try{const u=new URL(v);return !/^https?:$/.test(u.protocol)}catch{return true}});
   if(badUrl){$('#'+badUrl).classList.add('invalid');$('#'+badUrl).focus();status.textContent='Links must start with https://';return}
   button.disabled=true;button.textContent='Saving…';status.textContent='';
-  // 1. Upload new files. A failed upload is reported and kept in the list so it can be retried.
-  for(const doc of profileDocs.filter(d=>d.file&&d.status!=='saved')){
-    const safe=doc.name.replace(/[^\w.\-]+/g,'_').slice(-80);
-    const path=`${state.userId}/${doc.kind}/${Date.now()}-${safe}`;
-    const {error}=await supabase.storage.from(DOCS_BUCKET).upload(path,doc.file,{upsert:false,contentType:doc.file.type||undefined});
-    if(error){doc.status='failed';doc.error=error.message}else{Object.assign(doc,{path,uploadedAt:new Date().toISOString(),status:'saved',error:undefined});delete doc.file}
-  }
-  // 2. Delete files the candidate removed or replaced.
-  if(state.docsToDelete.length){const {error}=await supabase.storage.from(DOCS_BUCKET).remove(state.docsToDelete);if(!error)state.docsToDelete=[]}
-  // 3. Save structured profile details in SAP HANA; keep file metadata with Supabase Storage.
+  // 1. Save the candidate first so HANA can attach documents to the profile.
   const profile={headline:$('#profHeadline').value.trim(),phone:$('#profPhone').value.trim(),city:$('#profCity').value.trim(),lookingFor:$('#profLooking').value,available:$('#profAvailable').value,education:$('#profEducation').value.trim(),linkedin:$('#profLinkedin').value.trim(),github:$('#profGithub').value.trim(),portfolio:$('#profPortfolio').value.trim(),bio:$('#profBio').value.trim()};
-  const documents=profileDocs.filter(d=>d.status==='saved'&&d.path).map(({kind,name,size,path,uploadedAt})=>({kind,name,size,path,uploadedAt}));
-  const {error:documentMetadataError}=await supabase.auth.updateUser({data:{documents}});
-  if(documentMetadataError){button.disabled=false;button.textContent='Save profile';status.textContent=`Could not save file list: ${documentMetadataError.message}`;return}
   let hanaError=null;
   try{
     const response=await fetch(`${API_BASE}/candidates/by-email/${encodeURIComponent(state.email)}`,{
@@ -1389,13 +1383,30 @@ $('#profileForm').addEventListener('submit',async e=>{
     const result=await response.json();
     if(!response.ok)throw new Error(result.detail||`Request failed (${response.status})`);
   }catch(error){hanaError=error}
+  if(!hanaError){
+    for(const documentId of state.docsToDelete){
+      try{const response=await fetch(`${API_BASE}/candidates/by-email/${encodeURIComponent(state.email)}/documents/${encodeURIComponent(documentId)}`,{method:'DELETE',headers:await candidateAuthHeaders()});if(!response.ok)throw new Error(`Delete failed (${response.status})`)}catch(error){hanaError=error;break}
+    }
+    if(!hanaError)state.docsToDelete=[];
+  }
+  if(!hanaError){
+    for(const doc of profileDocs.filter(d=>d.file&&d.status!=='saved')){
+      try{
+        const headers=await candidateAuthHeaders({'Content-Type':doc.file.type||'application/octet-stream','X-File-Name':encodeURIComponent(doc.name),'X-Document-Kind':doc.kind});
+        const response=await fetch(`${API_BASE}/candidates/by-email/${encodeURIComponent(state.email)}/documents`,{method:'POST',headers,body:doc.file});
+        const result=await response.json();
+        if(!response.ok)throw new Error(result.detail||`Upload failed (${response.status})`);
+        Object.assign(doc,{documentId:result.id,status:'saved',uploadedAt:new Date().toISOString(),error:undefined});delete doc.file;
+      }catch(error){doc.status='failed';doc.error=error.message}
+    }
+  }
   button.disabled=false;button.textContent='Save profile';
   renderDocs();updateProfileCompleteness();
-  if(hanaError){status.textContent=`Profile files saved, but profile details could not be saved to SAP HANA: ${hanaError.message}`;toast('Could not save profile details to SAP HANA');return}
+  if(hanaError){status.textContent=`Could not save profile or manage documents in SAP HANA: ${hanaError.message}`;toast('Could not save to SAP HANA');return}
   applyNameEverywhere(name,profile.headline);
   const failed=profileDocs.filter(d=>d.status==='failed');
-  if(failed.length){status.textContent=`Profile saved to SAP HANA, but ${failed.length} file${failed.length>1?'s':''} could not be uploaded (${failed[0].error}). Check that the "${DOCS_BUCKET}" storage bucket exists, then save again.`;toast('Profile saved. Some files were not uploaded.')}
-  else{status.textContent='Profile saved to SAP HANA.';toast('Profile saved to SAP HANA')}
+  if(failed.length){status.textContent=`Profile saved to SAP HANA, but ${failed.length} document${failed.length>1?'s':''} could not be uploaded (${failed[0].error}). Save again to retry.`;toast('Profile saved. Some documents were not uploaded.')}
+  else{status.textContent='Profile and documents saved to SAP HANA.';toast('Profile and documents saved to SAP HANA')}
 });
 
 function setAuthenticatedUser(user){

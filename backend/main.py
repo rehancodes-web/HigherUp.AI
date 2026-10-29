@@ -4,7 +4,7 @@ from pathlib import Path
 from uuid import uuid4
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, Response
 from pydantic import BaseModel, Field
 from hdbcli import dbapi
 from skills_agent import discover
@@ -18,7 +18,7 @@ app.add_middleware(
     allow_origins=["*"],
     allow_credentials=False,
     allow_methods=["GET", "POST", "PUT", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization"],
+    allow_headers=["Content-Type", "Authorization", "X-File-Name", "X-Document-Kind"],
 )
 
 
@@ -44,6 +44,31 @@ def get_db_connection():
         sslValidateCertificate=True,
         connectTimeout=30000,
     )
+
+
+def require_candidate_email(authorization: str | None, expected_email: str) -> None:
+    """Verify the Supabase access token and ensure it belongs to this candidate."""
+    import json
+    from urllib.error import HTTPError, URLError
+    from urllib.request import Request as UrlRequest, urlopen
+
+    token = (authorization or "").removeprefix("Bearer ").strip()
+    supabase_url = os.getenv("SUPABASE_URL", "").rstrip("/")
+    supabase_key = os.getenv("SUPABASE_PUBLISHABLE_KEY", "")
+    if not token or not supabase_url or not supabase_key:
+        raise HTTPException(status_code=401, detail="Sign in required")
+
+    request = UrlRequest(
+        f"{supabase_url}/auth/v1/user",
+        headers={"apikey": supabase_key, "Authorization": f"Bearer {token}"},
+    )
+    try:
+        with urlopen(request, timeout=10) as response:
+            user = json.loads(response.read().decode("utf-8"))
+    except (HTTPError, URLError, TimeoutError, ValueError):
+        raise HTTPException(status_code=401, detail="Invalid or expired login session")
+    if user.get("email", "").strip().lower() != expected_email.strip().lower():
+        raise HTTPException(status_code=403, detail="You can only access your own documents")
 
 
 @app.get("/")
@@ -278,6 +303,168 @@ def get_candidate_by_email(email: str):
             status_code=500,
             detail=f"Could not retrieve candidate: {str(exc)[:300]}"
         )
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if connection is not None:
+            connection.close()
+
+
+MAX_DOCUMENT_BYTES = 5 * 1024 * 1024
+ALLOWED_DOCUMENT_KINDS = {"resume", "cover", "proof"}
+
+
+@app.get("/candidates/by-email/{email}/documents")
+def list_candidate_documents(email: str, request: Request):
+    require_candidate_email(request.headers.get("Authorization"), email)
+    connection = None
+    cursor = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute(
+            """
+            SELECT D.DOCUMENT_ID, D.DOCUMENT_KIND, D.FILE_NAME,
+                   D.CONTENT_TYPE, D.FILE_SIZE, D.UPLOADED_AT
+            FROM CANDIDATE_DOCUMENT D
+            JOIN CANDIDATE_PROFILE C ON C.CANDIDATE_ID = D.CANDIDATE_ID
+            WHERE LOWER(C.EMAIL) = ?
+            ORDER BY D.UPLOADED_AT DESC
+            """,
+            (email.strip().lower(),),
+        )
+        return [{
+            "id": row[0], "kind": row[1], "name": row[2],
+            "content_type": row[3], "size": row[4],
+            "uploaded_at": row[5].isoformat() if row[5] else None,
+        } for row in cursor.fetchall()]
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Could not list documents: {str(exc)[:300]}")
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if connection is not None:
+            connection.close()
+
+
+@app.post("/candidates/by-email/{email}/documents", status_code=201)
+async def upload_candidate_document(email: str, request: Request):
+    require_candidate_email(request.headers.get("Authorization"), email)
+    kind = request.headers.get("X-Document-Kind", "").strip().lower()
+    from urllib.parse import unquote
+    name = unquote(request.headers.get("X-File-Name", "").strip())
+    content_type = request.headers.get("Content-Type", "application/octet-stream")[:255]
+    if kind not in ALLOWED_DOCUMENT_KINDS:
+        raise HTTPException(status_code=400, detail="Unsupported document type")
+    if not name or len(name) > 255 or "/" in name or "\\" in name or any(char in name for char in '\r\n"'):
+        raise HTTPException(status_code=400, detail="Invalid file name")
+    data = await request.body()
+    if not data or len(data) > MAX_DOCUMENT_BYTES:
+        raise HTTPException(status_code=413, detail="File must be between 1 byte and 5 MB")
+
+    connection = None
+    cursor = None
+    document_id = str(uuid4())
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute(
+            "SELECT CANDIDATE_ID FROM CANDIDATE_PROFILE WHERE LOWER(EMAIL) = ?",
+            (email.strip().lower(),),
+        )
+        candidate = cursor.fetchone()
+        if candidate is None:
+            raise HTTPException(status_code=404, detail="Candidate profile not found; save the profile first")
+        cursor.execute(
+            """
+            INSERT INTO CANDIDATE_DOCUMENT
+                (DOCUMENT_ID, CANDIDATE_ID, DOCUMENT_KIND, FILE_NAME,
+                 CONTENT_TYPE, FILE_SIZE, FILE_DATA, UPLOADED_AT)
+            VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_UTCTIMESTAMP)
+            """,
+            (document_id, candidate[0], kind, name, content_type, len(data), data),
+        )
+        connection.commit()
+        return {"id": document_id, "kind": kind, "name": name, "size": len(data), "status": "saved"}
+    except HTTPException:
+        if connection is not None:
+            connection.rollback()
+        raise
+    except Exception as exc:
+        if connection is not None:
+            connection.rollback()
+        raise HTTPException(status_code=500, detail=f"Could not save document: {str(exc)[:300]}")
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if connection is not None:
+            connection.close()
+
+
+@app.get("/candidates/by-email/{email}/documents/{document_id}")
+def download_candidate_document(email: str, document_id: str, request: Request):
+    require_candidate_email(request.headers.get("Authorization"), email)
+    connection = None
+    cursor = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute(
+            """
+            SELECT D.FILE_NAME, D.CONTENT_TYPE, D.FILE_DATA
+            FROM CANDIDATE_DOCUMENT D
+            JOIN CANDIDATE_PROFILE C ON C.CANDIDATE_ID = D.CANDIDATE_ID
+            WHERE LOWER(C.EMAIL) = ? AND D.DOCUMENT_ID = ?
+            """,
+            (email.strip().lower(), document_id),
+        )
+        row = cursor.fetchone()
+        if row is None:
+            raise HTTPException(status_code=404, detail="Document not found")
+        return Response(
+            content=bytes(row[2]), media_type=row[1] or "application/octet-stream",
+            headers={"Content-Disposition": f'inline; filename="{row[0]}"'},
+        )
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Could not retrieve document: {str(exc)[:300]}")
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if connection is not None:
+            connection.close()
+
+
+@app.delete("/candidates/by-email/{email}/documents/{document_id}")
+def delete_candidate_document(email: str, document_id: str, request: Request):
+    require_candidate_email(request.headers.get("Authorization"), email)
+    connection = None
+    cursor = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute(
+            """
+            DELETE FROM CANDIDATE_DOCUMENT
+            WHERE DOCUMENT_ID = ? AND CANDIDATE_ID = (
+                SELECT CANDIDATE_ID FROM CANDIDATE_PROFILE WHERE LOWER(EMAIL) = ?
+            )
+            """,
+            (document_id, email.strip().lower()),
+        )
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Document not found")
+        connection.commit()
+        return {"id": document_id, "status": "deleted"}
+    except HTTPException:
+        if connection is not None:
+            connection.rollback()
+        raise
+    except Exception as exc:
+        if connection is not None:
+            connection.rollback()
+        raise HTTPException(status_code=500, detail=f"Could not delete document: {str(exc)[:300]}")
     finally:
         if cursor is not None:
             cursor.close()
