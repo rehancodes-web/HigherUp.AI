@@ -972,6 +972,22 @@ body:has(.workspace.active) .site-footer{display:none}
 .brand-mark{font-family:var(--font-ui);font-weight:800}
 
 .brand-ai{color:var(--muted);font-weight:700}
+
+/* Skills-first pill: always one line; text scales with the screen, shorter wording on small phones */
+#homePage .hero-copy{container-type:inline-size}
+.hero-eyebrow{flex-wrap:nowrap;white-space:nowrap;max-width:100%;font-size:clamp(9.5px,calc((100cqi - 44px) / 40),14px);gap:.7em}
+.hero-eyebrow b{flex:none;font-size:.8em}
+.hero-eyebrow span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.eyebrow-short{display:none}
+@media(max-width:560px){.eyebrow-long{display:none}.eyebrow-short{display:inline}.hero-eyebrow{border-radius:999px;font-size:clamp(10px,calc((100cqi - 44px) / 25),13px)}}
+/* Demo pointer: a pointed indigo marker (not shaped like a real mouse pointer) */
+.demo-cursor .dot{display:none}
+.demo-cursor .pointer{position:absolute;left:-3px;top:-3px;width:28px;height:28px;display:block!important;filter:drop-shadow(0 0 10px rgba(129,140,248,.7)) drop-shadow(0 3px 6px rgba(0,0,0,.4));transform-origin:3px 3px;transition:transform 160ms ease;animation:pointer-bob 1.6s ease-in-out infinite}
+.demo-cursor.clicking .pointer{transform:scale(.78)}
+.demo-cursor .ring{left:-13px;top:-13px}
+.demo-cursor .hint-label{left:28px;top:14px}
+.demo-cursor.flip .hint-label{left:auto;right:6px;top:30px}
+@keyframes pointer-bob{0%,100%{translate:0 0}50%{translate:2px 2px}}
 </style>
 </head>
 <body>
@@ -1024,7 +1040,7 @@ body:has(.workspace.active) .site-footer{display:none}
     <section class="page active" id="homePage">
       <section class="hero" aria-labelledby="heroTitle">
         <div class="hero-copy">
-          <p class="hero-eyebrow"><b>Skills-first</b>Jobs and internships for students, graduates and job seekers</p>
+          <p class="hero-eyebrow"><b>Skills-first</b><span class="eyebrow-long">Jobs and internships for students, graduates and job seekers</span><span class="eyebrow-short">Jobs &amp; internships for everyone</span></p>
           <h1 id="heroTitle"><span class="hero-solid">Potential,</span><em>made visible.</em></h1>
           <p class="hero-lead">Land jobs and internships by proving what you can do — projects, hackathons and real work all count. Businesses hire for skills, not just degrees, with clear scores and a human in charge.</p>
           <div class="hero-actions">
@@ -1390,7 +1406,7 @@ body:has(.workspace.active) .site-footer{display:none}
       </nav>
       <nav class="footer-col" aria-label="Project">
         <h2>Project</h2>
-        <a href="https://github.com/rehancodes-web/include.ai" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+        <a href="https://github.com/rehancodes-web/HigherUp.AI" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
         <span class="footer-text">SAP Inclusive Workforce hackathon</span>
       </nav>
     </div>
@@ -1462,6 +1478,7 @@ body:has(.workspace.active) .site-footer{display:none}
     </div>
   </div>
 
+  <script src="api-config.js"></script>
   <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
@@ -1469,7 +1486,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 const SUPABASE_URL = 'https://kgubkabyljxawnsonjnj.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_XlsiXHyiKr6D6LZjByRlsQ_ecy7RNV7';
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-const API_BASE = 'http://127.0.0.1:8000';
+const API_BASE = window.HIGHERUP_API_BASE || 'http://127.0.0.1:8000';
 
 document.documentElement.classList.add('motion-ready');
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
@@ -1638,7 +1655,7 @@ function fillProfile(user){
 async function loadCandidateProfileFromHana(user){
   if(!user?.email)return;
   try{
-    const response=await fetch(`${API_BASE}/candidates/by-email/${encodeURIComponent(user.email)}`);
+    const response=await fetch(`${API_BASE}/candidates/by-email/${encodeURIComponent(user.email)}`,{headers:await candidateAuthHeaders()});
     if(response.status===404)return;
     const candidate=await response.json();
     if(!response.ok)throw new Error(candidate.detail||`Request failed (${response.status})`);
@@ -1726,7 +1743,7 @@ $('#profileForm').addEventListener('submit',async e=>{
   let hanaError=null;
   try{
     const response=await fetch(`${API_BASE}/candidates/by-email/${encodeURIComponent(state.email)}`,{
-      method:'PUT',headers:{'Content-Type':'application/json'},
+      method:'PUT',headers:await candidateAuthHeaders({'Content-Type':'application/json'}),
       body:JSON.stringify({full_name:name,email:state.email,headline:profile.headline,phone:profile.phone,city:profile.city,looking_for:profile.lookingFor,available:profile.available,education:profile.education,linkedin:profile.linkedin,github:profile.github,portfolio:profile.portfolio,bio:profile.bio,preferred_roles:$('#prefRoles').value.trim()||'Any suitable role',preferred_locations:$('#prefCities').value.trim()||'Any location',work_mode:$('#prefMode').value})
     });
     const result=await response.json();
@@ -2063,7 +2080,7 @@ if (savePreferencesButton) {
         `${API_BASE}/candidates/by-email/${encodeURIComponent(state.email)}`,
         {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: await candidateAuthHeaders({ 'Content-Type': 'application/json' }),
           body: JSON.stringify({
             full_name: state.name,
             email: state.email,
@@ -2230,7 +2247,7 @@ try{const saved=localStorage.getItem('higherupDomain');if(saved&&DOMAINS[saved])
   if(!picker||!pills.length||prefersReducedMotion())return;
   const cursor=document.createElement('div');
   cursor.className='demo-cursor';cursor.setAttribute('aria-hidden','true');
-  cursor.innerHTML='<span class="ring"></span><span class="dot"></span><span class="hint-label">Click to explore</span>';
+  cursor.innerHTML='<span class="ring"></span><svg class="pointer" viewBox="0 0 28 28"><defs><linearGradient id="ptrGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c7d2fe"/><stop offset="1" stop-color="#6366f1"/></linearGradient></defs><path d="M3 3 L25 12 L15.5 15.5 L12 25 Z" fill="url(#ptrGrad)" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg><span class="hint-label">Click to explore</span>';
   picker.appendChild(cursor);
   let last=-1,timer=null,resumeTimer=null,stopped=false,userHere=false;
   const clear=()=>pills.forEach(p=>p.classList.remove('is-hinting'));

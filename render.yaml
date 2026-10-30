@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: include-ai-api
+    name: higherup-ai-api
     runtime: python
     rootDir: backend
     buildCommand: pip install -r requirements.txt
