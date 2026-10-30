@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#fbf7ef">
   <meta name="description" content="HigherUp.AI is a skills-first platform that matches students, graduates and job seekers to jobs and internships, and helps businesses hire for proven skills.">
   <title>HigherUp.AI — Skills-first recruitment</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400..700&display=swap">
@@ -1064,6 +1065,12 @@ body:has(.workspace.active) .site-footer{display:none}
 .listing.preview-card{display:flex;flex-direction:column;gap:6px;padding:16px 16px 16px 20px;transform:none!important}
 .listing.preview-card .listing-top{justify-content:space-between}
 .listing.preview-card:hover{transform:none;box-shadow:none}
+
+/* New HigherUp.AI mark */
+.brand-logo{background:none!important;padding:0;border-radius:0;overflow:visible}
+.brand-logo svg{display:block;width:100%;height:100%}
+.brand .brand-logo{width:30px;height:30px}
+.footer-brand .brand-logo{width:28px;height:28px}
 </style>
 </head>
 <body>
@@ -1091,7 +1098,7 @@ body:has(.workspace.active) .site-footer{display:none}
   </div>
 
   <header class="site-header" id="siteHeader">
-    <button class="brand" data-route="home" aria-label="HigherUp.AI home"><span class="brand-mark" aria-hidden="true">↑</span><span>higher<b class="brand-up">up</b><span class="brand-ai">.ai</span></span></button>
+    <button class="brand" data-route="home" aria-label="HigherUp.AI home"><span class="brand-mark brand-logo" aria-hidden="true"><svg viewBox="0 0 64 64" width="100%" height="100%"><defs><linearGradient id="hu-bg-site" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b54ec"/><stop offset="1" stop-color="#3730a3"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#hu-bg-site)"/><rect x="16" y="28" width="8" height="21" rx="2.5" fill="#fff"/><rect x="40" y="22" width="8" height="27" rx="2.5" fill="#fff"/><path d="M35.5 24 44 12.5 52.5 24Z" fill="#fff" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/><path d="M24 38.5 40 31v7.5L24 46Z" fill="#a5b4fc"/></svg></span><span>higher<b class="brand-up">up</b><span class="brand-ai">.ai</span></span></button>
     <nav class="public-nav" aria-label="Primary navigation">
       <button data-route="home">Home</button>
       <button data-scroll="audiences">Who it’s for</button>
@@ -1520,7 +1527,7 @@ body:has(.workspace.active) .site-footer{display:none}
   <footer class="site-footer" aria-label="Site footer">
     <div class="footer-top">
       <div class="footer-about">
-        <span class="footer-brand"><span class="brand-mark" aria-hidden="true">↑</span>higher<b class="brand-up">up</b><span class="brand-ai">.ai</span></span>
+        <span class="footer-brand"><span class="brand-mark brand-logo" aria-hidden="true"><svg viewBox="0 0 64 64" width="100%" height="100%"><defs><linearGradient id="hu-bg-site" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b54ec"/><stop offset="1" stop-color="#3730a3"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#hu-bg-site)"/><rect x="16" y="28" width="8" height="21" rx="2.5" fill="#fff"/><rect x="40" y="22" width="8" height="27" rx="2.5" fill="#fff"/><path d="M35.5 24 44 12.5 52.5 24Z" fill="#fff" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/><path d="M24 38.5 40 31v7.5L24 46Z" fill="#a5b4fc"/></svg></span>higher<b class="brand-up">up</b><span class="brand-ai">.ai</span></span>
         <p>Skills-first hiring for students, job seekers and growing businesses. AI prepares the context; people make the decision.</p>
       </div>
       <nav class="footer-col" aria-label="Product">
