@@ -560,7 +560,8 @@ html.domain-open{overflow:hidden}
   background:linear-gradient(rgba(17,19,24,.045) 1px,transparent 1px) 0 0/56px 56px,linear-gradient(90deg,rgba(17,19,24,.045) 1px,transparent 1px) 0 0/56px 56px;
   -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 20%,#000 25%,transparent 75%);mask-image:radial-gradient(ellipse 70% 60% at 50% 20%,#000 25%,transparent 75%)}
 .domain-overlay[hidden]{display:none}
-.domain-edge{position:fixed;top:0;bottom:0;left:0;width:3px;background:linear-gradient(180deg,var(--brand),var(--c));opacity:0;pointer-events:none}
+.domain-fill{position:fixed;inset:0;z-index:1;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 70%,#fff),var(--c));opacity:0;pointer-events:none}
+.domain-edge{position:fixed;top:0;bottom:0;left:0;z-index:1;width:90px;background:linear-gradient(90deg,rgba(255,255,255,.95),rgba(255,255,255,0));opacity:0;pointer-events:none;mix-blend-mode:soft-light}
 .domain-inner{position:relative;max-width:1120px;margin:0 auto;padding:clamp(76px,11vh,128px) clamp(20px,5vw,64px) 64px}
 .domain-close{position:fixed;top:20px;right:24px;z-index:2;width:46px;height:46px;display:grid;place-items:center;border:1px solid var(--line-strong);border-radius:50%;background:rgba(255,255,255,.85);color:var(--ink);font-size:24px;line-height:1;box-shadow:var(--shadow-sm);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transition:background-color 160ms ease,transform 200ms var(--ease-out)}
 .domain-close:hover{background:#fff;transform:rotate(90deg)}
@@ -790,7 +791,7 @@ body:has(.workspace.active) .site-footer{display:none}
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <div class="domain-overlay" id="domainOverlay" role="dialog" aria-modal="true" aria-labelledby="domainTitle" hidden>
-    <span class="domain-edge" id="domainEdge" aria-hidden="true"></span>
+    <span class="domain-fill" id="domainFill" aria-hidden="true"></span>
     <button class="domain-close" id="domainClose" type="button" aria-label="Close domain">×</button>
     <div class="domain-inner">
       <p class="domain-kicker" data-stagger>Domain</p>
@@ -1838,22 +1839,52 @@ function playWind(){
   try{
     audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
     const ctx=audioCtx;if(ctx.state==='suspended')ctx.resume();
-    const t=ctx.currentTime,dur=.9;
+    const t=ctx.currentTime,dur=1.1;
     const buffer=ctx.createBuffer(1,Math.ceil(ctx.sampleRate*dur),ctx.sampleRate);
     const data=buffer.getChannelData(0);let last=0;
     for(let i=0;i<data.length;i++){const white=Math.random()*2-1;last=(last+.02*white)/1.02;data[i]=last*3.5} // soft "brown" noise
     const noise=ctx.createBufferSource();noise.buffer=buffer;
     const band=ctx.createBiquadFilter();band.type='bandpass';band.Q.value=.8;
-    band.frequency.setValueAtTime(250,t);band.frequency.exponentialRampToValueAtTime(1400,t+.35);band.frequency.exponentialRampToValueAtTime(500,t+dur);
+    band.frequency.setValueAtTime(220,t);band.frequency.exponentialRampToValueAtTime(1500,t+.55);band.frequency.exponentialRampToValueAtTime(450,t+dur);
     const gain=ctx.createGain();
-    gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.35,t+.22);gain.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.08,t+.2);gain.gain.exponentialRampToValueAtTime(.34,t+.55);gain.gain.exponentialRampToValueAtTime(.0001,t+dur);
     const pan=ctx.createStereoPanner?ctx.createStereoPanner():null; // drifts right to left, like the wipe
     let node=noise.connect(band).connect(gain);
-    if(pan){pan.pan.setValueAtTime(.7,t);pan.pan.linearRampToValueAtTime(-.6,t+dur);node=node.connect(pan)}
+    if(pan){pan.pan.setValueAtTime(.4,t);pan.pan.linearRampToValueAtTime(-.4,t+dur);node=node.connect(pan)}
     node.connect(ctx.destination);noise.start(t);noise.stop(t+dur);
   }catch{/* sound is optional */}
 }
 // Run fn when an animation ends, or after ms at the latest (a background tab can pause animations).
+// Wave reveal: a circle that grows from the button, with a soft rippling edge (a polygon redrawn every frame).
+function waveClip(cx,cy,radius,amp,phase){
+  const pts=[],N=90;
+  for(let i=0;i<N;i++){
+    const a=i/N*Math.PI*2;
+    const r=Math.max(0,radius+amp*(Math.sin(a*5+phase)*.6+Math.sin(a*9-phase*1.4)*.4));
+    pts.push(`${(cx+Math.cos(a)*r).toFixed(1)}px ${(cy+Math.sin(a)*r).toFixed(1)}px`);
+  }
+  return `polygon(${pts.join(',')})`;
+}
+let waveFrame=0;
+// Animates the wave from one radius to another. Calls done() at the end, or after a timeout if frames stall.
+function runWave(el,{cx,cy,from,to,duration,ease},done){
+  cancelAnimationFrame(waveFrame);
+  const start=performance.now();let finished=false;
+  const end=()=>{if(finished)return;finished=true;cancelAnimationFrame(waveFrame);done()};
+  const tick=now=>{
+    const p=Math.min(1,(now-start)/duration),e=ease(p);
+    const radius=from+(to-from)*e;
+    const amp=Math.min(34,radius*.18)*Math.sin(p*Math.PI); // ripples swell mid-way and settle at the end
+    el.style.clipPath=waveClip(cx,cy,radius,amp,p*9);
+    if(p<1)waveFrame=requestAnimationFrame(tick);else end();
+  };
+  waveFrame=requestAnimationFrame(tick);
+  setTimeout(end,duration+400);
+}
+const easeInOutCubic=p=>p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
+const easeOutQuart=p=>1-Math.pow(1-p,4);
+const waveOrigin=button=>{const r=button.getBoundingClientRect();const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  return {cx,cy,start:Math.max(r.width,r.height)/2,full:Math.hypot(Math.max(cx,innerWidth-cx),Math.max(cy,innerHeight-cy))+60}};
 const whenDone=(anim,ms,fn)=>{let called=false;const go=()=>{if(called)return;called=true;fn()};anim.finished.then(go,go);setTimeout(go,ms)};
 function fillDomain(key){
   const d=DOMAINS[key];
@@ -1875,12 +1906,13 @@ function openDomain(button){
   document.documentElement.classList.add('domain-open');
   const done=()=>{domainAnimating=false;$('#domainClose').focus({preventScroll:true})};
   if(prefersReducedMotion()){whenDone(domainOverlay.animate([{opacity:0},{opacity:1}],{duration:180,easing:'ease-out'}),330,done);return}
-  button.animate([{transform:'scale(1)'},{transform:'scale(.97)'},{transform:'scale(1)'}],{duration:200,easing:'cubic-bezier(.23,1,.32,1)'});
-  // Wipe in from the right edge across to the left, with a thin coloured leading edge.
-  const grow=domainOverlay.animate([{clipPath:'inset(0 0 0 100%)'},{clipPath:'inset(0 0 0 0%)'}],{duration:720,easing:'cubic-bezier(.76,0,.24,1)'});
-  $('#domainEdge').animate([{opacity:1,transform:`translateX(${innerWidth}px)`},{opacity:1,transform:'translateX(0)',offset:.98},{opacity:0,transform:'translateX(0)'}],{duration:720,easing:'cubic-bezier(.76,0,.24,1)'});
-  $$('#domainOverlay [data-stagger]').forEach((el,i)=>el.animate([{opacity:0,transform:'translateX(40px)'},{opacity:1,transform:'none'}],{duration:620,delay:360+i*70,easing:'cubic-bezier(.23,1,.32,1)',fill:'backwards'}));
-  whenDone(grow,880,done);
+  button.animate([{transform:'scale(1)'},{transform:'scale(.96)'},{transform:'scale(1)'}],{duration:260,easing:'cubic-bezier(.23,1,.32,1)'});
+  const o=waveOrigin(button);const DURATION=1000;
+  domainOverlay.style.clipPath=waveClip(o.cx,o.cy,o.start,0,0);
+  // The wave starts in the domain's colour, then settles into the page.
+  $('#domainFill').animate([{opacity:1},{opacity:1,offset:.45},{opacity:0}],{duration:DURATION+200,easing:'ease-out'});
+  $$('#domainOverlay [data-stagger]').forEach((el,i)=>el.animate([{opacity:0,transform:'translateY(24px)'},{opacity:1,transform:'none'}],{duration:620,delay:DURATION*.6+i*70,easing:'cubic-bezier(.23,1,.32,1)',fill:'backwards'}));
+  runWave(domainOverlay,{cx:o.cx,cy:o.cy,from:o.start,to:o.full,duration:DURATION,ease:easeInOutCubic},()=>{domainOverlay.style.clipPath='';done()});
 }
 function closeDomain(after){
   if(domainOverlay.hidden||domainAnimating)return;
@@ -1891,8 +1923,10 @@ function closeDomain(after){
   };
   const button=activeDomainButton;
   if(prefersReducedMotion()){const fade=domainOverlay.animate([{opacity:1},{opacity:0}],{duration:160,fill:'forwards'});whenDone(fade,310,()=>{finish();fade.cancel()});return}
-  const shrink=domainOverlay.animate([{clipPath:'inset(0 0 0 0%)'},{clipPath:'inset(0 0 0 100%)'}],{duration:520,easing:'cubic-bezier(.76,0,.24,1)',fill:'forwards'});
-  whenDone(shrink,680,()=>{finish();shrink.cancel()});
+  // Leaving: the page slides away (to the right on wider screens, downward on phones), revealing the landing page.
+  const away=innerWidth<=680?'translateY(100%)':'translateX(100%)';
+  const slide=domainOverlay.animate([{transform:'none'},{transform:away}],{duration:620,easing:'cubic-bezier(.65,0,.35,1)',fill:'forwards'});
+  whenDone(slide,800,()=>{finish();slide.cancel()});
 }
 $$('.domain-pill').forEach(button=>button.addEventListener('click',()=>openDomain(button)));
 $('#domainClose').onclick=()=>closeDomain();
