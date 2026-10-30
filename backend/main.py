@@ -140,19 +140,19 @@ def discover_skills(request: SkillsRequest):
 class CandidateRequest(BaseModel):
     full_name: str = Field(min_length=1, max_length=120)
     email: str = Field(min_length=3, max_length=255)
-    headline: str = Field(default="", max_length=200)
-    phone: str = Field(default="", max_length=40)
-    city: str = Field(default="", max_length=100)
-    looking_for: str = Field(default="", max_length=100)
-    available: str = Field(default="", max_length=100)
-    education: str = Field(default="", max_length=250)
-    linkedin: str = Field(default="", max_length=500)
-    github: str = Field(default="", max_length=500)
-    portfolio: str = Field(default="", max_length=500)
-    bio: str = Field(default="", max_length=1200)
-    preferred_roles: str = Field(default="", max_length=500)
-    preferred_locations: str = Field(default="", max_length=500)
-    work_mode: str = Field(default="Flexible", max_length=50)
+    headline: str | None = Field(default=None, max_length=200)
+    phone: str | None = Field(default=None, max_length=40)
+    city: str | None = Field(default=None, max_length=100)
+    looking_for: str | None = Field(default=None, max_length=100)
+    available: str | None = Field(default=None, max_length=100)
+    education: str | None = Field(default=None, max_length=250)
+    linkedin: str | None = Field(default=None, max_length=500)
+    github: str | None = Field(default=None, max_length=500)
+    portfolio: str | None = Field(default=None, max_length=500)
+    bio: str | None = Field(default=None, max_length=1200)
+    preferred_roles: str | None = Field(default=None, max_length=500)
+    preferred_locations: str | None = Field(default=None, max_length=500)
+    work_mode: str | None = Field(default=None, max_length=50)
 
 
 @app.put("/candidates/by-email/{email}")
@@ -182,10 +182,18 @@ def upsert_candidate_by_email(email: str, request: CandidateRequest):
             cursor.execute(
                 """
                 UPDATE CANDIDATE_PROFILE
-                SET FULL_NAME = ?, HEADLINE = ?, PHONE = ?, CITY = ?,
-                    LOOKING_FOR = ?, AVAILABLE = ?, EDUCATION = ?,
-                    LINKEDIN = ?, GITHUB = ?, PORTFOLIO = ?, BIO = ?,
-                    PREFERRED_ROLES = ?, PREFERRED_LOCATIONS = ?, WORK_MODE = ?
+                SET FULL_NAME = ?, HEADLINE = COALESCE(?, HEADLINE),
+                    PHONE = COALESCE(?, PHONE), CITY = COALESCE(?, CITY),
+                    LOOKING_FOR = COALESCE(?, LOOKING_FOR),
+                    AVAILABLE = COALESCE(?, AVAILABLE),
+                    EDUCATION = COALESCE(?, EDUCATION),
+                    LINKEDIN = COALESCE(?, LINKEDIN),
+                    GITHUB = COALESCE(?, GITHUB),
+                    PORTFOLIO = COALESCE(?, PORTFOLIO),
+                    BIO = COALESCE(?, BIO),
+                    PREFERRED_ROLES = COALESCE(?, PREFERRED_ROLES),
+                    PREFERRED_LOCATIONS = COALESCE(?, PREFERRED_LOCATIONS),
+                    WORK_MODE = COALESCE(?, WORK_MODE)
                 WHERE CANDIDATE_ID = ?
                 """,
                 (
@@ -225,19 +233,19 @@ def upsert_candidate_by_email(email: str, request: CandidateRequest):
                     candidate_id,
                     request.full_name,
                     request.email.strip(),
-                    request.headline,
-                    request.phone,
-                    request.city,
-                    request.looking_for,
-                    request.available,
-                    request.education,
-                    request.linkedin,
-                    request.github,
-                    request.portfolio,
-                    request.bio,
-                    request.preferred_roles,
-                    request.preferred_locations,
-                    request.work_mode
+                    request.headline or "",
+                    request.phone or "",
+                    request.city or "",
+                    request.looking_for or "",
+                    request.available or "",
+                    request.education or "",
+                    request.linkedin or "",
+                    request.github or "",
+                    request.portfolio or "",
+                    request.bio or "",
+                    request.preferred_roles or "",
+                    request.preferred_locations or "",
+                    request.work_mode or "Flexible"
                 )
             )
             status = "created"

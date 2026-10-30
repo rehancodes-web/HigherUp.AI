@@ -1554,9 +1554,9 @@ async function loadCandidateProfileFromHana(user){
     $('#profName').value=candidate.full_name||'';
     $('#profEmail').value=candidate.email||user.email;
     const fields={profHeadline:'headline',profPhone:'phone',profCity:'city',profLooking:'looking_for',profAvailable:'available',profEducation:'education',profLinkedin:'linkedin',profGithub:'github',profPortfolio:'portfolio',profBio:'bio'};
-    Object.entries(fields).forEach(([id,key])=>{const value=candidate[key]||'';if(value&&$('#'+id).tagName==='SELECT')$('#'+id).value=value;else if($('#'+id).tagName!=='SELECT')$('#'+id).value=value});
-    if(candidate.preferred_roles)$('#prefRoles').value=candidate.preferred_roles;
-    if(candidate.preferred_locations)$('#prefCities').value=candidate.preferred_locations;
+    Object.entries(fields).forEach(([id,key])=>{$('#'+id).value=candidate[key]??''});
+    $('#prefRoles').value=candidate.preferred_roles??'';
+    $('#prefCities').value=candidate.preferred_locations??'';
     if(candidate.work_mode)$('#prefMode').value=candidate.work_mode;
     applyNameEverywhere(candidate.full_name,candidate.headline);
     const docsResponse=await fetch(`${API_BASE}/candidates/by-email/${encodeURIComponent(user.email)}/documents`,{headers:await candidateAuthHeaders()});
