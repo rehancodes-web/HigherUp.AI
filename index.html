@@ -1353,6 +1353,7 @@ body:has(.workspace.active) .site-footer{display:none}
     </div>
   </div>
 
+  <script src="api-config.js"></script>
   <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
@@ -1360,7 +1361,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 const SUPABASE_URL = 'https://kgubkabyljxawnsonjnj.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_XlsiXHyiKr6D6LZjByRlsQ_ecy7RNV7';
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-const API_BASE = 'http://127.0.0.1:8000';
+const API_BASE = window.INCLUDE_API_BASE || 'http://127.0.0.1:8000';
 
 document.documentElement.classList.add('motion-ready');
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
@@ -1529,7 +1530,7 @@ function fillProfile(user){
 async function loadCandidateProfileFromHana(user){
   if(!user?.email)return;
   try{
-    const response=await fetch(`${API_BASE}/candidates/by-email/${encodeURIComponent(user.email)}`);
+    const response=await fetch(`${API_BASE}/candidates/by-email/${encodeURIComponent(user.email)}`,{headers:await candidateAuthHeaders()});
     if(response.status===404)return;
     const candidate=await response.json();
     if(!response.ok)throw new Error(candidate.detail||`Request failed (${response.status})`);
@@ -1617,7 +1618,7 @@ $('#profileForm').addEventListener('submit',async e=>{
   let hanaError=null;
   try{
     const response=await fetch(`${API_BASE}/candidates/by-email/${encodeURIComponent(state.email)}`,{
-      method:'PUT',headers:{'Content-Type':'application/json'},
+      method:'PUT',headers:await candidateAuthHeaders({'Content-Type':'application/json'}),
       body:JSON.stringify({full_name:name,email:state.email,headline:profile.headline,phone:profile.phone,city:profile.city,looking_for:profile.lookingFor,available:profile.available,education:profile.education,linkedin:profile.linkedin,github:profile.github,portfolio:profile.portfolio,bio:profile.bio,preferred_roles:$('#prefRoles').value.trim()||'Any suitable role',preferred_locations:$('#prefCities').value.trim()||'Any location',work_mode:$('#prefMode').value})
     });
     const result=await response.json();
@@ -1954,7 +1955,7 @@ if (savePreferencesButton) {
         `${API_BASE}/candidates/by-email/${encodeURIComponent(state.email)}`,
         {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: await candidateAuthHeaders({ 'Content-Type': 'application/json' }),
           body: JSON.stringify({
             full_name: state.name,
             email: state.email,

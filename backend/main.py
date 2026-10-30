@@ -13,9 +13,17 @@ from skills_agent import discover
 load_dotenv(Path(__file__).resolve().parent / ".env")
 
 app = FastAPI(title="Include.AI API")
+cors_origins = [
+    origin.strip()
+    for origin in os.getenv(
+        "CORS_ORIGINS",
+        "http://127.0.0.1:5500,http://localhost:5500",
+    ).split(",")
+    if origin.strip()
+]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=cors_origins,
     allow_credentials=False,
     allow_methods=["GET", "POST", "PUT", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization", "X-File-Name", "X-Document-Kind"],
@@ -156,7 +164,8 @@ class CandidateRequest(BaseModel):
 
 
 @app.put("/candidates/by-email/{email}")
-def upsert_candidate_by_email(email: str, request: CandidateRequest):
+def upsert_candidate_by_email(email: str, request: CandidateRequest, http_request: Request):
+    require_candidate_email(http_request.headers.get("Authorization"), email)
     if email.strip().lower() != request.email.strip().lower():
         raise HTTPException(
             status_code=400,
@@ -275,7 +284,8 @@ def upsert_candidate_by_email(email: str, request: CandidateRequest):
 
 
 @app.get("/candidates/by-email/{email}")
-def get_candidate_by_email(email: str):
+def get_candidate_by_email(email: str, request: Request):
+    require_candidate_email(request.headers.get("Authorization"), email)
     connection = None
     cursor = None
     try:
