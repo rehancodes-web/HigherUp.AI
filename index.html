@@ -520,6 +520,70 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .orbit-core{border-color:#818cf8;background:var(--dark)}
 .orbit-core strong{color:var(--brand-line)}
 
+/* Domain picker: the main content of the hero card, with the orbit in the top-right corner. */
+#homePage .hero .hero-system{padding:34px}
+#homePage .hero .hero-system::before{display:none}
+.domain-picker{position:relative}
+.domain-picker .domain-eyebrow,.domain-picker .domain-heading,.domain-picker .domain-sub{padding-right:185px}
+.domain-picker .domain-sub{min-height:110px}
+.domain-eyebrow{margin:0 0 8px;color:var(--brand-hi)!important;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.domain-heading{margin:0 0 10px;color:#fff;font-family:var(--font-statement);font-size:clamp(28px,2.6vw,38px);font-weight:750;letter-spacing:-.03em;line-height:1.05}
+.domain-sub{margin:0 0 24px;color:#b4bac6!important;font-size:14px;line-height:1.55}
+.domain-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.domain-pill{position:relative;display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;column-gap:12px;row-gap:2px;align-items:center;min-height:64px;padding:12px 14px;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.035);color:#fff;text-align:left;cursor:pointer;transition:border-color 180ms ease,background-color 180ms ease,transform 180ms var(--ease-out)}
+.domain-pill::before{content:"";grid-row:1/3;width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 22%,transparent)}
+.domain-pill::after{content:"→";grid-column:3;grid-row:1/3;color:var(--c);opacity:.35;transition:opacity 180ms ease,transform 180ms var(--ease-out)}
+.domain-pill b{font-size:15px;font-weight:650;line-height:1.2}
+.domain-pill small{grid-column:2;color:#9aa2b1;font-size:12px;line-height:1.3}
+.domain-pill:hover{border-color:color-mix(in srgb,var(--c) 60%,transparent);background:color-mix(in srgb,var(--c) 12%,transparent);transform:translateY(-2px)}
+.domain-pill:hover::after,.domain-pill:focus-visible::after{opacity:1;transform:translateX(3px)}
+.domain-pill:active{transform:scale(.97)}
+.domain-pill:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+.motion-ready #homePage.active .domain-pill{animation:pill-in 600ms var(--ease-out) backwards}
+.motion-ready #homePage.active .domain-pill:nth-child(1){animation-delay:700ms}.motion-ready #homePage.active .domain-pill:nth-child(2){animation-delay:770ms}.motion-ready #homePage.active .domain-pill:nth-child(3){animation-delay:840ms}.motion-ready #homePage.active .domain-pill:nth-child(4){animation-delay:910ms}.motion-ready #homePage.active .domain-pill:nth-child(5){animation-delay:980ms}.motion-ready #homePage.active .domain-pill:nth-child(6){animation-delay:1050ms}
+@keyframes pill-in{from{opacity:0;transform:translateY(10px)}}
+@media(max-width:1050px){#homePage .hero .hero-system{padding:30px}}
+@media(max-width:680px){
+  #homePage .hero .hero-system{padding:24px 20px}
+  .domain-picker .domain-eyebrow,.domain-picker .domain-heading,.domain-picker .domain-sub{padding-right:0}
+  .domain-picker .domain-sub{min-height:0}
+}
+@media(max-width:480px){.domain-list{grid-template-columns:1fr}}
+
+/* Full-screen domain page. It grows out of the clicked button (see openDomain). */
+html{scrollbar-gutter:stable}
+html.domain-open{overflow:hidden}
+.domain-overlay{position:fixed;inset:0;z-index:450;overflow-y:auto;overscroll-behavior:contain;color:var(--ink);background:
+  radial-gradient(900px 520px at 85% -10%,color-mix(in srgb,var(--c) 22%,transparent),transparent 60%),
+  radial-gradient(700px 420px at -10% 110%,rgba(99,102,241,.1),transparent 60%),var(--bg)}
+.domain-overlay::before{content:"";position:fixed;inset:0;pointer-events:none;
+  background:linear-gradient(rgba(17,19,24,.045) 1px,transparent 1px) 0 0/56px 56px,linear-gradient(90deg,rgba(17,19,24,.045) 1px,transparent 1px) 0 0/56px 56px;
+  -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 20%,#000 25%,transparent 75%);mask-image:radial-gradient(ellipse 70% 60% at 50% 20%,#000 25%,transparent 75%)}
+.domain-overlay[hidden]{display:none}
+.domain-edge{position:fixed;top:0;bottom:0;left:0;width:3px;background:linear-gradient(180deg,var(--brand),var(--c));opacity:0;pointer-events:none}
+.domain-inner{position:relative;max-width:1120px;margin:0 auto;padding:clamp(76px,11vh,128px) clamp(20px,5vw,64px) 64px}
+.domain-close{position:fixed;top:20px;right:24px;z-index:2;width:46px;height:46px;display:grid;place-items:center;border:1px solid var(--line-strong);border-radius:50%;background:rgba(255,255,255,.85);color:var(--ink);font-size:24px;line-height:1;box-shadow:var(--shadow-sm);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transition:background-color 160ms ease,transform 200ms var(--ease-out)}
+.domain-close:hover{background:#fff;transform:rotate(90deg)}
+.domain-close:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
+.domain-kicker{display:inline-flex;align-items:center;gap:10px;margin:0 0 18px;padding:6px 14px 6px 8px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.8);color:var(--ink-soft)!important;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;box-shadow:var(--shadow-sm)}
+.domain-kicker::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 30%,transparent)}
+.domain-overlay h2{margin:0 0 16px;color:var(--ink);font-family:var(--font-statement);font-size:clamp(2.8rem,7vw,5.4rem);font-weight:800;line-height:.98;letter-spacing:-.045em}
+.domain-overlay h2 em{font-family:var(--font-editorial);font-weight:400;color:var(--brand)}
+.domain-lead{max-width:56ch;margin:0 0 44px;color:#4a4f5c!important;font-size:clamp(17px,1.6vw,21px);line-height:1.55}
+.domain-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.domain-grid section{position:relative;overflow:hidden;padding:24px;border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:var(--shadow-sm)}
+.domain-grid section::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--c)}
+.domain-grid h3{margin:0 0 14px;color:var(--ink);font-family:var(--font-statement);font-size:17px;font-weight:700;letter-spacing:-.02em}
+.domain-grid ul{display:grid;gap:9px;margin:0;padding:0;list-style:none;color:var(--ink-soft);font-size:15px}
+#domainRoles li{display:flex;align-items:baseline;gap:10px}
+#domainRoles li::before{content:"";flex:none;width:6px;height:6px;border-radius:50%;background:var(--brand);transform:translateY(-2px)}
+.domain-grid .chip-list{display:flex;flex-wrap:wrap;gap:8px}
+.chip-list li{padding:6px 11px;border:1px solid var(--brand-line);border-radius:999px;background:var(--brand-bg);color:var(--brand-dark);font-size:13px;font-weight:600}
+.domain-grid p{margin:0;color:var(--ink-soft)!important;font-size:15px;line-height:1.6}
+.domain-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:36px}
+.domain-note{margin:20px 0 0;color:var(--muted)!important;font-size:13px}
+@media(max-width:860px){.domain-grid{grid-template-columns:1fr}}
+
 /* Section headings */
 #homePage .section-heading h2{font-family:var(--font-statement);font-size:clamp(2.4rem,4.2vw,4.1rem);font-weight:750;line-height:1.02;letter-spacing:-.04em}
 #homePage .section-heading h2 span{color:var(--ink);font-family:var(--font-statement)}
@@ -725,6 +789,26 @@ body:has(.workspace.active) .site-footer{display:none}
   <a class="skip-link" href="#main">Skip to main content</a>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+  <div class="domain-overlay" id="domainOverlay" role="dialog" aria-modal="true" aria-labelledby="domainTitle" hidden>
+    <span class="domain-edge" id="domainEdge" aria-hidden="true"></span>
+    <button class="domain-close" id="domainClose" type="button" aria-label="Close domain">×</button>
+    <div class="domain-inner">
+      <p class="domain-kicker" data-stagger>Domain</p>
+      <h2 id="domainTitle" data-stagger></h2>
+      <p class="domain-lead" id="domainLead" data-stagger></p>
+      <div class="domain-grid">
+        <section data-stagger><h3>Roles you’ll find</h3><ul id="domainRoles"></ul></section>
+        <section data-stagger><h3>Skills employers ask for</h3><ul id="domainSkills" class="chip-list"></ul></section>
+        <section data-stagger><h3>How to prove it</h3><p id="domainProof"></p></section>
+      </div>
+      <div class="domain-actions" data-stagger>
+        <button class="button button-primary button-large" id="domainFind" type="button"></button>
+        <button class="button button-outline-light button-large" id="domainHire" type="button"></button>
+      </div>
+      <p class="domain-note" data-stagger>Skills-first: projects, internships, hackathons and informal work all count as evidence.</p>
+    </div>
+  </div>
+
   <header class="site-header" id="siteHeader">
     <button class="brand" data-route="home" aria-label="Include.AI home"><span class="brand-mark" aria-hidden="true">i</span><span>include.ai</span></button>
     <nav class="public-nav" aria-label="Primary navigation">
@@ -769,11 +853,18 @@ body:has(.workspace.active) .site-footer{display:none}
             </div>
             <p id="orbitHint">Drag · arrows · double-click reset</p>
           </div>
-          <div class="system-role"><span>Open role</span><strong>Junior Data Analyst</strong><small>Pune · Hybrid · Entry level</small></div>
-          <div class="system-flow">
-            <article class="system-step evidence-step"><span class="step-index">01</span><div><small>Candidate-owned evidence</small><strong>Skills, projects and work</strong><p>SQL verified · Retail dashboard verified · Power BI proof missing</p></div></article>
-            <article class="system-step explain-step"><span class="step-index">02</span><div><small>Explainable matching</small><strong>Strengths and gaps stay visible</strong><p>Every factor links back to evidence. Confidence is shown separately.</p></div></article>
-            <article class="system-step human-step"><span class="step-index">03</span><div><small>Human checkpoint</small><strong>People make the decision</strong><p>Shortlist, pass or request more context—with undo and an audit trail.</p></div></article>
+          <div class="domain-picker" role="group" aria-labelledby="domainPickerTitle">
+            <p class="domain-eyebrow">Explore by domain</p>
+            <h2 class="domain-heading" id="domainPickerTitle">Find your field</h2>
+            <p class="domain-sub">Pick a domain to see the roles, in-demand skills and the evidence that proves them.</p>
+            <div class="domain-list">
+              <button type="button" class="domain-pill" data-domain="tech" style="--c:#818cf8"><b>Technology</b><small>Software, web, IT</small></button>
+              <button type="button" class="domain-pill" data-domain="data" style="--c:#67e8f9"><b>Data &amp; Analytics</b><small>SQL, dashboards, insight</small></button>
+              <button type="button" class="domain-pill" data-domain="finance" style="--c:#6ee7b7"><b>Finance</b><small>Accounts, audit, analysis</small></button>
+              <button type="button" class="domain-pill" data-domain="core" style="--c:#fcd34d"><b>Core Engineering</b><small>Mechanical, civil, electrical</small></button>
+              <button type="button" class="domain-pill" data-domain="marketing" style="--c:#f9a8d4"><b>Sales &amp; Marketing</b><small>Growth, brand, customers</small></button>
+              <button type="button" class="domain-pill" data-domain="design" style="--c:#fdba74"><b>Design</b><small>UI/UX, graphics, video</small></button>
+            </div>
           </div>
           <div class="system-principle"><span aria-hidden="true"></span><p>AI prepares the context.<br><em>Humans remain accountable.</em></p></div>
         </div>
@@ -1730,6 +1821,95 @@ if (savePreferencesButton) {
 }
 
 renderCandidate();renderCounts();
+// ---------- Domain explorer: a domain button grows into a full-screen page, with a short "zap" sound.
+const DOMAINS={
+  tech:{name:'Technology',color:'#818cf8',lead:'Build and run the software, systems and infrastructure that businesses depend on.',roles:['Junior Software Developer','Web Developer Intern','QA / Test Engineer','IT Support Associate'],skills:['JavaScript','Python','SQL','Git','Cloud basics'],proof:'GitHub projects, hackathon builds, freelance websites and coding assessments all count as evidence.'},
+  data:{name:'Data & Analytics',color:'#67e8f9',lead:'Turn messy data into clear decisions that teams can act on.',roles:['Junior Data Analyst','Business Analyst Intern','Reporting Associate','MIS Executive'],skills:['SQL','Excel','Power BI','Python','Data storytelling'],proof:'Dashboards, analysis projects, notebooks and internship reports show what you can do with real data.'},
+  finance:{name:'Finance',color:'#6ee7b7',lead:'Keep the numbers right, from books and audits to analysis and planning.',roles:['Accounts Executive','Financial Analyst Intern','Audit Associate','Payroll Executive'],skills:['Excel','Tally','GST basics','Reconciliation','Financial modelling'],proof:'Internship work, case competitions, certifications and practical tasks such as a reconciliation or a simple model.'},
+  core:{name:'Core Engineering',color:'#fcd34d',lead:'Design, build and maintain physical products, plants and infrastructure.',roles:['Graduate Engineer Trainee','Production / Quality Engineer','Site Engineer','Maintenance Technician'],skills:['AutoCAD','SolidWorks','Quality control','Safety standards','Lean basics'],proof:'Final-year projects, workshop and shop-floor experience, apprenticeships and design files.'},
+  marketing:{name:'Sales & Marketing',color:'#f9a8d4',lead:'Find customers, tell the story and help the business grow.',roles:['Sales Executive','Digital Marketing Intern','Business Development Associate','Social Media Associate'],skills:['Communication','Social media','SEO basics','CRM tools','Negotiation'],proof:'Campaigns you ran, pages you grew, sales targets you met and sponsorships you secured.'},
+  design:{name:'Design',color:'#fdba74',lead:'Shape how products and brands look, feel and work.',roles:['UI/UX Design Intern','Graphic Designer','Video Editor','Product Design Associate'],skills:['Figma','Visual design','User research','Prototyping','Adobe tools'],proof:'A portfolio, redesign case studies, client work and design challenge entries.'}
+};
+const domainOverlay=$('#domainOverlay');
+let activeDomainButton=null,domainAnimating=false,audioCtx=null;
+const prefersReducedMotion=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+// A soft synthesized wind "whoosh": filtered noise that swells and sweeps upward. No audio file needed.
+function playWind(){
+  try{
+    audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+    const ctx=audioCtx;if(ctx.state==='suspended')ctx.resume();
+    const t=ctx.currentTime,dur=.9;
+    const buffer=ctx.createBuffer(1,Math.ceil(ctx.sampleRate*dur),ctx.sampleRate);
+    const data=buffer.getChannelData(0);let last=0;
+    for(let i=0;i<data.length;i++){const white=Math.random()*2-1;last=(last+.02*white)/1.02;data[i]=last*3.5} // soft "brown" noise
+    const noise=ctx.createBufferSource();noise.buffer=buffer;
+    const band=ctx.createBiquadFilter();band.type='bandpass';band.Q.value=.8;
+    band.frequency.setValueAtTime(250,t);band.frequency.exponentialRampToValueAtTime(1400,t+.35);band.frequency.exponentialRampToValueAtTime(500,t+dur);
+    const gain=ctx.createGain();
+    gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.35,t+.22);gain.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    const pan=ctx.createStereoPanner?ctx.createStereoPanner():null; // drifts right to left, like the wipe
+    let node=noise.connect(band).connect(gain);
+    if(pan){pan.pan.setValueAtTime(.7,t);pan.pan.linearRampToValueAtTime(-.6,t+dur);node=node.connect(pan)}
+    node.connect(ctx.destination);noise.start(t);noise.stop(t+dur);
+  }catch{/* sound is optional */}
+}
+// Run fn when an animation ends, or after ms at the latest (a background tab can pause animations).
+const whenDone=(anim,ms,fn)=>{let called=false;const go=()=>{if(called)return;called=true;fn()};anim.finished.then(go,go);setTimeout(go,ms)};
+function fillDomain(key){
+  const d=DOMAINS[key];
+  domainOverlay.style.setProperty('--c',d.color);
+  {const words=d.name.split(' ');const last=words.pop();$('#domainTitle').innerHTML=(words.length?esc(words.join(' '))+' ':'')+`<em>${esc(last)}</em>`}
+  $('#domainLead').textContent=d.lead;
+  $('#domainRoles').innerHTML=d.roles.map(r=>`<li>${esc(r)}</li>`).join('');
+  $('#domainSkills').innerHTML=d.skills.map(s=>`<li>${esc(s)}</li>`).join('');
+  $('#domainProof').textContent=d.proof;
+  $('#domainFind').textContent=`Find ${d.name} jobs & internships`;
+  $('#domainHire').textContent=`Hire ${d.name} talent`;
+}
+function openDomain(button){
+  if(domainAnimating||!domainOverlay.hidden)return;
+  domainAnimating=true;activeDomainButton=button;
+  fillDomain(button.dataset.domain);
+  playWind();
+  domainOverlay.hidden=false;domainOverlay.scrollTop=0;
+  document.documentElement.classList.add('domain-open');
+  const done=()=>{domainAnimating=false;$('#domainClose').focus({preventScroll:true})};
+  if(prefersReducedMotion()){whenDone(domainOverlay.animate([{opacity:0},{opacity:1}],{duration:180,easing:'ease-out'}),330,done);return}
+  button.animate([{transform:'scale(1)'},{transform:'scale(.97)'},{transform:'scale(1)'}],{duration:200,easing:'cubic-bezier(.23,1,.32,1)'});
+  // Wipe in from the right edge across to the left, with a thin coloured leading edge.
+  const grow=domainOverlay.animate([{clipPath:'inset(0 0 0 100%)'},{clipPath:'inset(0 0 0 0%)'}],{duration:720,easing:'cubic-bezier(.76,0,.24,1)'});
+  $('#domainEdge').animate([{opacity:1,transform:`translateX(${innerWidth}px)`},{opacity:1,transform:'translateX(0)',offset:.98},{opacity:0,transform:'translateX(0)'}],{duration:720,easing:'cubic-bezier(.76,0,.24,1)'});
+  $$('#domainOverlay [data-stagger]').forEach((el,i)=>el.animate([{opacity:0,transform:'translateX(40px)'},{opacity:1,transform:'none'}],{duration:620,delay:360+i*70,easing:'cubic-bezier(.23,1,.32,1)',fill:'backwards'}));
+  whenDone(grow,880,done);
+}
+function closeDomain(after){
+  if(domainOverlay.hidden||domainAnimating)return;
+  domainAnimating=true;
+  const finish=()=>{
+    domainOverlay.hidden=true;document.documentElement.classList.remove('domain-open');domainAnimating=false;
+    if(typeof after==='function')after();else activeDomainButton?.focus({preventScroll:true});
+  };
+  const button=activeDomainButton;
+  if(prefersReducedMotion()){const fade=domainOverlay.animate([{opacity:1},{opacity:0}],{duration:160,fill:'forwards'});whenDone(fade,310,()=>{finish();fade.cancel()});return}
+  const shrink=domainOverlay.animate([{clipPath:'inset(0 0 0 0%)'},{clipPath:'inset(0 0 0 100%)'}],{duration:520,easing:'cubic-bezier(.76,0,.24,1)',fill:'forwards'});
+  whenDone(shrink,680,()=>{finish();shrink.cancel()});
+}
+$$('.domain-pill').forEach(button=>button.addEventListener('click',()=>openDomain(button)));
+$('#domainClose').onclick=()=>closeDomain();
+$('#domainFind').onclick=()=>closeDomain(()=>openLogin('candidate'));
+$('#domainHire').onclick=()=>closeDomain(()=>openLogin('recruiter'));
+document.addEventListener('keydown',event=>{
+  if(domainOverlay.hidden)return;
+  if(event.key==='Escape'){event.preventDefault();closeDomain();return}
+  if(event.key==='Tab'){ // keep keyboard focus inside the domain page
+    const items=[$('#domainClose'),$('#domainFind'),$('#domainHire')];
+    const i=items.indexOf(document.activeElement);
+    if(event.shiftKey&&i<=0){event.preventDefault();items.at(-1).focus()}
+    else if(!event.shiftKey&&(i===-1||i===items.length-1)){event.preventDefault();items[0].focus()}
+  }
+});
+window.addEventListener('popstate',()=>{if(!domainOverlay.hidden){domainAnimating=false;closeDomain()}});
+
 $('#footerYear').textContent=new Date().getFullYear();
 applyRoute();
 
