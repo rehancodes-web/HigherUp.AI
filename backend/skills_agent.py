@@ -1,4 +1,4 @@
-"""Include.AI - Skills Discovery Agent (SAP Generative AI Hub).
+"""HigherUp.AI - Skills Discovery Agent (SAP Generative AI Hub).
 
 Reads candidate text and returns skills WITH evidence quotes and confidence.
 Rules: never invent skills, quotes must exist in the text, ignore protected
