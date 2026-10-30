@@ -1002,6 +1002,68 @@ body:has(.workspace.active) .site-footer{display:none}
 .pill-count{grid-column:2;grid-row:3;display:flex;align-items:baseline;gap:5px;margin-top:3px;line-height:1.2}
 .pill-count b{font-family:var(--font-statement);font-size:14px;font-weight:750;color:var(--c);font-variant-numeric:tabular-nums}
 .pill-count i{font-style:normal;color:#8b93a3;font-size:11.5px;font-weight:600}
+
+/* Post a role */
+.role-head-actions{display:flex;gap:10px;flex-wrap:wrap}
+.role-columns{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,1fr);gap:16px;align-items:start}
+.role-main,.role-side{display:grid;gap:16px}
+.role-side{position:sticky;top:96px}
+.role-builder{margin-bottom:0}
+.role-form .span-2{grid-column:1/-1}
+.role-form input[type=number],.role-form input[type=date]{min-height:44px;padding:9px 12px;border:1px solid var(--line-strong);border-radius:8px;background:var(--surface);color:var(--ink);font:inherit;font-weight:400}
+.salary-row{display:flex;align-items:center;gap:8px}
+.salary-row input{width:100%;min-width:0}
+.salary-row span{color:var(--muted);font-weight:500}
+.salary-row select{flex:none;width:auto}
+.chip-label{display:block;margin:4px 0 6px;color:#34495c;font-size:13px;font-weight:750}
+.chip-input{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:46px;margin-bottom:14px;padding:6px 8px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);cursor:text}
+.chip-input:focus-within{border-color:var(--brand);box-shadow:0 0 0 3px rgba(99,102,241,.16)}
+.chip-input input{flex:1;min-width:120px;border:0;outline:none;background:none;font:inherit;font-size:14px;color:var(--ink);padding:4px}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 6px 4px 10px;border-radius:999px;background:var(--brand-bg);color:var(--brand-dark);font-size:13px;font-weight:650;box-shadow:inset 0 0 0 1px var(--brand-line)}
+.chip button{width:18px;height:18px;display:grid;place-items:center;border:0;border-radius:50%;background:none;color:var(--brand-dark);font-size:14px;line-height:1;cursor:pointer}
+.chip button:hover{background:rgba(67,56,202,.12)}
+#niceSkills .chip{background:var(--surface-2);color:var(--ink-soft);box-shadow:inset 0 0 0 1px var(--line)}
+.skill-suggest{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:13px}
+.skill-suggest:empty{display:none}
+.skill-suggest span{color:var(--muted)}
+.skill-suggest button{padding:4px 10px;border:1px dashed var(--brand-line);border-radius:999px;background:none;color:var(--brand);font-size:12.5px;font-weight:600}
+.skill-suggest button:hover{background:var(--brand-bg)}
+.role-textarea{display:grid;gap:6px}
+.role-textarea textarea{width:100%;padding:12px 14px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;font-size:15px;line-height:1.6;resize:vertical}
+.role-textarea textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(99,102,241,.16);outline:none}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.rank-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rank-option{display:flex;gap:10px;align-items:flex-start;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);cursor:pointer;transition:border-color 160ms ease,background-color 160ms ease}
+.rank-option:has(input:checked){border-color:var(--brand);background:var(--brand-bg)}
+.rank-option input{margin-top:3px;accent-color:var(--brand)}
+.rank-option b{display:block;color:var(--ink);font-size:14.5px}
+.rank-option small{display:block;color:var(--muted);font-size:12.5px;line-height:1.45}
+.rank-note{margin:14px 0 0;font-size:13px}
+.optional-tag{margin-left:6px;padding:2px 8px;border-radius:999px;background:var(--surface-2);color:var(--muted);font:600 11px var(--font-ui);vertical-align:middle}
+.question-list{display:grid;gap:8px;margin:0 0 12px;padding:0;list-style:none}
+.question-list:empty{display:none}
+.question-list li{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.question-list li span{color:var(--brand);font-weight:700}
+.question-list li p{margin:0;color:var(--ink-soft);font-size:14px}
+.question-list li button{width:26px;height:26px;border:0;border-radius:6px;background:none;color:var(--muted);font-size:16px;cursor:pointer}
+.question-list li button:hover{background:var(--surface-2);color:var(--ink)}
+.question-add{display:flex;gap:8px}
+.question-add input{flex:1;min-width:0;min-height:44px;padding:9px 12px;border:1px solid var(--line-strong);border-radius:8px;font:inherit}
+.question-add input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(99,102,241,.16);outline:none}
+.readiness-lead{margin:-2px 0 12px;font-size:13px}
+.inclusion-ok{margin:0;padding:12px 14px;border-radius:10px;background:var(--green-bg);color:var(--green)!important;font-size:14px}
+#inclusionList article{grid-template-columns:1fr;gap:8px}
+#inclusionList article button{justify-self:start}
+.preview-card{animation:none!important}
+.role-side .field-grid{grid-template-columns:1fr}
+@media(max-width:1100px){.role-columns{grid-template-columns:1fr}.role-side{position:static}}
+@media(max-width:620px){.rank-options{grid-template-columns:1fr}}
+
+/* Role setup fixes: hidden "Other" box stays hidden; listing preview stacks in the side column */
+.role-form label[hidden]{display:none!important}
+.listing.preview-card{display:flex;flex-direction:column;gap:6px;padding:16px 16px 16px 20px;transform:none!important}
+.listing.preview-card .listing-top{justify-content:space-between}
+.listing.preview-card:hover{transform:none;box-shadow:none}
 </style>
 </head>
 <body>
@@ -1221,7 +1283,7 @@ body:has(.workspace.active) .site-footer{display:none}
                 <label class="span-2">Portfolio or website<input id="profPortfolio" type="url" inputmode="url" maxlength="200" placeholder="https://…"></label>
                 <label class="span-2">About me<textarea id="profBio" rows="4" maxlength="600" placeholder="A few lines about what you enjoy working on and what you're looking for."></textarea><small class="char-count" id="profBioCount">0 / 600</small></label>
               </div>
-              <p class="criteria-help">Education, college name and personal details are shown for context only. They have <b>zero weight</b> in your match score.</p>
+              <p class="criteria-help">We match you on your <b>skills and real experience</b>. Your education and personal details simply help employers get to know you better.</p>
 
               <div class="documents-head"><h3>Resume, CV and documents</h3><p>The Skills Discovery Agent will use your resume to suggest Skill Passport entries. You confirm every one.</p></div>
               <div class="upload-grid">
@@ -1299,34 +1361,89 @@ body:has(.workspace.active) .site-footer{display:none}
         </section>
 
         <section class="tab-panel" id="recruiter-role">
-          <div class="workspace-heading"><div><p class="overline dark">Employer Readiness Agent</p><h1>Configure the <em>role</em></h1><p>Set what the job needs, how fit is scored and exactly what appears in each one-page applicant summary.</p></div><button class="button button-primary" id="saveTemplate">Save role</button></div>
-          <div class="content-block role-builder">
-            <div class="block-heading"><div><h2>Role requirements</h2><p>Separate what the job truly needs from what is nice to have.</p></div></div>
-            <div class="role-form">
-              <label>Job title<input id="roleTitle" value="Junior Data Analyst" maxlength="80"></label>
-              <label>Domain
-                <select id="roleDomain" required>
-                  <option value="tech">Technology</option>
-                  <option value="data" selected>Data &amp; Analytics</option>
-                  <option value="finance">Finance</option>
-                  <option value="core">Core Engineering</option>
-                  <option value="marketing">Sales &amp; Marketing</option>
-                  <option value="design">Design</option>
-                  <option value="other">Other (type it in)</option>
-                </select>
-              </label>
-              <label id="roleDomainOtherWrap" hidden>Domain name <small>not in the list</small><input id="roleDomainOther" maxlength="40" placeholder="e.g. Healthcare, Logistics, Education"></label>
-              <label>Location and work mode<input id="rolePlace" value="Pune · Hybrid" maxlength="80"></label>
-              <label>Essential skills <small>comma separated</small><input id="roleEssential" value="SQL, Excel, Power BI" maxlength="200"></label>
-              <label>Preferred skills <small>comma separated</small><input id="rolePreferred" value="Python, Data storytelling, Communication" maxlength="200"></label>
+          <div class="workspace-heading"><div><p class="overline dark">Employer Readiness Agent</p><h1>Post a <em>role</em></h1><p>Describe the job the way you would for any job board. We turn it into the listing candidates see and rank applicants on their skills.</p></div><div class="role-head-actions"><button class="button button-outline-light" id="saveDraft" type="button">Save draft</button><button class="button button-primary" id="saveTemplate" type="button">Publish role</button></div></div>
+
+          <div class="role-columns">
+            <div class="role-main">
+              <div class="content-block role-builder">
+                <div class="block-heading"><div><h2>Job basics</h2><p>The essentials candidates look at first.</p></div></div>
+                <div class="role-form">
+                  <label class="span-2">Job title<input id="roleTitle" value="Junior Data Analyst" maxlength="80" required></label>
+                  <label>Domain
+                    <select id="roleDomain" required>
+                      <option value="tech">Technology</option>
+                      <option value="data" selected>Data &amp; Analytics</option>
+                      <option value="finance">Finance</option>
+                      <option value="core">Core Engineering</option>
+                      <option value="marketing">Sales &amp; Marketing</option>
+                      <option value="design">Design</option>
+                      <option value="other">Other (type it in)</option>
+                    </select>
+                  </label>
+                  <label id="roleDomainOtherWrap" hidden>Domain name <small>not in the list</small><input id="roleDomainOther" maxlength="40" placeholder="e.g. Healthcare, Logistics, Education"></label>
+                  <label>Employment type<select id="roleType"><option>Full-time</option><option>Internship</option><option>Part-time</option><option>Contract</option></select></label>
+                  <label>Experience level<select id="roleLevel"><option value="fresher">Fresher (0–1 year)</option><option value="junior" selected>Junior (1–3 years)</option><option value="mid">Mid-level (3–5 years)</option></select></label>
+                  <label>Openings<input id="roleOpenings" type="number" min="1" max="99" value="2"></label>
+                  <label>City<input id="roleCity" value="Pune" maxlength="40" placeholder="e.g. Pune"></label>
+                  <label>Work mode<select id="roleMode"><option>On-site</option><option selected>Hybrid</option><option>Remote</option></select></label>
+                  <label class="span-2">Salary <small>shown to candidates · roles with a range get more applicants</small>
+                    <span class="salary-row"><input id="payMin" type="number" min="0" step="0.5" value="4.5" aria-label="Minimum salary"><span>to</span><input id="payMax" type="number" min="0" step="0.5" value="6" aria-label="Maximum salary"><select id="payUnit" aria-label="Salary unit"><option value="LPA">LPA</option><option value="k/month">thousand / month</option></select></span>
+                  </label>
+                  <label>Apply by<input id="roleDeadline" type="date"></label>
+                  <label>Start date<select id="roleStart"><option>Immediately</option><option selected>Within a month</option><option>Flexible</option></select></label>
+                </div>
+              </div>
+
+              <div class="content-block role-builder">
+                <div class="block-heading"><div><h2>Skills</h2><p>Type a skill and press Enter. Keep must-haves short — three to five is ideal.</p></div></div>
+                <label class="chip-label">Must-have skills</label>
+                <div class="chip-input" id="mustSkills" data-initial="SQL,Excel,Power BI"><input placeholder="Add a skill" aria-label="Add a must-have skill"></div>
+                <label class="chip-label">Nice to have</label>
+                <div class="chip-input" id="niceSkills" data-initial="Python,Data storytelling,Communication"><input placeholder="Add a skill" aria-label="Add a nice-to-have skill"></div>
+                <div class="skill-suggest" id="skillSuggest"></div>
+              </div>
+
+              <div class="content-block role-builder">
+                <div class="block-heading"><div><h2>About the role</h2><p>What the person will do day to day. Plain language works best.</p></div></div>
+                <label class="role-textarea"><span class="sr-only">Job description</span><textarea id="roleDescription" rows="6" maxlength="2000">You'll turn sales and customer data into clear weekly reports for our operations team, build simple dashboards, and help managers answer questions with data. You'll work closely with a senior analyst who will help you grow.</textarea><small class="char-count" id="roleDescCount"></small></label>
+              </div>
+
+              <div class="content-block role-builder">
+                <div class="block-heading"><div><h2>How should we rank applicants?</h2><p>Pick what matters most. You can change this any time.</p></div></div>
+                <div class="rank-options" role="radiogroup" aria-label="Ranking priority">
+                  <label class="rank-option"><input type="radio" name="rankPreset" value="balanced" checked><span><b>Balanced</b><small>Recommended. Skills, proof of work and fit all count.</small></span></label>
+                  <label class="rank-option"><input type="radio" name="rankPreset" value="skills"><span><b>Skills first</b><small>Best for hands-on roles where ability matters most.</small></span></label>
+                  <label class="rank-option"><input type="radio" name="rankPreset" value="experience"><span><b>Relevant experience</b><small>Favours internships, projects and work in this area.</small></span></label>
+                  <label class="rank-option"><input type="radio" name="rankPreset" value="potential"><span><b>Potential to learn</b><small>Great for freshers and career switchers.</small></span></label>
+                </div>
+                <p class="rank-note">We only look at skills and real evidence. Gender, age, caste, religion, disability and college name are never part of the ranking.</p>
+              </div>
+
+              <div class="content-block role-builder">
+                <div class="block-heading"><div><h2>Screening questions <small class="optional-tag">optional</small></h2><p>Up to three short questions candidates answer when they apply.</p></div></div>
+                <ul class="question-list" id="questionList"></ul>
+                <div class="question-add"><input id="questionInput" maxlength="160" placeholder="e.g. Share a link to a project you're proud of"><button type="button" class="button button-outline-light" id="questionAdd">Add</button></div>
+              </div>
             </div>
-            <div class="weights-head"><h3>Scoring weights</h3><p>Fit = each factor score × its weight. Weights must add up to 100%.</p></div>
-            <div id="weightList"></div>
-            <div class="weight-total"><span>Total <small id="weightHint">Ready to save</small></span><b id="weightTotal">100%</b></div>
-            <p class="weight-locked">Gender, age, caste, religion, disability, college brand, degree status and payment status: <b>0% weight, locked</b>.</p>
-            <button class="text-action" id="resetWeights" type="button">Reset to recommended weights</button>
+
+            <aside class="role-side">
+              <div class="content-block readiness" id="inclusionCheck">
+                <h2>Inclusion check</h2>
+                <p class="readiness-lead">Updates as you type.</p>
+                <div id="inclusionList"></div>
+              </div>
+              <div class="content-block listing-preview-block">
+                <h2>Listing preview</h2>
+                <p class="readiness-lead">What candidates will see in Search.</p>
+                <div id="listingPreview"></div>
+              </div>
+              <div class="content-block">
+                <h2>On each applicant card</h2>
+                <p class="readiness-lead">Choose what you see when reviewing applicants.</p>
+                <div class="field-grid"><label><input type="checkbox" data-field="skills" checked> Core skills</label><label><input type="checkbox" data-field="projects" checked> Relevant projects</label><label><input type="checkbox" data-field="internships" checked> Internships</label><label><input type="checkbox" data-field="work" checked> Work and freelance evidence</label><label><input type="checkbox" data-field="hackathons" checked> Hackathons</label><label><input type="checkbox" data-field="certifications" checked> Courses and certifications</label><label><input type="checkbox" data-field="location" checked> Location and availability</label><label><input type="checkbox" data-field="gaps" checked> Missing evidence</label></div>
+              </div>
+            </aside>
           </div>
-          <div class="role-layout"><div class="content-block"><h2>One-page summary fields</h2><div class="field-grid"><label><input type="checkbox" data-field="skills" checked> Core skills</label><label><input type="checkbox" data-field="projects" checked> Relevant projects</label><label><input type="checkbox" data-field="internships" checked> Internships</label><label><input type="checkbox" data-field="work" checked> Work and freelance evidence</label><label><input type="checkbox" data-field="hackathons" checked> Hackathons</label><label><input type="checkbox" data-field="certifications" checked> Courses and certifications</label><label><input type="checkbox" data-field="location" checked> Location and availability</label><label><input type="checkbox" data-field="gaps" checked> Missing evidence</label></div></div><div class="content-block readiness"><h2>Inclusion check</h2><article><div><b>Degree required</b><p>May exclude candidates with strong evidence.</p></div><button>Replace with assessment</button></article><article><div><b>3 years’ experience</b><p>High for a junior position.</p></div><button>Change to 0–1 year</button></article><article><div><b>Strong communication</b><p>Define the evidence you expect.</p></div><button>Define evidence</button></article></div></div>
         </section>
 
         <section class="tab-panel" id="recruiter-decisions"><div class="workspace-heading"><div><p class="overline dark">Human decisions</p><h1>Shortlisted and passed <em>candidates</em></h1><p>Every decision can be undone and remains part of the audit trail.</p></div></div><div class="decision-stats"><article><strong id="shortlistedCount">0</strong><span>Shortlisted</span></article><article><strong id="passedCount">0</strong><span>Passed for this role</span></article><article><strong id="remainingCount">4</strong><span>Remaining</span></article></div><div class="decision-list" id="decisionList"><p class="empty-state">No decisions yet. Review candidates in the Talent Deck.</p></div></section>
@@ -2004,52 +2121,139 @@ document.addEventListener('keydown',event=>{
 function renderCounts(){$('#shortlistedCount').textContent=state.decisions.filter(item=>item.decision==='Shortlisted').length;$('#passedCount').textContent=state.decisions.filter(item=>item.decision==='Passed').length;$('#remainingCount').textContent=candidates.length-state.decisions.length}
 function renderDecisions(){renderCounts();const root=$('#decisionList');root.innerHTML=state.decisions.length?state.decisions.map((item,index)=>`<article><div><b>${esc(item.candidate.name)}</b><span>${esc(item.candidate.headline)}</span></div><strong>${item.decision}</strong><button data-undo-index="${index}">Undo</button></article>`).join(''):'<p class="empty-state">No decisions yet. Review candidates in the Talent Deck.</p>';$$('[data-undo-index]').forEach(button=>button.onclick=()=>{const [removed]=state.decisions.splice(Number(button.dataset.undoIndex),1);addAudit('Decision undone',`${removed.candidate.name} returned to the Talent Deck`);renderCandidate();renderDecisions();toast(`${removed.candidate.name} returned to the Talent Deck`)})}
 
-// Role setup: requirements, scoring weights and summary fields apply to the Talent Deck when saved.
-function renderWeightInputs(weights){
-  $('#weightList').innerHTML=weightFactors.map(([key,label])=>`<label class="weight-row"><span>${label}</span><input type="range" min="0" max="50" step="5" value="${weights[key]}" data-weight="${key}" aria-label="${label} weight"><output>${weights[key]}%</output></label>`).join('');
-  $$('[data-weight]').forEach(input=>input.oninput=()=>{input.nextElementSibling.textContent=`${input.value}%`;updateWeightTotal()});
-  updateWeightTotal();
-}
-function readWeights(){const weights={};$$('[data-weight]').forEach(input=>weights[input.dataset.weight]=Number(input.value));return weights}
-function updateWeightTotal(){
-  const total=Object.values(readWeights()).reduce((a,b)=>a+b,0);
-  $('#weightTotal').textContent=`${total}%`;
-  $('.weight-total').classList.toggle('invalid',total!==100);
-  $('#weightHint').textContent=total===100?'Ready to save':`${total>100?'Remove':'Add'} ${Math.abs(100-total)}% to reach 100%`;
-  return total;
-}
-renderWeightInputs(state.weights);
-$('#resetWeights').onclick=()=>{renderWeightInputs(defaultWeights);toast('Recommended weights restored. Save the role to apply them.')};
+// Role setup ("Post a role"): every field feeds the candidate listing, the Talent Deck ranking and the audit log.
+const RANK_PRESETS={
+  balanced:{label:'Balanced',weights:{essential:35,evidence:25,experience:15,transferable:10,recency:5,preferences:10}},
+  skills:{label:'Skills first',weights:{essential:45,evidence:25,experience:10,transferable:10,recency:5,preferences:5}},
+  experience:{label:'Relevant experience',weights:{essential:25,evidence:20,experience:35,transferable:10,recency:5,preferences:5}},
+  potential:{label:'Potential to learn',weights:{essential:25,evidence:20,experience:5,transferable:30,recency:10,preferences:10}}
+};
 const splitList=value=>value.split(',').map(item=>item.trim()).filter(Boolean);
+// Chip inputs for skills: Enter or comma adds, Backspace on an empty box removes the last one.
+function chipInput(box){
+  const input=box.querySelector('input');let items=splitList(box.dataset.initial||'');
+  const render=()=>{box.querySelectorAll('.chip').forEach(c=>c.remove());items.forEach((t,i)=>{const c=document.createElement('span');c.className='chip';c.innerHTML=`${esc(t)}<button type="button" aria-label="Remove ${esc(t)}">×</button>`;c.querySelector('button').onclick=()=>{items.splice(i,1);render();roleChanged()};box.insertBefore(c,input)})};
+  const add=t=>{t=t.trim().replace(/\s+/g,' ');if(!t||items.some(x=>x.toLowerCase()===t.toLowerCase()))return false;items.push(t);render();roleChanged();return true};
+  input.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===',')&&input.value.trim()){e.preventDefault();add(input.value);input.value=''}else if(e.key==='Backspace'&&!input.value&&items.length){items.pop();render();roleChanged()}});
+  input.addEventListener('blur',()=>{if(input.value.trim()){add(input.value);input.value=''}});
+  box.addEventListener('click',e=>{if(e.target===box)input.focus()});
+  render();
+  return {get:()=>[...items],set:v=>{items=[...v];render()},add};
+}
+const mustChips=chipInput($('#mustSkills')),niceChips=chipInput($('#niceSkills'));
+// Screening questions
+let screeningQuestions=["Share a link to a project, dashboard or report you're proud of."];
+function renderQuestions(){
+  $('#questionList').innerHTML=screeningQuestions.map((q,i)=>`<li><span>${i+1}.</span><p>${esc(q)}</p><button type="button" data-remove-q="${i}" aria-label="Remove question">×</button></li>`).join('');
+  $$('[data-remove-q]').forEach(b=>b.onclick=()=>{screeningQuestions.splice(Number(b.dataset.removeQ),1);renderQuestions()});
+  $('#questionAdd').disabled=screeningQuestions.length>=3;$('#questionInput').disabled=screeningQuestions.length>=3;
+  $('#questionInput').placeholder=screeningQuestions.length>=3?'Maximum of three questions':"e.g. Share a link to a project you're proud of";
+}
+const addQuestion=()=>{const q=$('#questionInput').value.trim();if(!q||screeningQuestions.length>=3)return;screeningQuestions.push(q);$('#questionInput').value='';renderQuestions()};
+$('#questionAdd').onclick=addQuestion;$('#questionInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addQuestion()}});
+renderQuestions();
+// Default deadline: three weeks from today
+(()=>{const d=new Date();d.setDate(d.getDate()+21);$('#roleDeadline').value=d.toISOString().slice(0,10);$('#roleDeadline').min=new Date().toISOString().slice(0,10)})();
 // Domain drop-down: "Other" reveals a box to type a domain that isn't listed.
 $('#roleDomain').addEventListener('change',()=>{
   const other=$('#roleDomain').value==='other';
   $('#roleDomainOtherWrap').hidden=!other;
   if(other)$('#roleDomainOther').focus();
+  roleChanged();
 });
 $('#roleDomainOther').addEventListener('input',()=>$('#roleDomainOther').classList.remove('invalid'));
+// Read the whole form
+function readRole(){
+  const unit=$('#payUnit').value,min=parseFloat($('#payMin').value),max=parseFloat($('#payMax').value);
+  const pay=!isNaN(min)&&!isNaN(max)&&max>0?(unit==='LPA'?`₹${min}–${max} LPA`:`₹${min}k–${max}k/month`):'';
+  const preset=($('input[name="rankPreset"]:checked')||{}).value||'balanced';
+  return {
+    title:$('#roleTitle').value.trim(),domainKey:$('#roleDomain').value,type:$('#roleType').value,level:$('#roleLevel').value,levelLabel:$('#roleLevel').selectedOptions[0].textContent,
+    openings:Math.max(1,Math.min(99,parseInt($('#roleOpenings').value,10)||1)),city:$('#roleCity').value.trim(),mode:$('#roleMode').value,
+    payMin:min,payMax:max,pay,deadline:$('#roleDeadline').value,start:$('#roleStart').value,
+    essential:mustChips.get(),preferred:niceChips.get(),description:$('#roleDescription').value.trim(),preset,questions:[...screeningQuestions]
+  };
+}
+const placeOf=r=>r.mode==='Remote'?(r.city?`Remote · ${r.city} team`:'Remote'):[r.city||'Location to be confirmed',r.mode].join(' · ');
+// Live inclusion check: flags wording or requirements that may put good candidates off.
+function inclusionIssues(r){
+  const issues=[],text=`${r.title} ${r.description}`;
+  if(/\b(degree|b\.?\s?tech|b\.?e\.?|graduate|bachelor'?s?|master'?s?|mba|from (a )?(top|tier[- ]?1|reputed))\b/i.test(r.description))issues.push({id:'degree',title:'Degree or college mentioned',text:'Asking for a degree can rule out people with strong, proven skills.',fix:'Use skills-based wording'});
+  if(/\b(junior|intern|trainee|fresher|entry)\b/i.test(r.title)&&r.level==='mid')issues.push({id:'level',title:'Experience level looks high',text:`"${r.title}" sounds entry-level, but 3–5 years is selected.`,fix:'Set to Junior'});
+  if(r.essential.length>5)issues.push({id:'skills',title:`${r.essential.length} must-have skills`,text:'Long must-have lists put off good applicants. Move some to nice-to-have.',fix:'Keep the first five'});
+  if(!r.essential.length)issues.push({id:'noskills',title:'No must-have skills yet',text:'Add at least one so we can rank applicants fairly.',fix:null});
+  if(!r.pay)issues.push({id:'pay',title:'No salary range',text:'Listings that show pay get noticeably more applicants.',fix:null});
+  else if(r.payMin>r.payMax)issues.push({id:'payorder',title:'Salary range is reversed',text:'The minimum is higher than the maximum.',fix:'Swap them'});
+  const loaded=text.match(/\b(rockstar|ninja|guru|young|energetic|dynamic|digital native|aggressive|culture fit)\b/i);
+  if(loaded)issues.push({id:'words',title:`"${loaded[0]}" may put people off`,text:'Some words can sound like they are aimed at a particular age or personality.',fix:'Remove the word'});
+  if(r.description.length<60)issues.push({id:'desc',title:'Short description',text:'Two or three sentences about the day-to-day work help the right people apply.',fix:null});
+  return issues;
+}
+function applyFix(id){
+  const d=$('#roleDescription');
+  if(id==='degree')d.value=d.value.replace(/[^.]*\b(degree|b\.?\s?tech|b\.?e\.?|graduate|bachelor'?s?|master'?s?|mba|from (a )?(top|tier[- ]?1|reputed))\b[^.]*\.?/gi,'').replace(/\s{2,}/g,' ').trim()+' Equivalent practical experience, projects or courses are just as welcome.';d.value=d.value.trim();
+  if(id==='level')$('#roleLevel').value='junior';
+  if(id==='skills')mustChips.set(mustChips.get().slice(0,5));
+  if(id==='payorder'){const a=$('#payMin').value;$('#payMin').value=$('#payMax').value;$('#payMax').value=a}
+  if(id==='words')d.value=d.value.replace(/\b(rockstar|ninja|guru|young|energetic|dynamic|digital native|aggressive|culture fit)\b\s?/gi,'').replace(/\s{2,}/g,' ').trim();
+  addAudit('Role criteria improved',`Inclusion check fix applied: ${id}`);
+  roleChanged();toast('Updated');
+}
+function renderInclusion(r){
+  const issues=inclusionIssues(r);
+  $('#inclusionList').innerHTML=issues.length?issues.map(i=>`<article><div><b>${esc(i.title)}</b><p>${esc(i.text)}</p></div>${i.fix?`<button type="button" data-fix="${i.id}">${esc(i.fix)}</button>`:''}</article>`).join(''):'<p class="inclusion-ok">Looks good. Nothing here is likely to put good candidates off.</p>';
+  $$('[data-fix]').forEach(b=>b.onclick=()=>applyFix(b.dataset.fix));
+}
+function renderPreview(r){
+  const domainName=r.domainKey==='other'?($('#roleDomainOther').value.trim()||'Other'):$('#roleDomain').selectedOptions[0].textContent;
+  const color=(typeof DOMAINS!=='undefined'&&DOMAINS[r.domainKey]?.color)||'#a5b4fc';
+  $('#listingPreview').innerHTML=`<article class="listing preview-card" style="--c:${color}"><div class="listing-top"><span class="listing-domain"><i></i>${esc(domainName)}</span><span class="listing-type">${esc(r.type)}</span></div><h4>${esc(r.title||'Job title')}</h4><p class="listing-meta">BrightForge Tools · ${esc(placeOf(r))}${r.pay?' · '+esc(r.pay):''}</p><p class="listing-meta">${esc(r.levelLabel)} · ${r.openings} opening${r.openings>1?'s':''}${r.deadline?' · Apply by '+new Date(r.deadline+'T00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short'}):''}</p><div class="listing-skills">${r.essential.map(sk=>`<span class="hit">${esc(sk)}</span>`).join('')}${r.preferred.map(sk=>`<span>${esc(sk)}</span>`).join('')}</div></article>`;
+}
+function renderSkillSuggestions(){
+  if(typeof DOMAINS==='undefined')return;
+  const d=DOMAINS[$('#roleDomain').value];const have=[...mustChips.get(),...niceChips.get()].map(x=>x.toLowerCase());
+  const sug=(d?.skills||[]).filter(x=>!have.includes(x.toLowerCase())).slice(0,6);
+  $('#skillSuggest').innerHTML=sug.length?`<span>Suggested for ${esc(d.name)}:</span>${sug.map(x=>`<button type="button" data-sug="${esc(x)}">+ ${esc(x)}</button>`).join('')}`:'';
+  $$('[data-sug]').forEach(b=>b.onclick=()=>mustChips.add(b.dataset.sug));
+}
+function roleChanged(){
+  const r=readRole();
+  renderInclusion(r);renderPreview(r);renderSkillSuggestions();
+  const n=$('#roleDescription').value.length;$('#roleDescCount').textContent=`${n} / 2000`;
+}
+$$('#recruiter-role input, #recruiter-role select, #recruiter-role textarea').forEach(el=>el.addEventListener('input',roleChanged));
+setTimeout(roleChanged,0);
+// Drafts are kept on this device
+$('#saveDraft').onclick=()=>{try{localStorage.setItem('higherupRoleDraft',JSON.stringify(readRole()));toast('Draft saved on this device')}catch{toast('Could not save the draft')}};
+(()=>{try{const d=JSON.parse(localStorage.getItem('higherupRoleDraft')||'null');if(!d)return;
+  [['roleTitle','title'],['roleType','type'],['roleLevel','level'],['roleOpenings','openings'],['roleCity','city'],['roleMode','mode'],['payMin','payMin'],['payMax','payMax'],['roleDeadline','deadline'],['roleStart','start'],['roleDescription','description']].forEach(([id,k])=>{if(d[k]!==undefined&&d[k]!==null&&!(typeof d[k]==='number'&&isNaN(d[k])))$('#'+id).value=d[k]});
+  if(d.domainKey&&$(`#roleDomain option[value="${d.domainKey}"]`))$('#roleDomain').value=d.domainKey;
+  if(d.essential)mustChips.set(d.essential);if(d.preferred)niceChips.set(d.preferred);
+  if(d.preset&&$(`input[name="rankPreset"][value="${d.preset}"]`))$(`input[name="rankPreset"][value="${d.preset}"]`).checked=true;
+  if(Array.isArray(d.questions)){screeningQuestions=d.questions.slice(0,3);renderQuestions()}
+}catch{}})();
+// Publish
 $('#saveTemplate').onclick=()=>{
-  let domainKey=$('#roleDomain').value,domainName=$('#roleDomain').selectedOptions[0].textContent;
+  const r=readRole();
+  if(!r.title){$('#roleTitle').focus();toast('Add a job title');return}
+  let domainKey=r.domainKey,domainName=$('#roleDomain').selectedOptions[0].textContent;
   if(domainKey==='other'){
     domainName=$('#roleDomainOther').value.trim().replace(/\s+/g,' ');
     if(!domainName){$('#roleDomainOther').classList.add('invalid');$('#roleDomainOther').focus();toast('Type the domain this role belongs to');return}
     domainKey=registerDomain(domainName);
   }
-  const total=updateWeightTotal();
-  if(total!==100){toast(`Weights must add up to 100% (currently ${total}%)`);return}
-  const title=$('#roleTitle').value.trim()||'Untitled role',place=$('#rolePlace').value.trim();
-  const essential=splitList($('#roleEssential').value);
-  if(!essential.length){toast('Add at least one essential skill');return}
-  state.weights=readWeights();
-  state.roleConfig={title,place,essential,preferred:splitList($('#rolePreferred').value),domain:domainKey,domainName};
+  if(!r.essential.length){$('#mustSkills input').focus();toast('Add at least one must-have skill');return}
+  if(r.pay&&r.payMin>r.payMax){toast('The minimum salary is higher than the maximum');return}
+  state.weights={...RANK_PRESETS[r.preset].weights};
+  state.roleConfig={...r,place:placeOf(r),domain:domainKey,domainName};
   publishRoleListing(state.roleConfig);
   state.summaryFields=new Set($$('[data-field]:checked').map(input=>input.dataset.field));
-  $('#recruiterRoleLabel').textContent=place?`${title} · ${place}`:title;
-  addAudit('Role criteria saved',`${title} · ${domainName} · essential: ${essential.join(', ')} · weights ${weightFactors.map(([key])=>state.weights[key]).join('/')}`);
+  $('#recruiterRoleLabel').textContent=`${r.title} · ${placeOf(r)}`;
+  addAudit('Role published',`${r.title} · ${domainName} · ${r.type} · ${r.openings} opening${r.openings>1?'s':''} · ranking: ${RANK_PRESETS[r.preset].label}`);
+  try{localStorage.removeItem('higherupRoleDraft')}catch{}
   renderCandidate();
-  toast(`Role saved under ${domainName}. Candidates can now find it in Search.`);
+  toast(`${r.title} is live. Candidates can find it under ${domainName}.`);
 };
-$$('.readiness button').forEach(button=>button.onclick=()=>{addAudit('Role criteria changed',`${button.closest('article').querySelector('b').textContent} → ${button.textContent}`);button.textContent='Updated';button.disabled=true;toast('Role criteria updated and audit event recorded')});
 
 document.addEventListener('keydown',event=>{const dialog=$('.dialog-backdrop.open');if(!dialog)return;if(event.key==='Escape'){closeDialog(dialog);return}if(event.key==='Tab'){const focusable=$$('button:not([disabled]),input:not([hidden]),select,textarea').filter(el=>dialog.contains(el));if(!focusable.length)return;const first=focusable[0],last=focusable.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}}});
 
@@ -2376,7 +2580,7 @@ function registerDomain(name){
 // The recruiter's saved role is listed for candidates (one listing per role setup, updated on each save).
 function publishRoleListing(cfg){
   const existing=LISTINGS.find(l=>l.fromRoleSetup);
-  const listing={id:existing?.id||LISTINGS.length+1,domain:cfg.domain,title:cfg.title,company:'BrightForge Tools',place:cfg.place||'Location to be confirmed',type:'Full-time',pay:'Salary on request',skills:[...cfg.essential,...cfg.preferred].slice(0,5),fromRoleSetup:true};
+  const listing={id:existing?.id||LISTINGS.length+1,domain:cfg.domain,title:cfg.title,company:'BrightForge Tools',place:cfg.place||'Location to be confirmed',type:cfg.type||'Full-time',pay:cfg.pay||'Salary on request',skills:[...cfg.essential,...cfg.preferred].slice(0,5),openings:cfg.openings,level:cfg.levelLabel,deadline:cfg.deadline,fromRoleSetup:true};
   if(existing)Object.assign(existing,listing);else LISTINGS.push(listing);
   SEARCH_ITEMS=buildSearchItems();
 }
