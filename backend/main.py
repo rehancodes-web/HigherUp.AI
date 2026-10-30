@@ -12,7 +12,7 @@ from skills_agent import discover
 # Load the .env located beside main.py
 load_dotenv(Path(__file__).resolve().parent / ".env")
 
-app = FastAPI(title="Include.AI API")
+app = FastAPI(title="HigherUp.AI API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -74,7 +74,7 @@ def require_candidate_email(authorization: str | None, expected_email: str) -> N
 @app.get("/")
 def home():
     return {
-        "project": "Include.AI",
+        "project": "HigherUp.AI",
         "status": "running",
         "agent": "Skills Discovery",
     }

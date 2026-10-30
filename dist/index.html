@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#fbf7ef">
-  <meta name="description" content="Include.AI is a skills-first platform that matches students, graduates and job seekers to jobs and internships, and helps businesses hire for proven skills.">
-  <title>Include.AI — Skills-first recruitment</title>
+  <meta name="description" content="HigherUp.AI is a skills-first platform that matches students, graduates and job seekers to jobs and internships, and helps businesses hire for proven skills.">
+  <title>HigherUp.AI — Skills-first recruitment</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400..700&display=swap">
@@ -897,6 +897,81 @@ body:has(.workspace.active) .site-footer{display:none}
   .listing-apply{margin-top:6px;width:100%}
   .listing:hover{transform:none}
 }
+
+/* Domain tiles: a spotlight moves through them one by one so people can see they are clickable. */
+.domain-pill:hover,.domain-pill.is-hinting{border-color:color-mix(in srgb,var(--c) 70%,transparent);background:color-mix(in srgb,var(--c) 14%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 18%,transparent),0 10px 24px -12px color-mix(in srgb,var(--c) 70%,transparent);transform:translateY(-2px)}
+.domain-pill:hover::after,.domain-pill.is-hinting::after{opacity:1;transform:translateX(3px)}
+.domain-pill:hover::before,.domain-pill.is-hinting::before{box-shadow:0 0 0 6px color-mix(in srgb,var(--c) 28%,transparent)}
+.domain-pill{transition:border-color 380ms ease,background-color 380ms ease,box-shadow 380ms ease,transform 380ms var(--ease-out)}
+.domain-pill::before{transition:box-shadow 380ms ease}
+
+/* Demo cursor that "clicks" the domain tiles to show they are interactive */
+.demo-cursor{position:absolute;left:0;top:0;z-index:5;width:24px;height:24px;pointer-events:none;opacity:0;transition:transform 1100ms cubic-bezier(.65,0,.35,1),opacity 400ms ease;filter:drop-shadow(0 4px 8px rgba(0,0,0,.45))}
+.demo-cursor.show{opacity:1}
+.demo-cursor svg{display:block;width:24px;height:24px;transform-origin:4px 3px;transition:transform 160ms ease}
+.demo-cursor.clicking svg{transform:scale(.8)}
+.demo-cursor .ring{position:absolute;left:-9px;top:-10px;width:26px;height:26px;border:2px solid rgba(255,255,255,.9);border-radius:50%;opacity:0}
+.demo-cursor.clicking .ring{animation:cursor-ring 650ms ease-out}
+@keyframes cursor-ring{from{opacity:.85;transform:scale(.3)}to{opacity:0;transform:scale(1.9)}}
+@media(hover:none){.demo-cursor svg{display:none}.demo-cursor .ring{left:-13px;top:-13px}}
+
+/* Demo pointer: a glowing dot with a label, so it can't be mistaken for the real mouse pointer */
+.demo-cursor{width:0;height:0;filter:none}
+.demo-cursor svg{display:none!important}
+.demo-cursor .dot{position:absolute;left:-9px;top:-9px;width:18px;height:18px;border:2px solid #fff;border-radius:50%;background:radial-gradient(circle at 35% 35%,#c7d2fe,#6366f1);box-shadow:0 0 0 6px rgba(129,140,248,.25),0 0 18px 4px rgba(129,140,248,.55);animation:dot-pulse 1.6s ease-in-out infinite;transition:transform 160ms ease}
+.demo-cursor.clicking .dot{transform:scale(.7)}
+.demo-cursor .ring{left:-14px;top:-14px;width:28px;height:28px;border-color:rgba(165,180,252,.95)}
+.demo-cursor .hint-label{position:absolute;left:16px;top:-12px;padding:3px 9px;border-radius:999px;background:#fff;color:#111318;font:700 11px/1.4 var(--font-ui);letter-spacing:.01em;white-space:nowrap;box-shadow:0 6px 16px -6px rgba(0,0,0,.5)}
+@keyframes dot-pulse{0%,100%{box-shadow:0 0 0 6px rgba(129,140,248,.25),0 0 18px 4px rgba(129,140,248,.55)}50%{box-shadow:0 0 0 10px rgba(129,140,248,.12),0 0 24px 6px rgba(129,140,248,.4)}}
+@media(hover:none){.demo-cursor .hint-label::after{content:""}.demo-cursor .ring{left:-14px;top:-14px}}
+@media(max-width:480px){.demo-cursor .hint-label{display:none}}
+
+.demo-cursor.flip .hint-label{left:auto;right:16px}
+
+/* Header chip showing the domain the person selected */
+.header-actions{align-items:center}
+.domain-chip{display:inline-flex;align-items:center;height:50px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);box-shadow:var(--shadow-sm);animation:profile-enter 280ms var(--ease-out) both}
+.domain-chip[hidden]{display:none!important}
+.domain-chip-main{display:flex;align-items:center;gap:10px;height:100%;padding:0 6px 0 12px;border:0;background:none;text-align:left;cursor:pointer}
+.domain-chip-main i{width:10px;height:10px;border-radius:50%;background:var(--c,var(--brand));box-shadow:0 0 0 4px color-mix(in srgb,var(--c,var(--brand)) 22%,transparent)}
+.domain-chip-main span{display:grid;line-height:1.1}
+.domain-chip-main small{color:#52605e;font-size:9px;font-weight:800;letter-spacing:.075em;text-transform:uppercase}
+.domain-chip-main b{max-width:150px;overflow:hidden;color:var(--ink);font-family:var(--font-statement);font-size:14px;font-weight:650;text-overflow:ellipsis;white-space:nowrap}
+.domain-chip-clear{width:30px;height:30px;margin-right:8px;border:0;border-radius:8px;background:none;color:var(--muted);font-size:18px;line-height:1;cursor:pointer}
+.domain-chip-clear:hover{background:var(--surface-2);color:var(--ink)}
+.domain-chip:hover{border-color:color-mix(in srgb,var(--c,var(--brand)) 55%,var(--line-strong))}
+@media(max-width:860px){.domain-chip-main small{display:none}.domain-chip{height:44px}}
+@media(max-width:680px){.domain-chip-main b{max-width:90px;font-size:12px}}
+
+/* Search: domain filter bar, recommendations, "your domain" in the domain question, mismatch popup */
+.search-filter{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:0 0 14px;padding:10px 14px;border:1px solid color-mix(in srgb,var(--c) 45%,var(--line));border-radius:12px;background:color-mix(in srgb,var(--c) 10%,var(--surface));font-size:14px}
+.search-filter[hidden]{display:none}
+.search-filter>span{color:var(--muted)}
+.search-filter b{display:inline-flex;align-items:center;gap:8px;color:var(--ink)}
+.search-filter b i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.search-filter b em{font-style:normal}
+.search-filter button{margin-left:auto;padding:4px 10px;border:1px solid var(--line-strong);border-radius:8px;background:var(--surface);color:var(--ink-soft);font-size:13px;font-weight:600}
+.search-filter button:hover{border-color:var(--ink-soft)}
+.search-recs:empty{display:none}
+.search-recs{margin-top:22px;padding-top:20px;border-top:1px solid var(--line)}
+.recs-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
+.recs-head h3{margin:0;font-family:var(--font-statement);font-size:19px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+.recs-head .text-action{min-height:auto;padding:0;font-size:14px}
+.recs-skills{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:14px;font-size:13px}
+.recs-skills span{color:var(--muted)}
+.recs-skills button{padding:4px 10px;border:1px solid var(--brand-line);border-radius:999px;background:var(--brand-bg);color:var(--brand-dark);font-size:12.5px;font-weight:600}
+.ask-options button.is-yours{border-color:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 25%,transparent),var(--shadow-sm);background:color-mix(in srgb,var(--c) 8%,var(--surface))}
+.ask-options button.is-yours small{color:var(--ink-soft);font-weight:650}
+.ask-go{margin-top:14px}
+.mismatch-card{width:min(480px,100%)}
+.mismatch-card h2{margin:0 0 10px;font-size:26px}
+.mismatch-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+
+/* HigherUp.AI wordmark */
+.brand-up{color:var(--brand);font-weight:inherit}
+.brand-mark{font-family:var(--font-ui);font-weight:800}
+
+.brand-ai{color:var(--muted);font-weight:700}
 </style>
 </head>
 <body>
@@ -924,13 +999,17 @@ body:has(.workspace.active) .site-footer{display:none}
   </div>
 
   <header class="site-header" id="siteHeader">
-    <button class="brand" data-route="home" aria-label="Include.AI home"><span class="brand-mark" aria-hidden="true">i</span><span>include.ai</span></button>
+    <button class="brand" data-route="home" aria-label="HigherUp.AI home"><span class="brand-mark" aria-hidden="true">↑</span><span>higher<b class="brand-up">up</b><span class="brand-ai">.ai</span></span></button>
     <nav class="public-nav" aria-label="Primary navigation">
       <button data-route="home">Home</button>
       <button data-scroll="audiences">Who it’s for</button>
       <button data-route="about">How it works</button>
     </nav>
     <div class="header-actions">
+      <div class="domain-chip" id="domainChip" hidden>
+        <button type="button" class="domain-chip-main" id="domainChipOpen" aria-label="Show jobs in your selected domain"><i aria-hidden="true"></i><span><small>Your domain</small><b id="domainChipName"></b></span></button>
+        <button type="button" class="domain-chip-clear" id="domainChipClear" aria-label="Clear selected domain">×</button>
+      </div>
       <button class="button button-ghost" id="candidateLogin">Candidate login</button>
       <button class="button button-light" id="recruiterLogin">Recruiter login</button>
       <button class="button button-ghost" id="logoutButton" type="button" hidden>Log out</button>
@@ -1060,6 +1139,7 @@ body:has(.workspace.active) .site-footer{display:none}
           <div class="workspace-heading"><div><p class="overline dark">Find opportunities</p><h1>Search roles, companies <em>and skills</em></h1><p>Look up a role, a company or a skill to see open jobs and internships. If it spans several domains, we’ll ask which one you want.</p></div><span class="status-chip">Press / to search</span></div>
           <div class="content-block">
           <div class="hero-search workspace-search" role="search">
+            <div class="search-filter" id="searchFilter" hidden><span>Filtering by</span><b id="searchFilterName"><i></i><em></em></b><button type="button" id="searchFilterRemove">Remove filter</button></div>
             <div class="search-tabs" role="tablist" aria-label="Search by">
               <button type="button" role="tab" aria-selected="true" data-search-mode="roles">By role</button>
               <button type="button" role="tab" aria-selected="false" data-search-mode="companies">By company</button>
@@ -1073,6 +1153,7 @@ body:has(.workspace.active) .site-footer{display:none}
             <ul class="search-results" id="searchResults" role="listbox" hidden></ul>
             <div class="search-outcome" id="searchOutcome" aria-live="polite"></div>
             <p class="search-popular"><span>Popular:</span><button type="button" data-search-q="Data Analyst">Data Analyst</button><button type="button" data-search-q="Intern">Internships</button><button type="button" data-search-q="SQL" data-search-set="skills">SQL</button><button type="button" data-search-q="Pixelnest" data-search-set="companies">Pixelnest Studio</button></p>
+            <div class="search-recs" id="searchRecs"></div>
           </div>
           </div>
         </section>
@@ -1086,7 +1167,7 @@ body:has(.workspace.active) .site-footer{display:none}
 
         <section class="tab-panel" id="candidate-profile">
           <div class="workspace-heading">
-            <div><p class="overline dark">Your account</p><h1>Profile & <em>preferences</em></h1><p>Tell Include.AI what roles, locations and work arrangements suit you. Save to sync your profile with SAP HANA.</p></div>
+            <div><p class="overline dark">Your account</p><h1>Profile & <em>preferences</em></h1><p>Tell HigherUp.AI what roles, locations and work arrangements suit you. Save to sync your profile with SAP HANA.</p></div>
             <span class="status-chip">Candidate-controlled</span>
           </div>
           <div class="content-block profile-editor" id="profileEditor">
@@ -1231,7 +1312,7 @@ body:has(.workspace.active) .site-footer{display:none}
         <p class="overline dark">Legal</p>
         <h1 id="privacyTitle">Privacy policy</h1>
         <p class="legal-meta">Last updated 30 October 2026</p>
-        <p class="legal-note">Include.AI is a hackathon prototype. This policy explains in plain language how the prototype handles information. It will be reviewed before any public launch.</p>
+        <p class="legal-note">HigherUp.AI is a hackathon prototype. This policy explains in plain language how the prototype handles information. It will be reviewed before any public launch.</p>
         <h2>What we collect</h2>
         <ul>
           <li><b>Account details:</b> your email address, name and whether you are a candidate or a recruiter.</li>
@@ -1265,8 +1346,8 @@ body:has(.workspace.active) .site-footer{display:none}
         <p class="overline dark">Legal</p>
         <h1 id="termsTitle">Terms of use</h1>
         <p class="legal-meta">Last updated 30 October 2026</p>
-        <p class="legal-note">Include.AI is a hackathon prototype provided for demonstration and evaluation. Sample candidates, companies and jobs shown in the product are fictional.</p>
-        <h2>Using Include.AI</h2>
+        <p class="legal-note">HigherUp.AI is a hackathon prototype provided for demonstration and evaluation. Sample candidates, companies and jobs shown in the product are fictional.</p>
+        <h2>Using HigherUp.AI</h2>
         <ul>
           <li>Keep your login details private and provide information that is accurate and your own.</li>
           <li>Only upload documents you have the right to share. Do not upload other people’s personal information.</li>
@@ -1292,7 +1373,7 @@ body:has(.workspace.active) .site-footer{display:none}
   <footer class="site-footer" aria-label="Site footer">
     <div class="footer-top">
       <div class="footer-about">
-        <span class="footer-brand"><span class="brand-mark" aria-hidden="true">i</span>include.ai</span>
+        <span class="footer-brand"><span class="brand-mark" aria-hidden="true">↑</span>higher<b class="brand-up">up</b><span class="brand-ai">.ai</span></span>
         <p>Skills-first hiring for students, job seekers and growing businesses. AI prepares the context; people make the decision.</p>
       </div>
       <nav class="footer-col" aria-label="Product">
@@ -1314,16 +1395,27 @@ body:has(.workspace.active) .site-footer{display:none}
       </nav>
     </div>
     <div class="footer-bottom">
-      <p>© <span id="footerYear">2026</span> Include.AI. All rights reserved.</p>
+      <p>© <span id="footerYear">2026</span> HigherUp.AI. All rights reserved.</p>
       <p>Protected characteristics have zero weight in matching. Sample people and companies shown are fictional.</p>
     </div>
   </footer>
 
+  <div class="dialog-backdrop" id="mismatchDialog" role="dialog" aria-modal="true" aria-labelledby="mismatchTitle" aria-hidden="true">
+    <div class="dialog-card mismatch-card">
+      <p class="overline dark">Your domain</p>
+      <h2 id="mismatchTitle">No jobs available in your selected domain</h2>
+      <p id="mismatchText"></p>
+      <div class="mismatch-actions">
+        <button type="button" class="button button-primary" id="mismatchContinue">Continue</button>
+        <button type="button" class="button button-outline-light" id="mismatchDiscard">Discard</button>
+      </div>
+    </div>
+  </div>
   <div class="dialog-backdrop" id="loginDialog" role="dialog" aria-modal="true" aria-labelledby="loginTitle" aria-hidden="true">
     <div class="dialog-card auth-dialog">
       <button class="dialog-close" id="closeDialog" aria-label="Close authentication dialog">×</button>
       <p class="overline dark">Secure account access</p>
-      <h2 id="loginTitle">Welcome to Include.AI</h2>
+      <h2 id="loginTitle">Welcome to HigherUp.AI</h2>
       <p id="authDescription">Log in to access your workspace, or create a new account.</p>
       <div class="auth-mode" role="group" aria-label="Authentication mode">
         <button type="button" id="showLogin" class="active">Log in</button>
@@ -1472,7 +1564,7 @@ function setAuthMode(mode){
   authMode=mode;
   $('#showLogin').classList.toggle('active',mode==='login');
   $('#showRegister').classList.toggle('active',mode==='register');
-  $('#loginTitle').textContent=mode==='login'?'Welcome back':'Create your Include.AI account';
+  $('#loginTitle').textContent=mode==='login'?'Welcome back':'Create your HigherUp.AI account';
   $('#authDescription').textContent=mode==='login'?'Log in to access your workspace.':'Register with your email and create a password.';
   $('#authSubmit').textContent=mode==='login'?'Log in':'Create account';
   $('#authPassword').autocomplete=mode==='login'?'current-password':'new-password';
@@ -1554,9 +1646,9 @@ async function loadCandidateProfileFromHana(user){
     $('#profName').value=candidate.full_name||'';
     $('#profEmail').value=candidate.email||user.email;
     const fields={profHeadline:'headline',profPhone:'phone',profCity:'city',profLooking:'looking_for',profAvailable:'available',profEducation:'education',profLinkedin:'linkedin',profGithub:'github',profPortfolio:'portfolio',profBio:'bio'};
-    Object.entries(fields).forEach(([id,key])=>{const value=candidate[key]||'';if(value&&$('#'+id).tagName==='SELECT')$('#'+id).value=value;else if($('#'+id).tagName!=='SELECT')$('#'+id).value=value});
-    if(candidate.preferred_roles)$('#prefRoles').value=candidate.preferred_roles;
-    if(candidate.preferred_locations)$('#prefCities').value=candidate.preferred_locations;
+    Object.entries(fields).forEach(([id,key])=>{$('#'+id).value=candidate[key]??''});
+    $('#prefRoles').value=candidate.preferred_roles??'';
+    $('#prefCities').value=candidate.preferred_locations??'';
     if(candidate.work_mode)$('#prefMode').value=candidate.work_mode;
     applyNameEverywhere(candidate.full_name,candidate.headline);
     const docsResponse=await fetch(`${API_BASE}/candidates/by-email/${encodeURIComponent(user.email)}/documents`,{headers:await candidateAuthHeaders()});
@@ -2050,6 +2142,7 @@ function openDomain(button){
   if(domainAnimating||!domainOverlay.hidden)return;
   domainAnimating=true;activeDomainButton=button;
   fillDomain(button.dataset.domain);
+  setSelectedDomain(button.dataset.domain);
   playWind();
   domainOverlay.hidden=false;domainOverlay.scrollTop=0;
   document.documentElement.classList.add('domain-open');
@@ -2079,6 +2172,99 @@ function closeDomain(after){
   whenDone(slide,800,()=>{finish();slide.cancel()});
 }
 $$('.domain-pill').forEach(button=>button.addEventListener('click',()=>openDomain(button)));
+// Selected domain shown in the header. Remembered on this device.
+function getSelectedDomain(){try{const k=localStorage.getItem('higherupDomain');return k&&DOMAINS[k]?k:null}catch{return null}}
+// "No jobs in your selected domain" popup: Continue shows the other domains, Discard cancels the search.
+let mismatchPending=null;
+function showMismatch(query,sel,domains){
+  mismatchPending=query;
+  const what=query.kind==='skill'?`“${query.value}” is used in`:query.kind==='company'?`${query.value} is hiring in`:`“${query.value}” is open in`;
+  $('#mismatchText').textContent=`${what} ${listJoin(domainNames(domains))}, but not in ${DOMAINS[sel].name}. Continue to see those jobs, or discard this search.`;
+  openDialog($('#mismatchDialog'));
+  requestAnimationFrame(()=>$('#mismatchContinue').focus());
+}
+$('#mismatchContinue').onclick=()=>{const q=mismatchPending;mismatchPending=null;closeDialog($('#mismatchDialog'));if(q)setTimeout(()=>showListings(q,undefined,{ignoreSelected:true}),250)};
+$('#mismatchDiscard').onclick=()=>{mismatchPending=null;closeDialog($('#mismatchDialog'));searchInput.value='';closeSearch();$('#searchOutcome').innerHTML='';renderSearchExtras();setTimeout(()=>searchInput.focus(),260)};
+$('#mismatchDialog').onclick=e=>{if(e.target===e.currentTarget)$('#mismatchDiscard').click()};
+// Filter bar + recommendations for the selected domain (shown on the Search page when nothing is being searched).
+function renderSearchExtras(){
+  const sel=getSelectedDomain(),bar=$('#searchFilter'),recs=$('#searchRecs');
+  if(!bar||!recs)return;
+  bar.hidden=!sel;
+  if(sel){bar.style.setProperty('--c',DOMAINS[sel].color);$('#searchFilterName em').textContent=DOMAINS[sel].name}
+  if(!sel||searchInput.value.trim()||$('#searchOutcome').innerHTML){recs.innerHTML='';return}
+  const jobs=LISTINGS.filter(l=>l.domain===sel).slice(0,4);
+  const skills=uniq(LISTINGS.filter(l=>l.domain===sel).flatMap(l=>l.skills)).slice(0,6);
+  recs.innerHTML=`<div class="recs-head"><h3>Recommended in ${esc(DOMAINS[sel].name)}</h3><button type="button" class="text-action" data-recs-all>See all ${LISTINGS.filter(l=>l.domain===sel).length} jobs</button></div>
+  <div class="listing-grid">${jobs.map(l=>`<article class="listing" style="--c:${DOMAINS[l.domain].color}"><div class="listing-top"><span class="listing-domain"><i></i>${esc(DOMAINS[l.domain].name)}</span><span class="listing-type">${esc(l.type)}</span></div><h4>${esc(l.title)}</h4><p class="listing-meta">${esc(l.company)} · ${esc(l.place)} · ${esc(l.pay)}</p><div class="listing-skills">${l.skills.map(sk=>`<span>${esc(sk)}</span>`).join('')}</div><button type="button" class="button button-primary listing-apply" data-apply-listing="${l.id}"${preparedListings.has(l.id)?' disabled':''}>${preparedListings.has(l.id)?'Prepared ✓':'Prepare application'}</button></article>`).join('')}</div>
+  <div class="recs-skills"><span>Skills in demand:</span>${skills.map(sk=>`<button type="button" data-recs-skill="${esc(sk)}">${esc(sk)}</button>`).join('')}</div>`;
+  $$('#searchRecs [data-apply-listing]').forEach(b=>b.onclick=()=>prepareApplication(Number(b.dataset.applyListing),b));
+  $('[data-recs-all]').onclick=()=>{searchInput.value=DOMAINS[sel].name;showListings({kind:'domain',value:sel})};
+  $$('[data-recs-skill]').forEach(b=>b.onclick=()=>{setSearchMode('skills');searchInput.value=b.dataset.recsSkill;closeSearch();showListings({kind:'skill',value:b.dataset.recsSkill})});
+}
+$('#searchFilterRemove').onclick=()=>{setSelectedDomain(null);toast('Domain filter removed')};
+function setSelectedDomain(key){
+  const d=key&&DOMAINS[key];
+  try{d?localStorage.setItem('higherupDomain',key):localStorage.removeItem('higherupDomain')}catch{}
+  $('#domainChip').hidden=!d;
+  if(typeof renderSearchExtras==='function')try{renderSearchExtras()}catch{}
+  if(!d)return;
+  $('#domainChip').style.setProperty('--c',d.color);
+  $('#domainChipName').textContent=d.name;
+  $('#domainChipOpen').title=`Show ${d.name} jobs`;
+}
+$('#domainChipOpen').onclick=()=>{
+  let key;try{key=localStorage.getItem('higherupDomain')}catch{}
+  if(!key||!DOMAINS[key])return;
+  if(state.authenticated&&state.role==='candidate'){showPage('candidate');activateTab('candidate','search');searchInput.value=DOMAINS[key].name;showListings({kind:'domain',value:key})}
+  else{const pill=$(`.domain-pill[data-domain="${key}"]`);if(pill){showPage('home');openDomain(pill)}}
+};
+$('#domainChipClear').onclick=()=>{setSelectedDomain(null);toast('Domain cleared')};
+try{const saved=localStorage.getItem('higherupDomain');if(saved&&DOMAINS[saved])setSelectedDomain(saved)}catch{}
+// Domain demo: a small cursor glides to a random tile, "clicks" it and the tile lights up, so people
+// can see the tiles are clickable. When the real mouse comes onto the tiles, the demo cursor fades away
+// (hovering lights tiles up the same way) and the demo resumes after a few idle seconds.
+// Clicking or tabbing to a tile stops it for good. It pauses while the home page is not showing.
+(()=>{
+  const picker=$('.domain-picker'),pills=$$('.domain-pill');
+  if(!picker||!pills.length||prefersReducedMotion())return;
+  const cursor=document.createElement('div');
+  cursor.className='demo-cursor';cursor.setAttribute('aria-hidden','true');
+  cursor.innerHTML='<span class="ring"></span><span class="dot"></span><span class="hint-label">Click to explore</span>';
+  picker.appendChild(cursor);
+  let last=-1,timer=null,resumeTimer=null,stopped=false,userHere=false;
+  const clear=()=>pills.forEach(p=>p.classList.remove('is-hinting'));
+  const visible=()=>$('#homePage').classList.contains('active')&&!document.hidden&&domainOverlay.hidden;
+  const moveTo=pill=>{
+    const x=pill.offsetLeft+pill.offsetWidth*.72,y=pill.offsetTop+pill.offsetHeight*.62;
+    cursor.style.transform=`translate(${x}px,${y}px)`;
+    cursor.classList.toggle('flip',x>picker.offsetWidth-150); // keep the label inside the card
+  };
+  const step=()=>{
+    if(stopped||userHere)return;
+    if(!visible()){clear();cursor.classList.remove('show');timer=setTimeout(step,1500);return}
+    let next;do{next=Math.floor(Math.random()*pills.length)}while(next===last&&pills.length>1);
+    last=next;const pill=pills[next];
+    clear();cursor.classList.add('show');moveTo(pill);
+    setTimeout(()=>{ // arrive, press, light up
+      if(stopped||userHere)return;
+      cursor.classList.remove('clicking');void cursor.offsetWidth;cursor.classList.add('clicking');
+      pill.classList.add('is-hinting');
+      setTimeout(()=>cursor.classList.remove('clicking'),650);
+    },1150);
+    timer=setTimeout(step,2600);
+  };
+  const pause=()=>{userHere=true;clearTimeout(timer);clearTimeout(resumeTimer);clear();cursor.classList.remove('show')};
+  const resumeLater=()=>{if(stopped)return;userHere=false;clearTimeout(resumeTimer);resumeTimer=setTimeout(()=>{if(!stopped&&!userHere)step()},4000)};
+  const stop=()=>{stopped=true;pause();cursor.remove()};
+  const list=$('.domain-list');
+  list.addEventListener('pointerenter',e=>{if(e.pointerType!=='touch')pause()});
+  list.addEventListener('pointerleave',e=>{if(e.pointerType!=='touch')resumeLater()});
+  pills.forEach(p=>{p.addEventListener('click',stop);p.addEventListener('focus',()=>{if(p.matches(':focus-visible'))stop()})});
+  // start in the middle of the tiles, then begin once the card has animated in
+  const mid=pills[Math.floor(pills.length/2)];cursor.style.transition='none';moveTo(mid);void cursor.offsetWidth;cursor.style.transition='';
+  timer=setTimeout(step,2600);
+})();
 $('#domainClose').onclick=()=>closeDomain();
 $('#domainFind').onclick=()=>closeDomain(()=>{if(state.authenticated&&state.role==='candidate'){showPage('candidate');activateTab('candidate','search');searchInput.value=DOMAINS[activeDomainButton.dataset.domain].name;showListings({kind:'domain',value:activeDomainButton.dataset.domain})}else openLogin('candidate')});
 $('#domainHire').onclick=()=>closeDomain(()=>openLogin('recruiter'));
@@ -2125,13 +2311,13 @@ const LISTINGS=[
 const domainNames=keys=>keys.map(k=>DOMAINS[k].name);
 const listJoin=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a.at(-1);
 const uniq=a=>[...new Set(a)];
-// Search suggestions: only roles, companies and skills that have listings on Include.AI.
+// Search suggestions: only roles, companies and skills that have listings on HigherUp.AI.
 function buildSearchItems(){
   const items=[];
   const group=(key,fn)=>{const m={};LISTINGS.forEach(l=>[].concat(fn(l)).forEach(k=>(m[k]=m[k]||[]).push(l)));return Object.entries(m)};
-  group('role',l=>l.title).forEach(([title,ls])=>items.push({mode:'roles',title,value:title,kind:'role',sub:`${listJoin(uniq(domainNames(ls.map(l=>l.domain))))} · ${ls.length} opening${ls.length>1?'s':''} · ${listJoin(uniq(ls.map(l=>l.company)))}`,color:DOMAINS[ls[0].domain].color,tag:/intern/i.test(title)?'Internship':'Role'}));
-  group('company',l=>l.company).forEach(([name,ls])=>{const d=uniq(ls.map(l=>l.domain));items.push({mode:'companies',title:name,value:name,kind:'company',sub:`${ls.length} open role${ls.length>1?'s':''} · ${listJoin(domainNames(d))}`,tag:'Company'})});
-  group('skill',l=>l.skills).forEach(([skill,ls])=>{const d=uniq(ls.map(l=>l.domain));items.push({mode:'skills',title:skill,value:skill,kind:'skill',sub:`Used in ${listJoin(domainNames(d))} · ${ls.length} job${ls.length>1?'s':''}`,color:DOMAINS[d[0]].color,tag:'Skill'})});
+  group('role',l=>l.title).forEach(([title,ls])=>items.push({mode:'roles',domains:uniq(ls.map(l=>l.domain)),title,value:title,kind:'role',sub:`${listJoin(uniq(domainNames(ls.map(l=>l.domain))))} · ${ls.length} opening${ls.length>1?'s':''} · ${listJoin(uniq(ls.map(l=>l.company)))}`,color:DOMAINS[ls[0].domain].color,tag:/intern/i.test(title)?'Internship':'Role'}));
+  group('company',l=>l.company).forEach(([name,ls])=>{const d=uniq(ls.map(l=>l.domain));items.push({mode:'companies',domains:d,title:name,value:name,kind:'company',sub:`${ls.length} open role${ls.length>1?'s':''} · ${listJoin(domainNames(d))}`,tag:'Company'})});
+  group('skill',l=>l.skills).forEach(([skill,ls])=>{const d=uniq(ls.map(l=>l.domain));items.push({mode:'skills',domains:d,title:skill,value:skill,kind:'skill',sub:`Used in ${listJoin(domainNames(d))} · ${ls.length} job${ls.length>1?'s':''}`,color:DOMAINS[d[0]].color,tag:'Skill'})});
   return items;
 }
 let SEARCH_ITEMS=buildSearchItems();
@@ -2140,7 +2326,7 @@ function registerDomain(name){
   const existing=Object.entries(DOMAINS).find(([,d])=>d.name.toLowerCase()===name.toLowerCase());
   if(existing)return existing[0];
   const key='custom-'+name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-  DOMAINS[key]={name,color:'#a5b4fc',lead:`Roles in ${name}, added by employers on Include.AI.`,roles:[],skills:[],proof:'Projects, internships, coursework and informal work related to this field all count as evidence.',custom:true};
+  DOMAINS[key]={name,color:'#a5b4fc',lead:`Roles in ${name}, added by employers on HigherUp.AI.`,roles:[],skills:[],proof:'Projects, internships, coursework and informal work related to this field all count as evidence.',custom:true};
   return key;
 }
 // The recruiter's saved role is listed for candidates (one listing per role setup, updated on each save).
@@ -2162,14 +2348,16 @@ function setSearchMode(mode){
 }
 function runSearch(){
   const q=searchInput.value.trim();
-  if(!q){closeSearch();return}
+  if(!q){closeSearch();renderSearchExtras();return}
+  $('#searchRecs').innerHTML='';
   const lq=q.toLowerCase();
   searchMatches=SEARCH_ITEMS.filter(i=>i.mode===searchMode&&(i.title.toLowerCase().includes(lq)||i.sub.toLowerCase().includes(lq)))
     .sort((a,b)=>(b.title.toLowerCase().startsWith(lq)-a.title.toLowerCase().startsWith(lq))||(b.title.toLowerCase().includes(lq)-a.title.toLowerCase().includes(lq))||a.title.localeCompare(b.title))
+    .sort((a,b)=>{const sel=getSelectedDomain();const ia=!!sel&&(a.domains||[]).includes(sel),ib=!!sel&&(b.domains||[]).includes(sel);return ia===ib?0:ia?-1:1})
     .slice(0,8);
   searchActive=searchMatches.length?0:-1;
   searchList.innerHTML=searchMatches.length
-    ?searchMatches.map((m,i)=>`<li role="option" id="search-opt-${i}" aria-selected="${i===searchActive}" data-search-index="${i}"><span class="result-icon" style="--c:${m.color||'var(--brand)'}">${m.mode==='companies'?esc(m.title.split(/\s/).map(w=>w[0]).slice(0,2).join('')):'<i></i>'}</span><span><b>${highlight(m.title,q)}</b><small>${highlight(m.sub,q)}</small></span><span class="result-tag">${m.tag}</span><span class="result-action">View jobs →</span></li>`).join('')
+    ?searchMatches.map((m,i)=>`<li role="option" id="search-opt-${i}" aria-selected="${i===searchActive}" data-search-index="${i}"><span class="result-icon" style="--c:${m.color||'var(--brand)'}">${m.mode==='companies'?esc(m.title.split(/\s/).map(w=>w[0]).slice(0,2).join('')):'<i></i>'}</span><span><b>${highlight(m.title,q)}</b><small>${highlight(m.sub,q)}</small></span><span class="result-tag">${getSelectedDomain()&&(m.domains||[]).includes(getSelectedDomain())?'In your domain':m.tag}</span><span class="result-action">View jobs →</span></li>`).join('')
     :`<li class="result-empty" role="option" aria-disabled="true">No ${searchMode==='companies'?'companies':searchMode} match “${esc(q)}”. Try another search${searchMode!=='roles'?' or switch to By role':''}.</li>`;
   searchList.hidden=false;searchInput.setAttribute('aria-expanded','true');
   if(searchActive>=0)searchInput.setAttribute('aria-activedescendant',`search-opt-${searchActive}`);else searchInput.removeAttribute('aria-activedescendant');
@@ -2190,7 +2378,7 @@ function chooseResult(i){
 }
 // Shows job listings for a role, company, skill or domain. If they span several domains, asks which one first.
 let lastQuery=null;
-function showListings(query,chosenDomain){
+function showListings(query,chosenDomain,opts={}){
   lastQuery=query;
   const match=l=>query.kind==='role'?l.title===query.value:query.kind==='company'?l.company===query.value:query.kind==='skill'?l.skills.includes(query.value):l.domain===query.value;
   const all=LISTINGS.filter(match);
@@ -2198,30 +2386,35 @@ function showListings(query,chosenDomain){
   const out=$('#searchOutcome');
   const label=query.kind==='domain'?DOMAINS[query.value].name:`“${query.value}”`;
   if(!all.length){out.innerHTML=`<div class="outcome-empty">No open jobs for ${esc(label)} right now.</div>`;return}
+  const sel=opts.ignoreSelected?null:getSelectedDomain();
+  // Nothing in the person's selected domain: ask before showing other domains.
+  if(sel&&!chosenDomain&&query.kind!=='domain'&&!domains.includes(sel)){showMismatch(query,sel,domains);return}
   if(domains.length>1&&!chosenDomain){
     const lead=query.kind==='skill'?`${esc(label)} is used in ${domains.length} domains with open jobs`:query.kind==='company'?`${esc(query.value)} is hiring in ${domains.length} domains`:`${esc(label)} is open in ${domains.length} domains`;
-    out.innerHTML=`<div class="outcome-ask"><h3>${lead}</h3><p>Which jobs would you like to see?</p><div class="ask-options">${domains.map(d=>`<button type="button" data-pick-domain="${d}" style="--c:${DOMAINS[d].color}"><i></i><b>${esc(DOMAINS[d].name)}</b><small>${all.filter(l=>l.domain===d).length} job${all.filter(l=>l.domain===d).length>1?'s':''}</small></button>`).join('')}<button type="button" class="ask-all" data-pick-domain="all"><b>Show all</b><small>${all.length} jobs</small></button></div></div>`;
+    const ordered=sel&&domains.includes(sel)?[sel,...domains.filter(d=>d!==sel)]:domains;
+    out.innerHTML=`<div class="outcome-ask"><h3>${lead}</h3><p>${sel&&domains.includes(sel)?`Your domain, ${esc(DOMAINS[sel].name)}, is selected. Choose another to switch.`:'Which jobs would you like to see?'}</p><div class="ask-options">${ordered.map(d=>`<button type="button" data-pick-domain="${d}" class="${d===sel?'is-yours':''}" aria-pressed="${d===sel}" style="--c:${DOMAINS[d].color}"><i></i><b>${esc(DOMAINS[d].name)}</b><small>${d===sel?'Your domain · ':''}${all.filter(l=>l.domain===d).length} job${all.filter(l=>l.domain===d).length>1?'s':''}</small></button>`).join('')}<button type="button" class="ask-all" data-pick-domain="all"><b>Show all</b><small>${all.length} jobs</small></button></div>${sel&&domains.includes(sel)?`<button type="button" class="button button-primary ask-go" data-pick-domain="${sel}">Show ${esc(DOMAINS[sel].name)} jobs</button>`:''}</div>`;
     $$('[data-pick-domain]').forEach(b=>b.onclick=()=>showListings(query,b.dataset.pickDomain));
     return;
   }
   const list=chosenDomain&&chosenDomain!=='all'?all.filter(l=>l.domain===chosenDomain):all;
   const inDomain=chosenDomain&&chosenDomain!=='all'?chosenDomain:domains.length===1?domains[0]:null;
+  if(query.kind==='domain')setSelectedDomain(query.value);
   out.innerHTML='';closeSearch();
-  try{sessionStorage.setItem('includeLastSearch',JSON.stringify({query,chosenDomain:chosenDomain||null}))}catch{}
+  try{sessionStorage.setItem('higherupLastSearch',JSON.stringify({query,chosenDomain:chosenDomain||null}))}catch{}
   $('#resultsKicker').textContent=query.kind==='domain'?'Jobs by domain':`Jobs by ${query.kind}`;
   $('#resultsTitle').innerHTML=`${list.length} job${list.length>1?'s':''} for <em>${esc(query.kind==='domain'?DOMAINS[query.value].name:query.value)}</em>`;
-  $('#resultsLead').textContent=inDomain&&query.kind!=='domain'?`In ${DOMAINS[inDomain].name}${query.kind==='company'?'':' · '+listJoin(uniq(list.map(l=>l.company)))}`:query.kind==='domain'?`Open roles in ${DOMAINS[query.value].name} from companies on Include.AI.`:`Across ${listJoin(domainNames(domains))}.`;
+  $('#resultsLead').textContent=inDomain&&query.kind!=='domain'?`In ${DOMAINS[inDomain].name}${query.kind==='company'?'':' · '+listJoin(uniq(list.map(l=>l.company)))}`:query.kind==='domain'?`Open roles in ${DOMAINS[query.value].name} from companies on HigherUp.AI.`:`Across ${listJoin(domainNames(domains))}.`;
   const change=$('#candidate-results [data-change-domain]');change.hidden=domains.length<2;
-  change.onclick=()=>{activateTab('candidate','search');searchInput.value=query.value&&query.kind!=='domain'?query.value:'';showListings(query)};
+  change.onclick=()=>{activateTab('candidate','search');searchInput.value=query.value&&query.kind!=='domain'?query.value:'';showListings(query,undefined,{ignoreSelected:true})};
   $('#resultsBody').innerHTML=`<div class="listing-grid">${list.map(l=>`<article class="listing" style="--c:${DOMAINS[l.domain].color}"><div class="listing-top"><span class="listing-domain"><i></i>${esc(DOMAINS[l.domain].name)}</span><span class="listing-type">${esc(l.type)}</span></div><h4>${esc(l.title)}</h4><p class="listing-meta">${esc(l.company)} · ${esc(l.place)} · ${esc(l.pay)}</p><div class="listing-skills">${l.skills.map(sk=>`<span class="${query.kind==='skill'&&sk===query.value?'hit':''}">${esc(sk)}</span>`).join('')}</div><button type="button" class="button button-primary listing-apply" data-apply-listing="${l.id}"${preparedListings.has(l.id)?' disabled':''}>${preparedListings.has(l.id)?'Prepared ✓':'Prepare application'}</button></article>`).join('')}</div>`;
   $$('#resultsBody [data-apply-listing]').forEach(b=>b.onclick=()=>prepareApplication(Number(b.dataset.applyListing),b));
   activateTab('candidate','results');
 }
 // Results page helpers: back to Search, and restoring the last results after a refresh.
-$('[data-back-to-search]').onclick=()=>{activateTab('candidate','search');searchInput.focus()};
+$('[data-back-to-search]').onclick=()=>{activateTab('candidate','search');renderSearchExtras();searchInput.focus()};
 function restoreResults(){
   if(state.page!=='candidate'||state.tabs.candidate!=='results'||$('#resultsBody').innerHTML)return;
-  try{const saved=JSON.parse(sessionStorage.getItem('includeLastSearch')||'null');if(saved?.query){showListings(saved.query,saved.chosenDomain||undefined);return}}catch{}
+  try{const saved=JSON.parse(sessionStorage.getItem('higherupLastSearch')||'null');if(saved?.query){showListings(saved.query,saved.chosenDomain||undefined);return}}catch{}
   $('#resultsBody').innerHTML='<div class="outcome-empty">No search yet. <button type="button" class="text-action" data-back-to-search-empty>Search for a role, company or skill</button></div>';
   $('[data-back-to-search-empty]').onclick=()=>{activateTab('candidate','search');searchInput.focus()};
 }
@@ -2257,6 +2450,8 @@ document.addEventListener('keydown',e=>{
 $('#footerYear').textContent=new Date().getFullYear();
 applyRoute();
 restoreResults();
+try{renderSearchExtras()}catch{}
+$$('[data-candidate-tab="search"]').forEach(b=>b.addEventListener('click',()=>renderSearchExtras()));
 
 </script>
 </body>
