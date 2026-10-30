@@ -24,8 +24,10 @@ cors_origins = [
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins,
+    # Any localhost / 127.0.0.1 port works for local development.
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
     allow_credentials=False,
-    allow_methods=["GET", "POST", "PUT", "OPTIONS"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization", "X-File-Name", "X-Document-Kind"],
 )
 
@@ -63,7 +65,12 @@ def require_candidate_email(authorization: str | None, expected_email: str) -> N
     token = (authorization or "").removeprefix("Bearer ").strip()
     supabase_url = os.getenv("SUPABASE_URL", "").rstrip("/")
     supabase_key = os.getenv("SUPABASE_PUBLISHABLE_KEY", "")
-    if not token or not supabase_url or not supabase_key:
+    if not supabase_url or not supabase_key:
+        raise HTTPException(
+            status_code=500,
+            detail="Server is missing SUPABASE_URL or SUPABASE_PUBLISHABLE_KEY",
+        )
+    if not token:
         raise HTTPException(status_code=401, detail="Sign in required")
 
     request = UrlRequest(
@@ -124,25 +131,6 @@ class SkillsRequest(BaseModel):
 @app.post("/skills/discover")
 def discover_skills(request: SkillsRequest):
     return discover(request.candidate_text)
-
-    skill_keywords = [
-        "Python", "SQL", "Excel", "Power BI",
-        "JavaScript", "Java", "C++", "HTML", "CSS",
-        "communication", "leadership", "data analysis",
-    ]
-
-    found_skills = [
-        skill for skill in skill_keywords
-        if skill.lower() in text.lower()
-    ]
-
-    return {
-        "agent": "Skills Discovery",
-        "skills_found": found_skills,
-        "evidence_source": "Candidate-provided text",
-        "needs_candidate_review": True,
-        "note": "Keyword-based prototype; AI extraction is not connected yet.",
-    }
 
 
 class CandidateRequest(BaseModel):
