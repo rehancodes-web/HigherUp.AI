@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 64" role="img" aria-label="HigherUp.AI">
+  <defs>
+    <linearGradient id="hu-bg-d" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6d66f5"/>
+      <stop offset="1" stop-color="#4338ca"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#hu-bg-d)"/>
+  <rect x="16" y="28" width="8" height="21" rx="2.5" fill="#fff"/>
+  <rect x="40" y="22" width="8" height="27" rx="2.5" fill="#fff"/>
+  <path d="M35.5 24 44 12.5 52.5 24Z" fill="#fff" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M24 38.5 40 31v7.5L24 46Z" fill="#c7d2fe"/>
+  <text x="80" y="44" font-family="'Plus Jakarta Sans','Inter','Segoe UI',Arial,sans-serif" font-size="34" font-weight="800" letter-spacing="-1.2" fill="#ffffff">higher<tspan fill="#a5b4fc">up</tspan><tspan fill="#8b93a3" font-weight="700">.ai</tspan></text>
+</svg>

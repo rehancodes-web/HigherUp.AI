@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#fbf7ef">
   <meta name="description" content="HigherUp.AI is a skills-first platform that matches students, graduates and job seekers to jobs and internships, and helps businesses hire for proven skills.">
   <title>HigherUp.AI — Skills-first recruitment</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400..700&display=swap">
@@ -1064,6 +1065,18 @@ body:has(.workspace.active) .site-footer{display:none}
 .listing.preview-card{display:flex;flex-direction:column;gap:6px;padding:16px 16px 16px 20px;transform:none!important}
 .listing.preview-card .listing-top{justify-content:space-between}
 .listing.preview-card:hover{transform:none;box-shadow:none}
+
+/* New HigherUp.AI mark */
+.brand-logo{background:none!important;padding:0;border-radius:0;overflow:visible}
+.brand-logo svg{display:block;width:100%;height:100%}
+.brand .brand-logo{width:30px;height:30px}
+.footer-brand .brand-logo{width:28px;height:28px}
+
+/* Company field */
+.company-status{min-height:16px;font-size:12px;font-weight:600;color:var(--muted)}
+.company-status.known{color:var(--green)}
+.company-status.new{color:var(--amber)}
+#roleCin{text-transform:uppercase;letter-spacing:.03em}
 </style>
 </head>
 <body>
@@ -1091,7 +1104,7 @@ body:has(.workspace.active) .site-footer{display:none}
   </div>
 
   <header class="site-header" id="siteHeader">
-    <button class="brand" data-route="home" aria-label="HigherUp.AI home"><span class="brand-mark" aria-hidden="true">↑</span><span>higher<b class="brand-up">up</b><span class="brand-ai">.ai</span></span></button>
+    <button class="brand" data-route="home" aria-label="HigherUp.AI home"><span class="brand-mark brand-logo" aria-hidden="true"><svg viewBox="0 0 64 64" width="100%" height="100%"><defs><linearGradient id="hu-bg-site" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b54ec"/><stop offset="1" stop-color="#3730a3"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#hu-bg-site)"/><rect x="16" y="28" width="8" height="21" rx="2.5" fill="#fff"/><rect x="40" y="22" width="8" height="27" rx="2.5" fill="#fff"/><path d="M35.5 24 44 12.5 52.5 24Z" fill="#fff" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/><path d="M24 38.5 40 31v7.5L24 46Z" fill="#a5b4fc"/></svg></span><span>higher<b class="brand-up">up</b><span class="brand-ai">.ai</span></span></button>
     <nav class="public-nav" aria-label="Primary navigation">
       <button data-route="home">Home</button>
       <button data-scroll="audiences">Who it’s for</button>
@@ -1369,6 +1382,62 @@ body:has(.workspace.active) .site-footer{display:none}
                 <div class="block-heading"><div><h2>Job basics</h2><p>The essentials candidates look at first.</p></div></div>
                 <div class="role-form">
                   <label class="span-2">Job title<input id="roleTitle" value="Junior Data Analyst" maxlength="80" required></label>
+                  <label class="span-2">Company <small>start typing to pick from registered companies</small>
+                    <input id="roleCompany" list="companyDirectory" value="BrightForge Tools" maxlength="80" autocomplete="off" required>
+                    <span class="company-status" id="companyStatus" aria-live="polite"></span>
+                  </label>
+                  <datalist id="companyDirectory">
+                    <option value="BrightForge Tools">Your company profile (demo)</option>
+                    <option value="Tata Consultancy Services"></option>
+                    <option value="Infosys"></option>
+                    <option value="Wipro"></option>
+                    <option value="HCLTech"></option>
+                    <option value="Tech Mahindra"></option>
+                    <option value="LTIMindtree"></option>
+                    <option value="Zoho Corporation"></option>
+                    <option value="Freshworks"></option>
+                    <option value="Reliance Industries"></option>
+                    <option value="Larsen &amp; Toubro"></option>
+                    <option value="Mahindra &amp; Mahindra"></option>
+                    <option value="Tata Motors"></option>
+                    <option value="Tata Steel"></option>
+                    <option value="Maruti Suzuki India"></option>
+                    <option value="Bajaj Auto"></option>
+                    <option value="Hero MotoCorp"></option>
+                    <option value="Ashok Leyland"></option>
+                    <option value="Hindustan Unilever"></option>
+                    <option value="ITC"></option>
+                    <option value="Asian Paints"></option>
+                    <option value="Godrej Consumer Products"></option>
+                    <option value="Titan Company"></option>
+                    <option value="Dabur India"></option>
+                    <option value="Bharti Airtel"></option>
+                    <option value="HDFC Bank"></option>
+                    <option value="ICICI Bank"></option>
+                    <option value="Axis Bank"></option>
+                    <option value="Kotak Mahindra Bank"></option>
+                    <option value="State Bank of India"></option>
+                    <option value="Bajaj Finance"></option>
+                    <option value="Zomato"></option>
+                    <option value="Swiggy"></option>
+                    <option value="Flipkart"></option>
+                    <option value="Nykaa"></option>
+                    <option value="Paytm (One 97 Communications)"></option>
+                    <option value="PhonePe"></option>
+                    <option value="Razorpay"></option>
+                    <option value="Ola"></option>
+                    <option value="MakeMyTrip"></option>
+                    <option value="Dr. Reddy's Laboratories"></option>
+                    <option value="Sun Pharmaceutical Industries"></option>
+                    <option value="Cipla"></option>
+                    <option value="Apollo Hospitals"></option>
+                    <option value="Accenture India"></option>
+                    <option value="Cognizant India"></option>
+                    <option value="Capgemini India"></option>
+                    <option value="IBM India"></option>
+                    <option value="Deloitte India"></option>
+                  </datalist>
+                  <label class="span-2" id="roleCinWrap" hidden>Company registration number (CIN) <small>optional · helps us verify new companies</small><input id="roleCin" maxlength="21" placeholder="e.g. U72200MH2015PTC123456" autocomplete="off"></label>
                   <label>Domain
                     <select id="roleDomain" required>
                       <option value="tech">Technology</option>
@@ -1520,7 +1589,7 @@ body:has(.workspace.active) .site-footer{display:none}
   <footer class="site-footer" aria-label="Site footer">
     <div class="footer-top">
       <div class="footer-about">
-        <span class="footer-brand"><span class="brand-mark" aria-hidden="true">↑</span>higher<b class="brand-up">up</b><span class="brand-ai">.ai</span></span>
+        <span class="footer-brand"><span class="brand-mark brand-logo" aria-hidden="true"><svg viewBox="0 0 64 64" width="100%" height="100%"><defs><linearGradient id="hu-bg-site" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b54ec"/><stop offset="1" stop-color="#3730a3"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#hu-bg-site)"/><rect x="16" y="28" width="8" height="21" rx="2.5" fill="#fff"/><rect x="40" y="22" width="8" height="27" rx="2.5" fill="#fff"/><path d="M35.5 24 44 12.5 52.5 24Z" fill="#fff" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/><path d="M24 38.5 40 31v7.5L24 46Z" fill="#a5b4fc"/></svg></span>higher<b class="brand-up">up</b><span class="brand-ai">.ai</span></span>
         <p>Skills-first hiring for students, job seekers and growing businesses. AI prepares the context; people make the decision.</p>
       </div>
       <nav class="footer-col" aria-label="Product">
@@ -2168,11 +2237,21 @@ function readRole(){
   const pay=!isNaN(min)&&!isNaN(max)&&max>0?(unit==='LPA'?`₹${min}–${max} LPA`:`₹${min}k–${max}k/month`):'';
   const preset=($('input[name="rankPreset"]:checked')||{}).value||'balanced';
   return {
-    title:$('#roleTitle').value.trim(),domainKey:$('#roleDomain').value,type:$('#roleType').value,level:$('#roleLevel').value,levelLabel:$('#roleLevel').selectedOptions[0].textContent,
+    title:$('#roleTitle').value.trim(),company:$('#roleCompany').value.trim().replace(/\s+/g,' '),cin:$('#roleCin').value.trim().toUpperCase(),domainKey:$('#roleDomain').value,type:$('#roleType').value,level:$('#roleLevel').value,levelLabel:$('#roleLevel').selectedOptions[0].textContent,
     openings:Math.max(1,Math.min(99,parseInt($('#roleOpenings').value,10)||1)),city:$('#roleCity').value.trim(),mode:$('#roleMode').value,
     payMin:min,payMax:max,pay,deadline:$('#roleDeadline').value,start:$('#roleStart').value,
     essential:mustChips.get(),preferred:niceChips.get(),description:$('#roleDescription').value.trim(),preset,questions:[...screeningQuestions]
   };
+}
+// Company directory for the Company field. A short built-in list of registered companies;
+// a live registry (e.g. MCA21) would replace this through the backend.
+const COMPANY_DIRECTORY=[...document.querySelectorAll('#companyDirectory option')].map(o=>o.value);
+const inDirectory=name=>COMPANY_DIRECTORY.some(c=>c.toLowerCase()===name.trim().toLowerCase());
+function renderCompanyStatus(){
+  const name=$('#roleCompany').value.trim(),status=$('#companyStatus'),known=name&&inDirectory(name);
+  status.className='company-status'+(known?' known':name?' new':'');
+  status.textContent=!name?'':known?'✓ Found in the company directory':'Not in the directory yet. Add your CIN below so we can verify it.';
+  $('#roleCinWrap').hidden=!name||known;
 }
 const placeOf=r=>r.mode==='Remote'?(r.city?`Remote · ${r.city} team`:'Remote'):[r.city||'Location to be confirmed',r.mode].join(' · ');
 // Live inclusion check: flags wording or requirements that may put good candidates off.
@@ -2207,7 +2286,7 @@ function renderInclusion(r){
 function renderPreview(r){
   const domainName=r.domainKey==='other'?($('#roleDomainOther').value.trim()||'Other'):$('#roleDomain').selectedOptions[0].textContent;
   const color=(typeof DOMAINS!=='undefined'&&DOMAINS[r.domainKey]?.color)||'#a5b4fc';
-  $('#listingPreview').innerHTML=`<article class="listing preview-card" style="--c:${color}"><div class="listing-top"><span class="listing-domain"><i></i>${esc(domainName)}</span><span class="listing-type">${esc(r.type)}</span></div><h4>${esc(r.title||'Job title')}</h4><p class="listing-meta">BrightForge Tools · ${esc(placeOf(r))}${r.pay?' · '+esc(r.pay):''}</p><p class="listing-meta">${esc(r.levelLabel)} · ${r.openings} opening${r.openings>1?'s':''}${r.deadline?' · Apply by '+new Date(r.deadline+'T00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short'}):''}</p><div class="listing-skills">${r.essential.map(sk=>`<span class="hit">${esc(sk)}</span>`).join('')}${r.preferred.map(sk=>`<span>${esc(sk)}</span>`).join('')}</div></article>`;
+  $('#listingPreview').innerHTML=`<article class="listing preview-card" style="--c:${color}"><div class="listing-top"><span class="listing-domain"><i></i>${esc(domainName)}</span><span class="listing-type">${esc(r.type)}</span></div><h4>${esc(r.title||'Job title')}</h4><p class="listing-meta">${esc(r.company||'Your company')} · ${esc(placeOf(r))}${r.pay?' · '+esc(r.pay):''}</p><p class="listing-meta">${esc(r.levelLabel)} · ${r.openings} opening${r.openings>1?'s':''}${r.deadline?' · Apply by '+new Date(r.deadline+'T00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short'}):''}</p><div class="listing-skills">${r.essential.map(sk=>`<span class="hit">${esc(sk)}</span>`).join('')}${r.preferred.map(sk=>`<span>${esc(sk)}</span>`).join('')}</div></article>`;
 }
 function renderSkillSuggestions(){
   if(typeof DOMAINS==='undefined')return;
@@ -2217,6 +2296,7 @@ function renderSkillSuggestions(){
   $$('[data-sug]').forEach(b=>b.onclick=()=>mustChips.add(b.dataset.sug));
 }
 function roleChanged(){
+  renderCompanyStatus();
   const r=readRole();
   renderInclusion(r);renderPreview(r);renderSkillSuggestions();
   const n=$('#roleDescription').value.length;$('#roleDescCount').textContent=`${n} / 2000`;
@@ -2226,7 +2306,7 @@ setTimeout(roleChanged,0);
 // Drafts are kept on this device
 $('#saveDraft').onclick=()=>{try{localStorage.setItem('higherupRoleDraft',JSON.stringify(readRole()));toast('Draft saved on this device')}catch{toast('Could not save the draft')}};
 (()=>{try{const d=JSON.parse(localStorage.getItem('higherupRoleDraft')||'null');if(!d)return;
-  [['roleTitle','title'],['roleType','type'],['roleLevel','level'],['roleOpenings','openings'],['roleCity','city'],['roleMode','mode'],['payMin','payMin'],['payMax','payMax'],['roleDeadline','deadline'],['roleStart','start'],['roleDescription','description']].forEach(([id,k])=>{if(d[k]!==undefined&&d[k]!==null&&!(typeof d[k]==='number'&&isNaN(d[k])))$('#'+id).value=d[k]});
+  [['roleTitle','title'],['roleCompany','company'],['roleCin','cin'],['roleType','type'],['roleLevel','level'],['roleOpenings','openings'],['roleCity','city'],['roleMode','mode'],['payMin','payMin'],['payMax','payMax'],['roleDeadline','deadline'],['roleStart','start'],['roleDescription','description']].forEach(([id,k])=>{if(d[k]!==undefined&&d[k]!==null&&!(typeof d[k]==='number'&&isNaN(d[k])))$('#'+id).value=d[k]});
   if(d.domainKey&&$(`#roleDomain option[value="${d.domainKey}"]`))$('#roleDomain').value=d.domainKey;
   if(d.essential)mustChips.set(d.essential);if(d.preferred)niceChips.set(d.preferred);
   if(d.preset&&$(`input[name="rankPreset"][value="${d.preset}"]`))$(`input[name="rankPreset"][value="${d.preset}"]`).checked=true;
@@ -2236,6 +2316,8 @@ $('#saveDraft').onclick=()=>{try{localStorage.setItem('higherupRoleDraft',JSON.s
 $('#saveTemplate').onclick=()=>{
   const r=readRole();
   if(!r.title){$('#roleTitle').focus();toast('Add a job title');return}
+  if(!r.company){$('#roleCompany').focus();toast('Add the company name');return}
+  if(r.cin&&!/^[LU]\d{5}[A-Z]{2}\d{4}[A-Z]{3}\d{6}$/.test(r.cin)){$('#roleCin').focus();toast('That CIN doesn\'t look right. It has 21 characters, like U72200MH2015PTC123456.');return}
   let domainKey=r.domainKey,domainName=$('#roleDomain').selectedOptions[0].textContent;
   if(domainKey==='other'){
     domainName=$('#roleDomainOther').value.trim().replace(/\s+/g,' ');
@@ -2249,10 +2331,11 @@ $('#saveTemplate').onclick=()=>{
   publishRoleListing(state.roleConfig);
   state.summaryFields=new Set($$('[data-field]:checked').map(input=>input.dataset.field));
   $('#recruiterRoleLabel').textContent=`${r.title} · ${placeOf(r)}`;
-  addAudit('Role published',`${r.title} · ${domainName} · ${r.type} · ${r.openings} opening${r.openings>1?'s':''} · ranking: ${RANK_PRESETS[r.preset].label}`);
+  $('.recruiter-nav h2').textContent=r.company;
+  addAudit('Role published',`${r.title} at ${r.company} · ${domainName} · ${r.type} · ${r.openings} opening${r.openings>1?'s':''} · ranking: ${RANK_PRESETS[r.preset].label}`);
   try{localStorage.removeItem('higherupRoleDraft')}catch{}
   renderCandidate();
-  toast(`${r.title} is live. Candidates can find it under ${domainName}.`);
+  toast(`${r.title} at ${r.company} is live. Candidates can find it under ${domainName}.`);
 };
 
 document.addEventListener('keydown',event=>{const dialog=$('.dialog-backdrop.open');if(!dialog)return;if(event.key==='Escape'){closeDialog(dialog);return}if(event.key==='Tab'){const focusable=$$('button:not([disabled]),input:not([hidden]),select,textarea').filter(el=>dialog.contains(el));if(!focusable.length)return;const first=focusable[0],last=focusable.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}}});
@@ -2580,7 +2663,7 @@ function registerDomain(name){
 // The recruiter's saved role is listed for candidates (one listing per role setup, updated on each save).
 function publishRoleListing(cfg){
   const existing=LISTINGS.find(l=>l.fromRoleSetup);
-  const listing={id:existing?.id||LISTINGS.length+1,domain:cfg.domain,title:cfg.title,company:'BrightForge Tools',place:cfg.place||'Location to be confirmed',type:cfg.type||'Full-time',pay:cfg.pay||'Salary on request',skills:[...cfg.essential,...cfg.preferred].slice(0,5),openings:cfg.openings,level:cfg.levelLabel,deadline:cfg.deadline,fromRoleSetup:true};
+  const listing={id:existing?.id||LISTINGS.length+1,domain:cfg.domain,title:cfg.title,company:cfg.company||'BrightForge Tools',place:cfg.place||'Location to be confirmed',type:cfg.type||'Full-time',pay:cfg.pay||'Salary on request',skills:[...cfg.essential,...cfg.preferred].slice(0,5),openings:cfg.openings,level:cfg.levelLabel,deadline:cfg.deadline,fromRoleSetup:true};
   if(existing)Object.assign(existing,listing);else LISTINGS.push(listing);
   SEARCH_ITEMS=buildSearchItems();
 }
