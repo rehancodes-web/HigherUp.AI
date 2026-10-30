@@ -1077,6 +1077,23 @@ body:has(.workspace.active) .site-footer{display:none}
 .company-status.known{color:var(--green)}
 .company-status.new{color:var(--amber)}
 #roleCin{text-transform:uppercase;letter-spacing:.03em}
+
+/* Company picker (narrows as you type) */
+.company-combo{position:relative;display:block}
+.company-combo input{width:100%}
+.company-options{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;max-height:340px;overflow-y:auto;margin:0;padding:6px;list-style:none;border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:var(--shadow-lg)}
+.company-options[hidden]{display:none}
+.company-options li{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;padding:8px 10px;border-radius:9px;cursor:pointer}
+.company-options li[aria-selected="true"],.company-options li:hover{background:var(--brand-bg)}
+.co-logo{width:34px;height:34px;display:grid;place-items:center;border-radius:8px;background:hsl(var(--h) 55% 92%);color:hsl(var(--h) 45% 32%);font:800 12px var(--font-statement);letter-spacing:.02em}
+.co-plus{background:var(--brand-bg);color:var(--brand);font-size:18px}
+.co-text{display:grid;min-width:0;line-height:1.25}
+.co-text b{overflow:hidden;color:var(--ink);font-size:14px;font-weight:650;text-overflow:ellipsis;white-space:nowrap}
+.co-text b mark{background:none;color:var(--brand);font-weight:800}
+.co-text small{color:var(--muted);font-size:12px;font-weight:500}
+.co-new{border-top:1px solid var(--line);margin-top:4px;padding-top:10px!important}
+.co-empty{display:block!important;padding:10px 12px!important;color:var(--muted);font-size:13px;cursor:default!important}
+.co-empty:hover{background:none!important}
 </style>
 </head>
 <body>
@@ -1383,60 +1400,9 @@ body:has(.workspace.active) .site-footer{display:none}
                 <div class="role-form">
                   <label class="span-2">Job title<input id="roleTitle" value="Junior Data Analyst" maxlength="80" required></label>
                   <label class="span-2">Company <small>start typing to pick from registered companies</small>
-                    <input id="roleCompany" list="companyDirectory" value="BrightForge Tools" maxlength="80" autocomplete="off" required>
+                    <span class="company-combo"><input id="roleCompany" value="BrightForge Tools" maxlength="80" autocomplete="off" required role="combobox" aria-expanded="false" aria-controls="companyOptions" aria-autocomplete="list"><ul class="company-options" id="companyOptions" role="listbox" hidden></ul></span>
                     <span class="company-status" id="companyStatus" aria-live="polite"></span>
                   </label>
-                  <datalist id="companyDirectory">
-                    <option value="BrightForge Tools">Your company profile (demo)</option>
-                    <option value="Tata Consultancy Services"></option>
-                    <option value="Infosys"></option>
-                    <option value="Wipro"></option>
-                    <option value="HCLTech"></option>
-                    <option value="Tech Mahindra"></option>
-                    <option value="LTIMindtree"></option>
-                    <option value="Zoho Corporation"></option>
-                    <option value="Freshworks"></option>
-                    <option value="Reliance Industries"></option>
-                    <option value="Larsen &amp; Toubro"></option>
-                    <option value="Mahindra &amp; Mahindra"></option>
-                    <option value="Tata Motors"></option>
-                    <option value="Tata Steel"></option>
-                    <option value="Maruti Suzuki India"></option>
-                    <option value="Bajaj Auto"></option>
-                    <option value="Hero MotoCorp"></option>
-                    <option value="Ashok Leyland"></option>
-                    <option value="Hindustan Unilever"></option>
-                    <option value="ITC"></option>
-                    <option value="Asian Paints"></option>
-                    <option value="Godrej Consumer Products"></option>
-                    <option value="Titan Company"></option>
-                    <option value="Dabur India"></option>
-                    <option value="Bharti Airtel"></option>
-                    <option value="HDFC Bank"></option>
-                    <option value="ICICI Bank"></option>
-                    <option value="Axis Bank"></option>
-                    <option value="Kotak Mahindra Bank"></option>
-                    <option value="State Bank of India"></option>
-                    <option value="Bajaj Finance"></option>
-                    <option value="Zomato"></option>
-                    <option value="Swiggy"></option>
-                    <option value="Flipkart"></option>
-                    <option value="Nykaa"></option>
-                    <option value="Paytm (One 97 Communications)"></option>
-                    <option value="PhonePe"></option>
-                    <option value="Razorpay"></option>
-                    <option value="Ola"></option>
-                    <option value="MakeMyTrip"></option>
-                    <option value="Dr. Reddy's Laboratories"></option>
-                    <option value="Sun Pharmaceutical Industries"></option>
-                    <option value="Cipla"></option>
-                    <option value="Apollo Hospitals"></option>
-                    <option value="Accenture India"></option>
-                    <option value="Cognizant India"></option>
-                    <option value="Capgemini India"></option>
-                    <option value="IBM India"></option>
-                    <option value="Deloitte India"></option>
-                  </datalist>
                   <label class="span-2" id="roleCinWrap" hidden>Company registration number (CIN) <small>optional · helps us verify new companies</small><input id="roleCin" maxlength="21" placeholder="e.g. U72200MH2015PTC123456" autocomplete="off"></label>
                   <label>Domain
                     <select id="roleDomain" required>
@@ -2245,12 +2211,54 @@ function readRole(){
 }
 // Company directory for the Company field. A short built-in list of registered companies;
 // a live registry (e.g. MCA21) would replace this through the backend.
-const COMPANY_DIRECTORY=[...document.querySelectorAll('#companyDirectory option')].map(o=>o.value);
+const COMPANIES=[{"name": "BrightForge Tools", "sector": "Your company profile (demo)", "city": "Pune"}, {"name": "Tata Consultancy Services", "sector": "IT services", "city": "Mumbai"}, {"name": "Infosys", "sector": "IT services", "city": "Bengaluru"}, {"name": "Wipro", "sector": "IT services", "city": "Bengaluru"}, {"name": "HCLTech", "sector": "IT services", "city": "Noida"}, {"name": "Tech Mahindra", "sector": "IT services", "city": "Pune"}, {"name": "LTIMindtree", "sector": "IT services", "city": "Mumbai"}, {"name": "Accenture India", "sector": "IT services", "city": "Bengaluru"}, {"name": "Cognizant India", "sector": "IT services", "city": "Chennai"}, {"name": "Capgemini India", "sector": "IT services", "city": "Mumbai"}, {"name": "IBM India", "sector": "Technology", "city": "Bengaluru"}, {"name": "Zoho Corporation", "sector": "Software", "city": "Chennai"}, {"name": "Freshworks", "sector": "Software", "city": "Chennai"}, {"name": "Reliance Industries", "sector": "Conglomerate", "city": "Mumbai"}, {"name": "ITC", "sector": "Conglomerate", "city": "Kolkata"}, {"name": "Larsen & Toubro", "sector": "Engineering & construction", "city": "Mumbai"}, {"name": "Mahindra & Mahindra", "sector": "Automotive", "city": "Mumbai"}, {"name": "Tata Motors", "sector": "Automotive", "city": "Mumbai"}, {"name": "Maruti Suzuki India", "sector": "Automotive", "city": "New Delhi"}, {"name": "Bajaj Auto", "sector": "Automotive", "city": "Pune"}, {"name": "Hero MotoCorp", "sector": "Automotive", "city": "New Delhi"}, {"name": "Ashok Leyland", "sector": "Automotive", "city": "Chennai"}, {"name": "Tata Steel", "sector": "Steel", "city": "Mumbai"}, {"name": "Hindustan Unilever", "sector": "Consumer goods", "city": "Mumbai"}, {"name": "Godrej Consumer Products", "sector": "Consumer goods", "city": "Mumbai"}, {"name": "Dabur India", "sector": "Consumer goods", "city": "Ghaziabad"}, {"name": "Titan Company", "sector": "Consumer goods", "city": "Bengaluru"}, {"name": "Asian Paints", "sector": "Paints", "city": "Mumbai"}, {"name": "Bharti Airtel", "sector": "Telecom", "city": "New Delhi"}, {"name": "HDFC Bank", "sector": "Banking", "city": "Mumbai"}, {"name": "ICICI Bank", "sector": "Banking", "city": "Mumbai"}, {"name": "Axis Bank", "sector": "Banking", "city": "Mumbai"}, {"name": "Kotak Mahindra Bank", "sector": "Banking", "city": "Mumbai"}, {"name": "State Bank of India", "sector": "Banking", "city": "Mumbai"}, {"name": "Bajaj Finance", "sector": "Financial services", "city": "Pune"}, {"name": "Zomato", "sector": "Food delivery", "city": "Gurugram"}, {"name": "Swiggy", "sector": "Food delivery", "city": "Bengaluru"}, {"name": "Flipkart", "sector": "E-commerce", "city": "Bengaluru"}, {"name": "Nykaa", "sector": "E-commerce", "city": "Mumbai"}, {"name": "Paytm (One 97 Communications)", "sector": "Fintech", "city": "Noida"}, {"name": "PhonePe", "sector": "Fintech", "city": "Bengaluru"}, {"name": "Razorpay", "sector": "Fintech", "city": "Bengaluru"}, {"name": "Ola", "sector": "Mobility", "city": "Bengaluru"}, {"name": "MakeMyTrip", "sector": "Travel", "city": "Gurugram"}, {"name": "Dr. Reddy's Laboratories", "sector": "Pharmaceuticals", "city": "Hyderabad"}, {"name": "Sun Pharmaceutical Industries", "sector": "Pharmaceuticals", "city": "Mumbai"}, {"name": "Cipla", "sector": "Pharmaceuticals", "city": "Mumbai"}, {"name": "Apollo Hospitals", "sector": "Healthcare", "city": "Chennai"}, {"name": "Deloitte India", "sector": "Professional services", "city": "Mumbai"}];
+const COMPANY_DIRECTORY=COMPANIES.map(c=>c.name);
+// Company picker: the list narrows as you type (names starting with the text first, then word starts, then anywhere).
+const companyInput=$('#roleCompany'),companyList=$('#companyOptions');
+let companyMatches=[],companyActive=-1;
+const companyHue=name=>[...name].reduce((h,ch)=>(h*31+ch.charCodeAt(0))%360,7);
+function findCompanies(q){
+  const lq=q.toLowerCase();
+  if(!lq)return COMPANIES.slice(0,8);
+  return COMPANIES.map(c=>{const n=c.name.toLowerCase();const rank=n.startsWith(lq)?0:n.split(/[\s(&.-]+/).some(w=>w.startsWith(lq))?1:n.includes(lq)?2:(c.sector.toLowerCase().includes(lq)||c.city.toLowerCase().includes(lq))?3:9;return {c,rank}})
+    .filter(x=>x.rank<9).sort((a,b)=>a.rank-b.rank||a.c.name.localeCompare(b.c.name)).slice(0,8).map(x=>x.c);
+}
+function renderCompanyOptions(){
+  const q=companyInput.value.trim();
+  companyMatches=findCompanies(q);
+  const exact=COMPANIES.some(c=>c.name.toLowerCase()===q.toLowerCase());
+  const items=companyMatches.map((c,i)=>{const initials=c.name.replace(/\(.*?\)/g,'').split(/\s+/).filter(w=>/^[A-Za-z0-9]/.test(w)).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+    return `<li role="option" id="company-opt-${i}" data-company-index="${i}" aria-selected="${i===companyActive}"><span class="co-logo" style="--h:${companyHue(c.name)}">${esc(initials)}</span><span class="co-text"><b>${highlightMatch(c.name,q)}</b><small>${esc(c.sector)} · ${esc(c.city)}</small></span></li>`}).join('');
+  const addNew=q&&!exact?`<li role="option" id="company-opt-new" data-company-new aria-selected="${companyActive===companyMatches.length}" class="co-new"><span class="co-logo co-plus">+</span><span class="co-text"><b>Add “${esc(q)}” as a new company</b><small>We'll ask for its registration number (CIN)</small></span></li>`:'';
+  companyList.innerHTML=(companyMatches.length?'':'<li class="co-empty" aria-disabled="true">No registered companies match</li>')+items+addNew;
+  companyList.hidden=false;companyInput.setAttribute('aria-expanded','true');
+  $$('#companyOptions [data-company-index]').forEach(li=>{li.onmousedown=e=>e.preventDefault();li.onclick=()=>pickCompany(companyMatches[Number(li.dataset.companyIndex)].name)});
+  const nw=$('#companyOptions [data-company-new]');if(nw){nw.onmousedown=e=>e.preventDefault();nw.onclick=()=>pickCompany(q)}
+}
+function highlightMatch(text,q){if(!q)return esc(text);const i=text.toLowerCase().indexOf(q.toLowerCase());return i<0?esc(text):esc(text.slice(0,i))+`<mark>${esc(text.slice(i,i+q.length))}</mark>`+esc(text.slice(i+q.length))}
+function closeCompanyOptions(){companyList.hidden=true;companyInput.setAttribute('aria-expanded','false');companyInput.removeAttribute('aria-activedescendant');companyActive=-1}
+function pickCompany(name){companyInput.value=name;closeCompanyOptions();roleChanged();if(!inDirectory(name))setTimeout(()=>$('#roleCin')?.focus(),50)}
+function moveCompany(step){
+  const total=$$('#companyOptions [role=option]:not([aria-disabled])').length;if(!total)return;
+  companyActive=(companyActive+step+total)%total;
+  $$('#companyOptions [role=option]:not([aria-disabled])').forEach((li,i)=>li.setAttribute('aria-selected',String(i===companyActive)));
+  const cur=$$('#companyOptions [role=option]:not([aria-disabled])')[companyActive];companyInput.setAttribute('aria-activedescendant',cur.id);cur.scrollIntoView({block:'nearest'});
+}
+companyInput.addEventListener('input',()=>{companyActive=-1;renderCompanyOptions()});
+companyInput.addEventListener('focus',()=>{companyActive=-1;renderCompanyOptions()});
+companyInput.addEventListener('blur',()=>setTimeout(closeCompanyOptions,120));
+companyInput.addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'){e.preventDefault();if(companyList.hidden)renderCompanyOptions();moveCompany(1)}
+  else if(e.key==='ArrowUp'){e.preventDefault();moveCompany(-1)}
+  else if(e.key==='Enter'&&!companyList.hidden){e.preventDefault();const cur=$$('#companyOptions [role=option]:not([aria-disabled])')[companyActive<0?0:companyActive];cur?.click()}
+  else if(e.key==='Escape'&&!companyList.hidden){e.preventDefault();e.stopPropagation();closeCompanyOptions()}
+});
 const inDirectory=name=>COMPANY_DIRECTORY.some(c=>c.toLowerCase()===name.trim().toLowerCase());
 function renderCompanyStatus(){
   const name=$('#roleCompany').value.trim(),status=$('#companyStatus'),known=name&&inDirectory(name);
   status.className='company-status'+(known?' known':name?' new':'');
-  status.textContent=!name?'':known?'✓ Found in the company directory':'Not in the directory yet. Add your CIN below so we can verify it.';
+  const co=known&&COMPANIES.find(c=>c.name.toLowerCase()===name.toLowerCase());
+  status.textContent=!name?'':known?`✓ ${co.sector} · ${co.city}`:'New company. Add its CIN below so we can verify it.';
   $('#roleCinWrap').hidden=!name||known;
 }
 const placeOf=r=>r.mode==='Remote'?(r.city?`Remote · ${r.city} team`:'Remote'):[r.city||'Location to be confirmed',r.mode].join(' · ');
