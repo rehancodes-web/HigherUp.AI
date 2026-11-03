@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 from hdbcli import dbapi
 from skills_agent import discover
 from pdf_extraction import PDFTextExtractionError, extract_pdf_text
+from resume_summary import ResumeReadError, extract_resume_text
 from interviews import router as interviews_router
 from talent import router as talent_router
 
@@ -544,19 +545,16 @@ def discover_skills_from_candidate_pdf(
 
     if document_kind != "resume":
         raise HTTPException(status_code=400, detail="Choose a resume document for skill discovery")
-    if not file_name.lower().endswith(".pdf") and content_type.split(";", 1)[0].lower() != "application/pdf":
-        raise HTTPException(status_code=415, detail="Skill discovery currently supports PDF resumes only")
-
     try:
-        text, page_count = extract_pdf_text(file_data)
-    except PDFTextExtractionError as exc:
+        text = extract_resume_text(file_data, file_name)
+    except ResumeReadError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
     result = discover(text)
     return {
         "document_id": document_id,
         "file_name": file_name,
-        "page_count": page_count,
+        "page_count": None,
         "character_count": len(text),
         "agent": result["agent"],
         "mode": result["mode"],

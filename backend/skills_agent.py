@@ -123,8 +123,11 @@ def _llm_discover(text: str) -> list[dict]:
 
 
 KEYWORDS = [
-    "Python", "SQL", "Excel", "Power BI", "JavaScript", "Java", "C++",
-    "HTML", "CSS", "communication", "leadership", "data analysis",
+    "Python", "Machine Learning", "ML", "PyTorch", "LLMs", "RAG", "TensorFlow",
+    "FastAPI", "REST APIs", "SQL", "PostgreSQL", "Docker", "Git", "Linux",
+    "AWS", "Kubernetes", "CI/CD", "Network Security", "Cybersecurity", "Wireshark",
+    "SIEM", "Cryptography", "Excel", "Power BI", "Data Analysis", "Data Visualization",
+    "JavaScript", "Java", "C++", "HTML", "CSS", "communication", "leadership",
 ]
 
 

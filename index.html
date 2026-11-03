@@ -741,6 +741,17 @@ body:has(.workspace.active) .site-footer{display:none}
 .factor-row:nth-child(2) .factor-bar i{animation-delay:60ms}.factor-row:nth-child(3) .factor-bar i{animation-delay:120ms}.factor-row:nth-child(4) .factor-bar i{animation-delay:180ms}.factor-row:nth-child(5) .factor-bar i{animation-delay:240ms}.factor-row:nth-child(6) .factor-bar i{animation-delay:300ms}
 @keyframes bar-grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 .factor-total b{color:var(--brand-line)}
+.factor-row>div:first-child,.match-factor>div:first-child{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.factor-row>div:first-child small,.match-factor>div:first-child small{color:#aeb4c2;font-size:11px;font-weight:600}
+.match-factor{padding:10px 0;border-bottom:1px solid var(--line)}
+.match-factor .factor-bar{height:7px;margin-top:8px;overflow:hidden;border-radius:999px;background:#e8eaf0}
+.match-factor .factor-bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#6366f1,#a78bfa)}
+.application-feedback{margin-top:20px}
+.application-feedback>small{display:block;color:var(--muted);margin:8px 0 14px}
+.course-recommendations{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.course-recommendations a{display:grid;gap:4px;padding:13px 15px;border:1px solid var(--line);border-radius:10px;color:var(--ink);text-decoration:none;background:var(--surface)}
+.course-recommendations a:hover{border-color:var(--brand);background:var(--brand-bg)}
+.course-recommendations span{color:var(--muted);font-size:13px}
 .human-note{border-radius:10px;background:#181b23;border-left:3px solid #818cf8}
 .candidate-summary-card.entering{animation:deck-in 340ms var(--ease-out)}
 @keyframes deck-in{from{opacity:0;transform:translateY(12px) scale(.98)}}
@@ -1408,6 +1419,7 @@ body:has(.workspace.active) .site-footer{display:none}
             <article><span>Submitted applications</span><strong id="ovPrepared">0</strong><p>With employers for review</p></article>
             <article><span>Next useful step</span><strong id="ovNext">—</strong><p id="ovNextNote">Nothing yet</p></article>
           </div>
+          <section class="content-block application-feedback-notice" id="applicationFeedbackOverview" hidden></section>
           <div class="content-block"><div class="block-heading"><div><h2>Top opportunities</h2><p>Recommended from verified evidence and your preferences.</p></div><button class="text-action" data-candidate-tab="matches">See all matches</button></div><div class="job-list" id="overviewJobs"></div></div>
         </section>
 
@@ -1515,7 +1527,7 @@ body:has(.workspace.active) .site-footer{display:none}
         </section>
 
         <section class="tab-panel" id="candidate-matches">
-          <div class="workspace-heading"><div><p class="overline dark">Explainable matching</p><h1>Your job <em>matches</em></h1><p>Fit and evidence confidence are shown separately.</p></div><span class="status-chip">Updated today</span></div>
+          <div class="workspace-heading"><div><p class="overline dark">Explainable matching</p><h1>Your job <em>matches</em></h1><p>Fit updates from your saved resume and Skill Passport. Resume-extracted skills are suggestions until you confirm them.</p></div><span class="status-chip" id="matchesUpdated">Add a resume to see your fit</span></div>
           <div class="job-list vertical" id="allJobs"></div>
         </section>
 
@@ -1528,8 +1540,9 @@ body:has(.workspace.active) .site-footer{display:none}
         <section class="tab-panel" id="candidate-selections"><div class="workspace-heading"><div><p class="overline dark">Interview invitations</p><h1>Your <em>selections</em></h1><p>Every company that has selected you for an interview. Pick a time that works for you and it's booked.</p></div><span class="status-chip" id="selectionsCount">0 selections</span></div><div class="selection-list" id="selectionList"></div></section>
 
         <section class="tab-panel" id="candidate-scaleup">
-          <div class="workspace-heading"><div><p class="overline dark">Learning Pathway Agent</p><h1>ScaleUp turns gaps into <em>opportunity.</em></h1><p>Confirmed recruiter feedback stays separate from AI-inferred market patterns.</p></div></div>
-          <div class="scaleup-grid"><article class="scaleup-focus"><span>Most repeated gap</span><h2 id="gapSkill">Nothing to fix yet</h2><p id="gapText">Add skills to your Skill Passport and ScaleUp will show what to prove next.</p><button class="button button-light" id="completeTask" type="button" hidden>Add proof</button></article><article class="content-block"><h2>Why this matters</h2><dl><div><dt>Confirmed feedback</dt><dd id="gapFeedback">No recruiter feedback yet.</dd></div><div><dt>Market pattern</dt><dd id="gapMarket">Shown once you add skills.</dd></div><div><dt>Smallest next action</dt><dd id="gapNext">Add one skill with a project, course or work sample.</dd></div></dl></article></div>
+          <div class="workspace-heading"><div><p class="overline dark">Learning Pathway Agent</p><h1>ScaleUp turns gaps into <em>opportunity.</em></h1><p>Learning guidance uses resume evidence and role skills. It does not claim to know the recruiter’s reason.</p></div></div>
+          <div class="scaleup-grid"><article class="scaleup-focus"><span>Most repeated gap</span><h2 id="gapSkill">Nothing to fix yet</h2><p id="gapText">Add skills to your Skill Passport and ScaleUp will show what to prove next.</p><button class="button button-light" id="completeTask" type="button" hidden>Add proof</button></article><article class="content-block"><h2>Why this matters</h2><dl><div><dt>AI learning feedback</dt><dd id="gapFeedback">No application feedback yet.</dd></div><div><dt>Market pattern</dt><dd id="gapMarket">Shown once you add skills.</dd></div><div><dt>Smallest next action</dt><dd id="gapNext">Add one skill with a project, course or work sample.</dd></div></dl></article></div>
+          <section class="content-block application-feedback" id="applicationFeedback" hidden></section>
         </section>
       </div>
     </section>
@@ -1906,9 +1919,10 @@ const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;
 let skillSeq=0;
 const skills=[];
 const evidenceSources=[];
+let resumeSkillEvidence=[],resumeSkillDocumentId=null,resumeSkillsLoading=false;
 
 // Scoring: each factor is 0–100; fit = Σ factor × weight / 100. Recommended weights from the product brief.
-const weightFactors=[['essential','Essential skill coverage'],['evidence','Evidence strength'],['experience','Relevant projects & experience'],['transferable','Transferable skills'],['recency','Evidence recency'],['preferences','Preferences & practical fit']];
+const weightFactors=[['essential','Essential skill coverage'],['evidence','Evidence strength'],['experience','Relevant projects & experience'],['transferable','Additional role skills'],['recency','Evidence recency'],['preferences','Preferences & practical fit']];
 const defaultWeights={essential:35,evidence:25,experience:15,transferable:10,recency:5,preferences:10};
 state.weights={...defaultWeights};
 state.roleConfig={title:'',company:COMPANY_NAME,place:'',essential:[],preferred:[]};state.activeListingId=null;
@@ -2058,6 +2072,8 @@ async function loadCandidateProfileFromHana(user){
     profileDocs=docsResult.map(d=>({id:++docSeq,documentId:d.id,kind:d.kind,name:d.name,size:d.size,uploadedAt:d.uploaded_at,status:'saved'}));
     renderDocs();
     updateProfileCompleteness();
+    const latestResume=profileDocs.filter(doc=>doc.kind==='resume').sort((a,b)=>String(b.uploadedAt||'').localeCompare(String(a.uploadedAt||'')))[0];
+    if(latestResume)await discoverResumeSkills(latestResume);
   }catch(error){
     console.error('Could not load candidate profile from SAP HANA:',error);
     $('#profileSaveStatus').textContent='Could not load your HANA profile. Check that FastAPI is running.';
@@ -2067,6 +2083,27 @@ async function candidateAuthHeaders(extra={}){
   const {data:{session}}=await supabase.auth.getSession();
   if(!session?.access_token)throw new Error('Please log in again to manage documents.');
   return {...extra,Authorization:`Bearer ${session.access_token}`};
+}
+async function discoverResumeSkills(doc){
+  if(!doc?.documentId||doc.kind!=='resume'||(resumeSkillDocumentId===doc.documentId&&resumeSkillEvidence.length))return;
+  const userId=state.userId;resumeSkillsLoading=true;renderCandidateDashboard();
+  try{
+    const cacheKey=`higherupResumeSkills:${doc.documentId}`;
+    try{
+      const cached=JSON.parse(sessionStorage.getItem(cacheKey)||'null');
+      if(cached&&Array.isArray(cached.skills)){resumeSkillDocumentId=doc.documentId;resumeSkillEvidence=cached.skills;return}
+    }catch{}
+    const response=await fetch(`${API_BASE}/candidates/by-email/${encodeURIComponent(state.email)}/documents/${encodeURIComponent(doc.documentId)}/discover-skills`,{method:'POST',headers:await candidateAuthHeaders()});
+    const result=await response.json();
+    if(!response.ok)throw new Error(result.detail||`Skill extraction failed (${response.status})`);
+    if(userId!==state.userId)return;
+    resumeSkillDocumentId=doc.documentId;
+    resumeSkillEvidence=result.skills||[];
+    try{sessionStorage.setItem(cacheKey,JSON.stringify({skills:resumeSkillEvidence}))}catch{}
+    renderCandidateDashboard();
+  }catch(error){
+    if(userId===state.userId)console.warn('Could not extract skills from saved resume:',error.message);
+  }finally{if(userId===state.userId){resumeSkillsLoading=false;renderCandidateDashboard()}}
 }
 function renderDocs(){
   const order={resume:0,cover:1,proof:2};
@@ -2150,6 +2187,11 @@ $('#profileForm').addEventListener('submit',async e=>{
       }catch(error){doc.status='failed';doc.error=error.message}
     }
   }
+  if(!hanaError){
+    const savedResume=profileDocs.filter(doc=>doc.kind==='resume'&&doc.documentId).sort((a,b)=>String(b.uploadedAt||'').localeCompare(String(a.uploadedAt||'')))[0];
+    resumeSkillDocumentId=null;resumeSkillEvidence=[];
+    if(savedResume)await discoverResumeSkills(savedResume);else renderCandidateDashboard();
+  }
   button.disabled=false;button.textContent='Save profile';
   renderDocs();updateProfileCompleteness();
   if(hanaError){status.textContent=`Could not save profile or manage documents in SAP HANA: ${hanaError.message}`;toast('Could not save to SAP HANA');return}
@@ -2160,7 +2202,7 @@ $('#profileForm').addEventListener('submit',async e=>{
 });
 
 function setAuthenticatedUser(user){
-  if(!user){state.authenticated=false;state.role=null;state.email=null;state.name=null;state.userId=null;state.profileLoadedFor=null;applicationsLoadedFor=null;candidateApplications=new Map();profileDocs=[];state.docsToDelete=[];renderDocs();$('#candidateLogin').hidden=false;$('#recruiterLogin').hidden=false;$('#profileButton').hidden=true;$('#logoutButton').hidden=true;startInterviewSync();return}
+  if(!user){state.authenticated=false;state.role=null;state.email=null;state.name=null;state.userId=null;state.profileLoadedFor=null;applicationsLoadedFor=null;candidateApplications=new Map();resumeSkillEvidence=[];resumeSkillDocumentId=null;resumeSkillsLoading=false;profileDocs=[];state.docsToDelete=[];renderDocs();$('#candidateLogin').hidden=false;$('#recruiterLogin').hidden=false;$('#profileButton').hidden=true;$('#logoutButton').hidden=true;startInterviewSync();return}
   const metaRole=user.user_metadata?.role;
   state.authenticated=true;
   state.role=metaRole==='recruiter'?'recruiter':'candidate';
@@ -2173,7 +2215,7 @@ function setAuthenticatedUser(user){
   $('#candidateGreeting').textContent=firstName+'.';
   $('#prefEmail').textContent=user.email;
   // Load the form once per signed-in user, so background session refreshes never wipe unsaved edits.
-  if(state.profileLoadedFor!==user.id){state.profileLoadedFor=user.id;fillProfile(user);loadCandidateProfileFromHana(user)}
+  if(state.profileLoadedFor!==user.id){state.profileLoadedFor=user.id;resumeSkillEvidence=[];resumeSkillDocumentId=null;resumeSkillsLoading=false;fillProfile(user);loadCandidateProfileFromHana(user)}
   $('#candidateLogin').hidden=true;$('#recruiterLogin').hidden=true;
   $('#profileButton').hidden=false;$('#logoutButton').hidden=false;
   $('#profileRole').textContent=state.role==='candidate'?'Candidate profile':'Recruiter profile';
@@ -2236,34 +2278,47 @@ if(initialSession?.user){
 }
 supabase.auth.onAuthStateChange((_event,session)=>{setAuthenticatedUser(session?.user||null)});
 
-function activateTab(type,name){$$(`[data-${type}-tab]`).forEach(button=>button.classList.toggle('active',button.dataset[`${type}Tab`]===name));$$(`#${type}Page .tab-panel`).forEach(panel=>panel.classList.toggle('active',panel.id===`${type}-${name}`));state.tabs[type]=name;if(state.page===type)syncRoute();window.scrollTo({top:0,behavior:'auto'});if(name==='decisions')renderDecisions();if(name==='schedule')renderSchedule();if(name==='booked')renderBooked();if(name==='selections')renderSelections();if(name==='fairness')renderFairness()}
+function activateTab(type,name){$$(`[data-${type}-tab]`).forEach(button=>button.classList.toggle('active',button.dataset[`${type}Tab`]===name));$$(`#${type}Page .tab-panel`).forEach(panel=>panel.classList.toggle('active',panel.id===`${type}-${name}`));state.tabs[type]=name;if(state.page===type)syncRoute();window.scrollTo({top:0,behavior:'auto'});if(type==='candidate'&&name==='scaleup')loadCandidateApplications();if(name==='decisions')renderDecisions();if(name==='schedule')renderSchedule();if(name==='booked')renderBooked();if(name==='selections')renderSelections();if(name==='fairness')renderFairness()}
 $$('[data-candidate-tab]').forEach(button=>button.onclick=()=>activateTab('candidate',button.dataset.candidateTab));
 $$('[data-recruiter-tab]').forEach(button=>button.onclick=()=>activateTab('recruiter',button.dataset.recruiterTab));
 
-// Candidate side: how the Skill Passport matches each open job. Every number comes from the passport, none is made up.
+// Candidate side: job match scores use confirmed Skill Passport items and clearly labeled resume suggestions.
 function candidateMatch(job){
   const ess=job.essential||[],pref=job.preferred||[];
-  const find=sk=>skills.find(s=>sameSkill(s.name,sk));
-  const matched=ess.map(find).filter(Boolean),missing=ess.filter(sk=>!find(sk));
-  const strength=s=>s.status==='Verified'?100:s.status==='Developing'?70:50;
+  const passportSkill=sk=>skills.find(s=>sameSkill(s.name,sk));
+  const resumeSkill=sk=>resumeSkillEvidence.find(s=>sameSkill(s.skill_name,sk));
+  const find=sk=>passportSkill(sk)||resumeSkill(sk);
+  const matched=ess.map(sk=>({skill:sk,source:find(sk)})).filter(item=>item.source),missing=ess.filter(sk=>!find(sk));
+  const strength=item=>item.source.status==='Verified'?100:item.source.status==='Developing'?70:Number(item.source.confidence_score??50);
   const essential=ess.length?matched.length/ess.length*100:0;
-  const evidence=matched.length?matched.reduce((a,s)=>a+strength(s),0)/matched.length:0;
-  const proof=matched.length?matched.filter(s=>s.detail).length/matched.length*100:0;
-  const nice=pref.length?pref.filter(find).length/pref.length*100:0;
-  const factors=[['Essential skill coverage',55,essential],['Evidence strength',20,evidence],['Proof of work',10,proof],['Nice-to-have skills',15,nice]];
-  const score=skills.length?Math.round(factors.reduce((a,[,w,v])=>a+w*v/100,0)):0;
+  const evidence=matched.length?matched.reduce((a,item)=>a+strength(item),0)/matched.length:0;
+  const proofItems=matched.filter(item=>item.source.detail||['project','internship','work','freelance','hackathon'].includes(item.source.evidence_type));
+  const experience=matched.length?proofItems.length/matched.length*100:0;
+  const transferable=pref.length?pref.filter(find).length/pref.length*100:0;
+  const location=$('#profCity')?.value.trim().toLowerCase()||'';
+  const requestedLocations=$('#prefCities')?.value.trim().toLowerCase()||'';
+  const jobCity=(job.place||'').split('·')[0].trim().toLowerCase();
+  const remote=/remote/i.test(job.place||''),onSite=/on-site/i.test(job.place||''),hybrid=/hybrid/i.test(job.place||'');
+  const cityFit=remote&&/remote/.test(requestedLocations)?100:!location&&!requestedLocations?60:location.includes(jobCity)||jobCity.includes(location)||requestedLocations.includes(jobCity)?100:50;
+  const workMode=$('#prefMode')?.value||'Any',modeFit=workMode==='Any'?100:workMode==='Remote only'?remote?100:0:workMode==='On-site'?onSite?100:0:(remote||hybrid)?100:onSite?50:60;
+  const preferences=(cityFit+modeFit)/2;
+  const recency=resumeSkillEvidence.length||matched.length?50:0;
+  const values={essential,evidence,experience,transferable,recency,preferences};
+  const factors=weightFactors.map(([key,label])=>[label,defaultWeights[key],values[key]]);
+  const score=skills.length||resumeSkillEvidence.length?Math.round(factors.reduce((a,[,w,v])=>a+w*v/100,0)):0;
   return {job,score,factors,missing,matched};
 }
 const candidateMatches=()=>LISTINGS.map(candidateMatch).sort((a,b)=>b.score-a.score);
-function jobMarkup(m){const j=m.job;return `<article class="job-card"><div class="company-icon">${esc(j.company.split(/\s/).map(w=>w[0]).slice(0,2).join(''))}</div><div><h3>${esc(j.title)}</h3><p>${esc(j.company)} · ${esc(j.place)}<br>${esc(j.skills.join(' · '))}</p></div><strong class="job-score">${skills.length?m.score+'%':'—'}</strong><button class="explain-match" data-match-job="${j.id}">Why this match?</button></article>`}
+function jobMarkup(m){const j=m.job,hasProfileEvidence=skills.length||resumeSkillEvidence.length;return `<article class="job-card"><div class="company-icon">${esc(j.company.split(/\s/).map(w=>w[0]).slice(0,2).join(''))}</div><div><h3>${esc(j.title)}</h3><p>${esc(j.company)} · ${esc(j.place)}<br>${esc(j.skills.join(' · '))}</p></div><strong class="job-score">${hasProfileEvidence?m.score+'%':'—'}</strong><button class="explain-match" data-match-job="${j.id}">Why this match?</button></article>`}
 const setText=(id,text)=>{const el=document.getElementById(id);if(el)el.textContent=text};
 const preparedMatches=()=>applyActive?candidateMatches().filter(m=>m.score>=60).slice(0,3):[];
 function openMatch(id){
   const m=candidateMatches().find(x=>x.job.id===Number(id));if(!m)return;
   setText('matchTitle',`Why ${m.job.title} matches`);
-  $('#matchScore').innerHTML=skills.length?`${m.score}% <span>fit · ${m.matched.length} of ${m.job.essential.length} must-have skills</span>`:'— <span>add skills to see your fit</span>';
-  $('#matchFactors').innerHTML=m.factors.map(([label,w,v])=>`<div><span>${label} · ${w}%</span><b>${Math.round(v)} / 100</b></div>`).join('');
-  $('#matchNote').innerHTML=m.missing.length?`<b>Missing proof:</b> ${esc(m.missing.join(', '))}. Missing information lowers confidence; it is never guessed.`:skills.length?'<b>Every must-have skill is in your Skill Passport.</b> Keep the proof up to date.':'<b>Add skills with proof to see how you match.</b>';
+  $('#matchScore').innerHTML=skills.length||resumeSkillEvidence.length?`${m.score}% <span>fit · ${m.matched.length} of ${m.job.essential.length} must-have skills</span>`:'— <span>add a resume or Skill Passport skills to see your fit</span>';
+  $('#matchFactors').innerHTML=m.factors.map(([label,w,v])=>`<div class="match-factor"><div><span>${label} <small>Weight ${w}%</small></span><b>${Math.round(v)}%</b></div><div class="factor-bar"><i style="width:${Math.max(0,Math.min(100,v))}%"></i></div></div>`).join('');
+  const hasEvidence=skills.length||resumeSkillEvidence.length;
+  $('#matchNote').innerHTML=!hasEvidence?'<b>Add a resume or Skill Passport skills to see your fit.</b> Evidence recency stays neutral when dates are unavailable.':`${m.missing.length?`<b>Not found in your saved resume or Skill Passport:</b> ${esc(m.missing.join(', '))}. Confirm extracted skills in your Skill Passport to add evidence.`:'<b>Every must-have skill appears in your resume or Skill Passport.</b> Confirm extracted suggestions in your Skill Passport.'} Evidence recency stays neutral when dates are unavailable.`;
   openDialog($('#matchDialog'));
 }
 $$('[data-close-match]').forEach(button=>button.onclick=()=>closeDialog($('#matchDialog')));$('#matchDialog').onclick=e=>{if(e.target===e.currentTarget)closeDialog(e.currentTarget)};
@@ -2300,33 +2355,50 @@ async function loadCandidateApplications(){
 }
 function renderApprovals(){
   const prepared=preparedMatches(),list=$('#approvalList');
-  list.innerHTML=prepared.length?prepared.map(m=>`<article class="approval-item"><div><b>${esc(m.job.title)}</b><span>${esc(m.job.company)} · ${esc(m.job.place)} · ${m.score}% fit</span><small>Submit your saved resume directly to this employer</small></div>${applicationActionMarkup(m.job,'button')}</article>`).join(''):`<p class="empty-state">${!applyActive?'The Apply Agent is paused.':skills.length?'No strong matches to prepare yet. Add more skills with proof.':'Add skills to your Skill Passport and the agent prepares applications for strong matches.'}</p>`;
+  list.innerHTML=prepared.length?prepared.map(m=>`<article class="approval-item"><div><b>${esc(m.job.title)}</b><span>${esc(m.job.company)} · ${esc(m.job.place)} · ${m.score}% fit</span><small>Submit your saved resume directly to this employer</small></div>${applicationActionMarkup(m.job,'button')}</article>`).join(''):`<p class="empty-state">${!applyActive?'The Apply Agent is paused.':skills.length||resumeSkillEvidence.length?'No strong matches to prepare yet. Add more skill evidence.':'Add a resume or Skill Passport skills and the agent will show suitable roles.'}</p>`;
   bindApplicationActions(list);
 }
 function renderScaleUp(){
   const gaps=new Map();
-  LISTINGS.forEach(l=>l.essential.forEach(sk=>{if(!skills.some(s=>sameSkill(s.name,sk)))gaps.set(sk,(gaps.get(sk)||0)+1)}));
+  const hasSkill=sk=>skills.some(s=>sameSkill(s.name,sk))||resumeSkillEvidence.some(s=>sameSkill(s.skill_name,sk));
+  LISTINGS.forEach(l=>l.essential.forEach(sk=>{if(!hasSkill(sk))gaps.set(sk,(gaps.get(sk)||0)+1)}));
   const top=[...gaps].sort((a,b)=>b[1]-a[1])[0];
+  const passed=[...candidateApplications.values()].filter(application=>application.status==='Passed'&&application.rejection_feedback).sort((a,b)=>String(b.submitted_at||'').localeCompare(String(a.submitted_at||'')));
+  const latest=passed[0],feedback=latest?.rejection_feedback,feedbackPanel=$('#applicationFeedback');
+  setText('gapFeedback',feedback?.message||'No recruiter feedback yet.');
+  if(feedbackPanel){
+    feedbackPanel.hidden=!feedback;
+    feedbackPanel.innerHTML=feedback?`<p class="overline dark">${feedback.generated_by==='ai'?'AI learning guidance':'Learning guidance'}</p><h2>Feedback for ${esc(latest.role_title)}</h2><p>${esc(feedback.message)}</p><small>${esc(feedback.notice||'Career guidance based on your resume and the role skills.')}</small>${feedback.courses?.length?`<h3>Suggested learning</h3><div class="course-recommendations">${feedback.courses.map(course=>`<a href="${esc(course.url)}" target="_blank" rel="noopener noreferrer"><b>${esc(course.title)}</b><span>${esc(course.skill)} · ${esc(course.provider)}</span></a>`).join('')}</div>`:''}`:'';
+  }
   scaleGap=top?top[0]:'';
-  setText('gapSkill',top?`${top[0]} evidence`:skills.length?'No gaps right now':'Nothing to fix yet');
-  setText('gapText',top?`Missing from your Skill Passport. It is a must-have in ${top[1]} of ${LISTINGS.length} open ${COMPANY_NAME} roles.`:skills.length?'Your Skill Passport covers every must-have skill we are hiring for.':'Add skills to your Skill Passport and ScaleUp will show what to prove next.');
+  setText('gapSkill',top?`${top[0]} evidence`:skills.length||resumeSkillEvidence.length?'No gaps right now':'Nothing to fix yet');
+  setText('gapText',top?`Missing from your resume and Skill Passport. It is a must-have in ${top[1]} of ${LISTINGS.length} open ${COMPANY_NAME} roles.`:skills.length||resumeSkillEvidence.length?'Your resume and Skill Passport cover every current must-have.':'Add skills to your Skill Passport and ScaleUp will show what to prove next.');
   setText('gapMarket',top?`${top[0]} is a must-have in ${top[1]} of ${LISTINGS.length} open roles.`:'Shown once you add skills.');
   setText('gapNext',top?`Add one project, course or work sample that shows ${top[0]}.`:'Add one skill with a project, course or work sample.');
   const button=$('#completeTask');button.hidden=!top;if(top)button.textContent=`Add proof for ${top[0]}`;
 }
 function renderCandidateDashboard(){
-  const matches=candidateMatches(),has=skills.length>0,best=matches[0],verified=skills.filter(s=>s.status==='Verified').length;
+  const matches=candidateMatches(),has=skills.length>0||resumeSkillEvidence.length>0,best=matches[0],verified=skills.filter(s=>s.status==='Verified').length;
+  const hasPassport=skills.length>0;
   const strong=matches.filter(m=>m.score>=60).length,waiting=[...candidateApplications.values()].filter(application=>application.status==='Submitted').length;
   setText('ovLead',has?`You match ${strong} of ${LISTINGS.length} open roles at ${COMPANY_NAME}.${best.missing.length?` Adding proof for ${best.missing[0]} would strengthen your top match.`:''}`:`Add your skills to see how you match ${COMPANY_NAME}'s open roles.`);
-  setText('ovChip',has?`${verified} of ${skills.length} skills verified`:'No skills yet');$('#ovChip')?.classList.toggle('success',verified>0);
-  setText('ovStrength',has?`${Math.round(verified/skills.length*100)}%`:'—');
-  setText('ovStrengthNote',has?`${verified} of ${skills.length} skills have verified evidence.`:'Add your first skill with proof.');
+  setText('ovChip',skills.length?`${verified} of ${skills.length} skills verified`:resumeSkillEvidence.length?`${resumeSkillEvidence.length} resume skills found`:'No skills yet');$('#ovChip')?.classList.toggle('success',verified>0);
+  setText('ovStrength',hasPassport?`${Math.round(verified/skills.length*100)}%`:'—');
+  setText('ovStrengthNote',hasPassport?`${verified} of ${skills.length} Skill Passport skills have verified evidence.`:resumeSkillEvidence.length?'Resume skills found; review and confirm them in your Skill Passport.':'Add your first skill with proof.');
   setText('ovBest',has?`${best.score}%`:'—');setText('ovBestNote',has?best.job.title:'Add skills to see matches');
   setText('ovPrepared',String(waiting));
+  setText('matchesUpdated',resumeSkillsLoading?'Reading your saved resume…':resumeSkillEvidence.length?`${resumeSkillEvidence.length} resume skills found · confirm suggestions`:skills.length?'Updated from Skill Passport':'Add a resume to see your fit');
   setText('ovNext',has&&best.missing.length?String(best.missing.length):'—');
   setText('ovNextNote',has&&best.missing.length?`Proof for ${best.missing[0]}`:has?'Nothing missing for your top match':'Nothing yet');
   const none='<p class="empty-state">No open jobs yet.</p>';
   $('#overviewJobs').innerHTML=matches.length?matches.slice(0,2).map(jobMarkup).join(''):none;$('#allJobs').innerHTML=matches.length?matches.map(jobMarkup).join(''):none;
+  const latestFeedback=[...candidateApplications.values()].filter(application=>application.status==='Passed'&&application.rejection_feedback).sort((a,b)=>String(b.submitted_at||'').localeCompare(String(a.submitted_at||'')))[0];
+  const feedbackNotice=$('#applicationFeedbackOverview');
+  if(feedbackNotice){
+    feedbackNotice.hidden=!latestFeedback;
+    feedbackNotice.innerHTML=latestFeedback?`<p class="overline dark">Application update</p><h2>Learning feedback for ${esc(latestFeedback.role_title)}</h2><p>${esc(latestFeedback.rejection_feedback.message)}</p><button type="button" class="text-action" id="viewApplicationFeedback">View suggested courses in ScaleUp →</button>`:'';
+    $('#viewApplicationFeedback')?.addEventListener('click',()=>activateTab('candidate','scaleup'));
+  }
   $$('[data-match-job]').forEach(b=>b.onclick=()=>openMatch(b.dataset.matchJob));
   renderApprovals();renderScaleUp();
 }
@@ -2447,7 +2519,7 @@ function renderCandidate(){
   deckCard.innerHTML=`<div class="candidate-head"><div class="candidate-avatar">${esc(candidate.initials)}</div><div><h2>${esc(candidate.name)}</h2><p>${esc(candidate.headline)}${fields.has('location')&&candidate.location?` · ${esc(candidate.location)}`:''}</p>${candidate.appliedRole?`<small class="deck-note">Applied for ${esc(candidate.appliedRole)} · ${esc(candidate.company)}</small>`:''}</div><div class="fit-score"><strong>${score}%</strong><span>job fit</span></div></div><span class="status-chip">${confidenceLabel(candidate)}</span><p class="candidate-summary">${esc(candidate.summary)}</p>${fields.has('skills')?`<div class="evidence-tags">${(candidate.skills||[]).slice(0,10).map(skill=>`<span class="${isEssential(skill)?'essential':''}">${esc(skill)}${isEssential(skill)?' · essential':''}</span>`).join('')}</div>`:''}${evidence?`<div class="summary-evidence">${evidence}</div>`:''}${fields.has('gaps')?`<div class="gap-box"><b>Missing evidence to check</b><p>${esc(gap)}</p></div>`:''}${candidate.mode==='keyword_fallback'?'<small class="deck-note">Summary built with keyword matching because the AI was unavailable. Check the resume.</small>':''}`;
   deckCard.classList.remove('entering');void deckCard.offsetWidth;deckCard.classList.add('entering');
   countUp(deckCard.querySelector('.fit-score strong'),score);
-  $('#factorList').innerHTML=weightFactors.map(([key,label])=>`<div class="factor-row"><div><span>${label} · ${state.weights[key]}%</span><b>${factors[key]}</b></div><div class="factor-bar"><i style="width:${factors[key]}%"></i></div></div>`).join('')+`<p class="factor-total">Each factor × its weight, added up = <b>${score}% fit</b></p>`;
+  $('#factorList').innerHTML=weightFactors.map(([key,label])=>`<div class="factor-row"><div><span>${label} <small>Weight ${state.weights[key]}%</small></span><b>${factors[key]}% score</b></div><div class="factor-bar"><i style="width:${Math.max(0,Math.min(100,factors[key]))}%"></i></div></div>`).join('')+`<p class="factor-total">Each factor score × its weight, added up = <b>${score}% fit</b></p>`;
 }
 
 // ---------- Talent pool: resumes the AI has read and summarised. Stored in SAP HANA, shown only to signed-in recruiters.
@@ -2528,7 +2600,7 @@ function renderFairness(){setText('auditCriteria',String(inclusionIssues(readRol
 
 async function decide(decision){
   const candidate=currentCandidate();if(!candidate)return;
-  try{await talentApi(`/talent/applications/${encodeURIComponent(candidate.applicationId)}/decision`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({decision})})}
+  try{await talentApi(`/talent/applications/${encodeURIComponent(candidate.applicationId)}/decision`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({decision,essential_skills:state.roleConfig.essential||[],preferred_skills:state.roleConfig.preferred||[]})})}
   catch(error){renderCandidate();toast(error.message);return}
   state.decisions.push({candidate,decision,role:state.roleConfig.title});
   addAudit('Human decision',`${candidate.name} ${decision.toLowerCase()} for ${state.roleConfig.title}`);
@@ -2572,7 +2644,7 @@ document.addEventListener('keydown',event=>{
   else if(event.key==='ArrowLeft'){event.preventDefault();flyOut('Passed')}
   else if(event.key.toLowerCase()==='u'||(event.key.toLowerCase()==='z'&&(event.ctrlKey||event.metaKey))){event.preventDefault();undo()}
 });
-function renderCounts(){const mine=roleDecisions();$('#shortlistedCount').textContent=mine.filter(d=>d.decision==='Shortlisted').length;$('#passedCount').textContent=mine.filter(d=>d.decision==='Passed').length;$('#remainingCount').textContent=Math.max(0,candidates.length-mine.length)}
+function renderCounts(){const mine=roleDecisions();$('#shortlistedCount').textContent=mine.filter(d=>d.decision==='Shortlisted').length;$('#passedCount').textContent=mine.filter(d=>d.decision==='Passed').length;$('#remainingCount').textContent=Math.max(0,rankedCandidates().length-mine.length)}
 // Decisions list. The Shortlisted / Passed cards filter it; shortlisted people get a Select button that sends a Round 1 invite.
 state.decisionFilter=null;
 function renderDecisions(){
