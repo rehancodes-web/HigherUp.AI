@@ -124,6 +124,7 @@ def db_health():
 
 
 class SkillsRequest(BaseModel):
+    email: str = Field(min_length=3, max_length=255)
     candidate_text: str = Field(
         min_length=20,
         max_length=10000,
@@ -132,7 +133,8 @@ class SkillsRequest(BaseModel):
 
 
 @app.post("/skills/discover")
-def discover_skills(request: SkillsRequest):
+def discover_skills(request: SkillsRequest, http_request: Request):
+    require_candidate_email(http_request.headers.get("Authorization"), request.email)
     return discover(request.candidate_text)
 
 
@@ -495,6 +497,70 @@ def extract_candidate_document_text(email: str, document_id: str, request: Reque
         "character_count": len(text),
         "text": text,
         "needs_ocr": False,
+    }
+
+
+@app.post("/candidates/by-email/{email}/documents/{document_id}/discover-skills")
+def discover_skills_from_candidate_pdf(
+    email: str,
+    document_id: str,
+    request: Request,
+):
+    """Extract a candidate-owned resume PDF and return skill suggestions for review."""
+    require_candidate_email(request.headers.get("Authorization"), email)
+    connection = None
+    cursor = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute(
+            """
+            SELECT D.DOCUMENT_KIND, D.FILE_NAME, D.CONTENT_TYPE, D.FILE_DATA
+            FROM CANDIDATE_DOCUMENT D
+            JOIN CANDIDATE_PROFILE C ON C.CANDIDATE_ID = D.CANDIDATE_ID
+            WHERE LOWER(C.EMAIL) = ? AND D.DOCUMENT_ID = ?
+            """,
+            (email.strip().lower(), document_id),
+        )
+        row = cursor.fetchone()
+        if row is None:
+            raise HTTPException(status_code=404, detail="Document not found")
+        document_kind = str(row[0]).strip().lower()
+        file_name, content_type, file_data = row[1], row[2] or "", bytes(row[3])
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Could not retrieve document for skill discovery: {str(exc)[:300]}",
+        )
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if connection is not None:
+            connection.close()
+
+    if document_kind != "resume":
+        raise HTTPException(status_code=400, detail="Choose a resume document for skill discovery")
+    if not file_name.lower().endswith(".pdf") and content_type.split(";", 1)[0].lower() != "application/pdf":
+        raise HTTPException(status_code=415, detail="Skill discovery currently supports PDF resumes only")
+
+    try:
+        text, page_count = extract_pdf_text(file_data)
+    except PDFTextExtractionError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+    result = discover(text)
+    return {
+        "document_id": document_id,
+        "file_name": file_name,
+        "page_count": page_count,
+        "character_count": len(text),
+        "agent": result["agent"],
+        "mode": result["mode"],
+        "skills": result["skills"],
+        "needs_candidate_review": True,
+        "note": result["note"],
     }
 
 
