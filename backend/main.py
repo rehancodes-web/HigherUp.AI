@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 from hdbcli import dbapi
 from skills_agent import discover
 from pdf_extraction import PDFTextExtractionError, extract_pdf_text
+from interviews import router as interviews_router
 
 # Load the .env located beside main.py
 load_dotenv(Path(__file__).resolve().parent / ".env")
@@ -31,6 +32,7 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization", "X-File-Name", "X-Document-Kind"],
 )
+app.include_router(interviews_router)  # interview slots, invites and booking (interviews.py)
 
 
 def get_db_connection():
