@@ -1405,7 +1405,7 @@ body:has(.workspace.active) .site-footer{display:none}
           <div class="summary-grid">
             <article class="summary-feature"><span>Profile strength</span><strong id="ovStrength">—</strong><p id="ovStrengthNote">Add your first skill with proof.</p></article>
             <article><span>Best match</span><strong id="ovBest">—</strong><p id="ovBestNote">Add skills to see matches</p></article>
-            <article><span>Prepared applications</span><strong id="ovPrepared">0</strong><p>Waiting for your approval</p></article>
+            <article><span>Submitted applications</span><strong id="ovPrepared">0</strong><p>With employers for review</p></article>
             <article><span>Next useful step</span><strong id="ovNext">—</strong><p id="ovNextNote">Nothing yet</p></article>
           </div>
           <div class="content-block"><div class="block-heading"><div><h2>Top opportunities</h2><p>Recommended from verified evidence and your preferences.</p></div><button class="text-action" data-candidate-tab="matches">See all matches</button></div><div class="job-list" id="overviewJobs"></div></div>
@@ -1543,7 +1543,7 @@ body:has(.workspace.active) .site-footer{display:none}
       <div class="workspace-content">
         <section class="tab-panel active" id="recruiter-deck">
           <div class="workspace-heading"><div><p class="overline dark">Skills-first review</p><h1>Talent <em>Deck</em></h1><p>Review one role-specific summary at a time. Drag the card right to shortlist or left to pass, or use the buttons. Every decision can be undone.</p></div><span class="status-chip" id="deckProgress">0 candidates</span></div>
-          <div class="deck-toolbar"><label>Reviewing candidates for<select id="deckRole"></select></label><div class="deck-toolbar-actions"><span class="deck-upload-status" id="deckUploadStatus" aria-live="polite"></span><button type="button" class="button button-outline-light" id="addResumes">Add resumes</button><input type="file" id="resumeFiles" accept=".pdf,.docx,.txt" multiple hidden></div></div>
+          <div class="deck-toolbar"><label>Reviewing applicants for<select id="deckRole"></select></label></div>
           <div class="deck-layout"><div><div class="candidate-summary-card" id="candidateCard"></div><div class="deck-actions"><button class="decision-button pass" id="passButton" aria-label="Pass candidate">Pass</button><button class="decision-button undo" id="undoButton" aria-label="Undo last decision">Undo</button><button class="decision-button shortlist" id="shortlistButton" aria-label="Shortlist candidate">Shortlist</button></div><p class="deck-keys">Keyboard: ← pass · → shortlist · U undo</p><button type="button" class="text-action" id="openOnePage" disabled>View the full one-page summary</button></div><aside class="explanation-panel"><span>Inclusive Matching Agent</span><h2>Fit is evidence, not a verdict.</h2><div id="factorList"></div><div class="human-note"><b>Human decision required</b><p>College brand, degree status, gender, age and payment status have zero score weight.</p></div></aside></div>
         </section>
 
@@ -1780,7 +1780,7 @@ body:has(.workspace.active) .site-footer{display:none}
     <div class="dialog-card onepage-dialog">
       <button class="dialog-close" type="button" data-close-onepage aria-label="Close summary">×</button>
       <div id="onePageBody"></div>
-      <div class="onepage-actions"><button type="button" class="button button-outline-light" id="onePageRemove">Remove from talent pool</button><button type="button" class="button button-primary" id="onePagePrint">Print / save as PDF</button></div>
+      <div class="onepage-actions"><button type="button" class="button button-outline-light" id="onePageViewResume" hidden>View original resume</button><button type="button" class="button button-primary" id="onePagePrint">Print / save as PDF</button></div>
     </div>
   </div>
 
@@ -1899,7 +1899,7 @@ const LISTINGS=VERGEMOUNT_JOBS.map((j,i)=>({id:i+1,company:COMPANY_NAME,...j,ski
 const SKILL_ALIASES={ml:'machine learning',js:'javascript',nlp:'natural language processing',k8s:'kubernetes',postgres:'postgresql',tf:'tensorflow',dl:'deep learning','rest api':'rest apis','restful apis':'rest apis',reactjs:'react',nodejs:'node.js'};
 const skillKey=s=>{const n=String(s||'').toLowerCase().replace(/[^a-z0-9+#.]+/g,' ').trim();return SKILL_ALIASES[n]||n};
 function sameSkill(a,b){const A=skillKey(a).split(' ').filter(Boolean),B=skillKey(b).split(' ').filter(Boolean);if(!A.length||!B.length)return false;const [small,big]=A.length<=B.length?[A,B]:[B,A];return small.every(w=>big.includes(w))}
-var approvedJobs=new Set(),applyActive=true,scaleGap='',deckReady=false;
+var candidateApplications=new Map(),applicationsLoadedFor=null,applyActive=true,scaleGap='',deckReady=false;
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 // Skill Passport: candidate-controlled. Anything the candidate adds or edits is "Candidate supplied" until reviewed.
@@ -2160,12 +2160,13 @@ $('#profileForm').addEventListener('submit',async e=>{
 });
 
 function setAuthenticatedUser(user){
-  if(!user){state.authenticated=false;state.role=null;state.email=null;state.name=null;state.userId=null;state.profileLoadedFor=null;profileDocs=[];state.docsToDelete=[];renderDocs();$('#candidateLogin').hidden=false;$('#recruiterLogin').hidden=false;$('#profileButton').hidden=true;$('#logoutButton').hidden=true;startInterviewSync();return}
+  if(!user){state.authenticated=false;state.role=null;state.email=null;state.name=null;state.userId=null;state.profileLoadedFor=null;applicationsLoadedFor=null;candidateApplications=new Map();profileDocs=[];state.docsToDelete=[];renderDocs();$('#candidateLogin').hidden=false;$('#recruiterLogin').hidden=false;$('#profileButton').hidden=true;$('#logoutButton').hidden=true;startInterviewSync();return}
   const metaRole=user.user_metadata?.role;
   state.authenticated=true;
   state.role=metaRole==='recruiter'?'recruiter':'candidate';
   state.email=user.email;
   state.userId=user.id;
+  if(state.role==='candidate'&&applicationsLoadedFor!==user.id){applicationsLoadedFor=user.id;candidateApplications=new Map();loadCandidateApplications()}
   state.name=user.user_metadata?.full_name||user.email;
   const firstName=state.name.split(/[\s@]/)[0];
   $('#candidateName').textContent=state.name;
@@ -2266,10 +2267,41 @@ function openMatch(id){
   openDialog($('#matchDialog'));
 }
 $$('[data-close-match]').forEach(button=>button.onclick=()=>closeDialog($('#matchDialog')));$('#matchDialog').onclick=e=>{if(e.target===e.currentTarget)closeDialog(e.currentTarget)};
+const applicationKey=job=>`${String(job.company||'').trim().toLowerCase()}|${job.id}|${String(job.title||'').trim().toLowerCase()}`;
+function applicationActionMarkup(job,className='button button-primary listing-apply'){
+  const application=candidateApplications.get(applicationKey(job));
+  if(application?.status==='Submitted')return `<button type="button" class="${className}" data-cancel-application="${job.id}">Cancel application</button>`;
+  if(application?.status==='Shortlisted'||application?.status==='Passed')return `<button type="button" class="${className}" disabled>${application.status}</button>`;
+  return `<button type="button" class="${className}" data-apply-listing="${job.id}">${application?.status==='Cancelled'?'Apply again':'Apply'}</button>`;
+}
+function bindApplicationActions(root=document){
+  root.querySelectorAll('[data-apply-listing]').forEach(button=>button.onclick=()=>submitJobApplication(Number(button.dataset.applyListing),button));
+  root.querySelectorAll('[data-cancel-application]').forEach(button=>button.onclick=()=>cancelJobApplication(Number(button.dataset.cancelApplication),button));
+}
+function refreshCandidateApplicationViews(){
+  if(state.page!=='candidate')return;
+  renderCandidateDashboard();
+  if(state.tabs.candidate==='search')renderSearchExtras();
+  if(state.tabs.candidate==='results'){
+    try{const saved=JSON.parse(sessionStorage.getItem('higherupLastSearch')||'null');if(saved?.query)showListings(saved.query,saved.chosenDomain||undefined)}catch{}
+  }
+}
+async function loadCandidateApplications(){
+  if(!(state.authenticated&&state.role==='candidate'))return;
+  const userId=state.userId;
+  try{
+    const result=await talentApi('/talent/applications/mine');
+    if(userId!==state.userId||state.role!=='candidate')return;
+    candidateApplications=new Map((result.applications||[]).map(application=>[
+      applicationKey({id:application.job_id,company:application.company,title:application.role_title}),application
+    ]));
+    refreshCandidateApplicationViews();
+  }catch(error){console.warn('Could not load candidate applications:',error.message)}
+}
 function renderApprovals(){
   const prepared=preparedMatches(),list=$('#approvalList');
-  list.innerHTML=prepared.length?prepared.map(m=>`<article class="approval-item"><div><b>${esc(m.job.title)}</b><span>${esc(m.job.company)} · ${esc(m.job.place)} · ${m.score}% fit</span><small>Prepared from your evidence · review before submission</small></div><button data-approve-job="${m.job.id}"${approvedJobs.has(m.job.id)?' disabled':''}>${approvedJobs.has(m.job.id)?'Approved':'Review & approve'}</button></article>`).join(''):`<p class="empty-state">${!applyActive?'The Apply Agent is paused.':skills.length?'No strong matches to prepare yet. Add more skills with proof.':'Add skills to your Skill Passport and the agent prepares applications for strong matches.'}</p>`;
-  $$('[data-approve-job]').forEach(b=>b.onclick=()=>{approvedJobs.add(Number(b.dataset.approveJob));toast('Application approved and added to your tracker');renderCandidateDashboard()});
+  list.innerHTML=prepared.length?prepared.map(m=>`<article class="approval-item"><div><b>${esc(m.job.title)}</b><span>${esc(m.job.company)} · ${esc(m.job.place)} · ${m.score}% fit</span><small>Submit your saved resume directly to this employer</small></div>${applicationActionMarkup(m.job,'button')}</article>`).join(''):`<p class="empty-state">${!applyActive?'The Apply Agent is paused.':skills.length?'No strong matches to prepare yet. Add more skills with proof.':'Add skills to your Skill Passport and the agent prepares applications for strong matches.'}</p>`;
+  bindApplicationActions(list);
 }
 function renderScaleUp(){
   const gaps=new Map();
@@ -2284,7 +2316,7 @@ function renderScaleUp(){
 }
 function renderCandidateDashboard(){
   const matches=candidateMatches(),has=skills.length>0,best=matches[0],verified=skills.filter(s=>s.status==='Verified').length;
-  const strong=matches.filter(m=>m.score>=60).length,waiting=preparedMatches().filter(m=>!approvedJobs.has(m.job.id)).length;
+  const strong=matches.filter(m=>m.score>=60).length,waiting=[...candidateApplications.values()].filter(application=>application.status==='Submitted').length;
   setText('ovLead',has?`You match ${strong} of ${LISTINGS.length} open roles at ${COMPANY_NAME}.${best.missing.length?` Adding proof for ${best.missing[0]} would strengthen your top match.`:''}`:`Add your skills to see how you match ${COMPANY_NAME}'s open roles.`);
   setText('ovChip',has?`${verified} of ${skills.length} skills verified`:'No skills yet');$('#ovChip')?.classList.toggle('success',verified>0);
   setText('ovStrength',has?`${Math.round(verified/skills.length*100)}%`:'—');
@@ -2357,7 +2389,7 @@ const summaryFieldDefs=[['projects','Strongest project','project'],['internships
 const scoreFor=candidate=>{const f=factorsFor(candidate);return Math.round(weightFactors.reduce((sum,[key])=>sum+f[key]*state.weights[key],0)/100)};
 const roleDecisions=()=>state.decisions.filter(d=>d.role===state.roleConfig.title);
 const decidedFor=c=>state.decisions.some(d=>d.candidate.id===c.id&&d.role===state.roleConfig.title);
-const rankedCandidates=()=>candidates.map(c=>({c,score:scoreFor(c)})).sort((a,b)=>b.score-a.score).map(x=>x.c);
+const rankedCandidates=()=>candidates.filter(c=>!c.appliedRole||c.appliedRole===state.roleConfig.title).map(c=>({c,score:scoreFor(c)})).sort((a,b)=>b.score-a.score).map(x=>x.c);
 const currentCandidate=()=>rankedCandidates().find(c=>!decidedFor(c));
 // How a resume lines up with the role being reviewed. Every number comes from what the resume shows (skills, AI evidence, signals).
 function factorsFor(c){
@@ -2393,26 +2425,26 @@ function countUp(el,to){
 function deckEmptyHtml(){
   if(!(state.authenticated&&state.role==='recruiter'))return '<div class="deck-empty"><h2>Sign in as a recruiter</h2><p>Candidate summaries are only shown to signed-in recruiters.</p></div>';
   if(talentError)return `<div class="deck-empty"><h2>Could not load the talent pool</h2><p>${esc(talentError)}</p></div>`;
-  return '<div class="deck-empty"><h2>No resumes yet</h2><p>Add resumes (PDF, Word or text). The AI reads each one and writes a one-page summary, then candidates are ranked against the role above.</p><button type="button" class="button button-primary" id="deckEmptyAdd">Add resumes</button></div>';
+  return '<div class="deck-empty"><h2>No applications yet</h2><p>When candidates apply to this role, their saved resume and application summary will appear here for your review.</p></div>';
 }
 function renderCandidate(){
-  const candidate=currentCandidate();
+  const roleCandidates=rankedCandidates(),candidate=currentCandidate();
   // Reset any swipe position without animating the new card back into place.
   deckCard.classList.add('swiping');deckCard.classList.remove('flying');deckCard.style.transform='';deckCard.style.opacity='';deckCard.removeAttribute('data-swipe');
   requestAnimationFrame(()=>requestAnimationFrame(()=>deckCard.classList.remove('swiping')));
   $('#openOnePage').disabled=!candidate;
-  if(!candidates.length){
+  if(!roleCandidates.length){
     deckCard.innerHTML=deckEmptyHtml();$('#factorList').innerHTML='';$('#deckProgress').textContent='0 candidates';
-    $('#deckEmptyAdd')?.addEventListener('click',()=>$('#resumeFiles').click());return;
+    return;
   }
   if(!candidate){deckCard.innerHTML='<div class="empty-state"><h2>Every candidate has been reviewed for this role.</h2><p>Your decisions are saved. Use Undo, open the Decisions tab, or switch the role above.</p></div>';$('#factorList').innerHTML='';$('#deckProgress').textContent='Complete';return}
-  $('#deckProgress').textContent=`${roleDecisions().length+1} of ${candidates.length}`;
+  $('#deckProgress').textContent=`${roleDecisions().length+1} of ${roleCandidates.length}`;
   const fields=state.summaryFields,essential=(state.roleConfig.essential||[]).map(skill=>skill.toLowerCase());
   const isEssential=skill=>essential.some(item=>sameSkill(item,skill));
   const evidence=summaryFieldDefs.filter(([key])=>fields.has(key)).map(([,label,prop])=>`<div><b>${label}</b><p>${esc(candidate[prop]||'Not provided')}</p></div>`).join('');
   const score=scoreFor(candidate),factors=factorsFor(candidate),missing=missingFor(candidate);
   const gap=missing.length?`No evidence yet for ${missing.join(', ')}. Ask for a short work sample.`:(candidate.gap||'Every must-have skill appears in the resume.');
-  deckCard.innerHTML=`<div class="candidate-head"><div class="candidate-avatar">${esc(candidate.initials)}</div><div><h2>${esc(candidate.name)}</h2><p>${esc(candidate.headline)}${fields.has('location')&&candidate.location?` · ${esc(candidate.location)}`:''}</p></div><div class="fit-score"><strong>${score}%</strong><span>job fit</span></div></div><span class="status-chip">${confidenceLabel(candidate)}</span><p class="candidate-summary">${esc(candidate.summary)}</p>${fields.has('skills')?`<div class="evidence-tags">${(candidate.skills||[]).slice(0,10).map(skill=>`<span class="${isEssential(skill)?'essential':''}">${esc(skill)}${isEssential(skill)?' · essential':''}</span>`).join('')}</div>`:''}${evidence?`<div class="summary-evidence">${evidence}</div>`:''}${fields.has('gaps')?`<div class="gap-box"><b>Missing evidence to check</b><p>${esc(gap)}</p></div>`:''}${candidate.mode==='keyword_fallback'?'<small class="deck-note">Summary built with keyword matching because the AI was unavailable. Check the resume.</small>':''}`;
+  deckCard.innerHTML=`<div class="candidate-head"><div class="candidate-avatar">${esc(candidate.initials)}</div><div><h2>${esc(candidate.name)}</h2><p>${esc(candidate.headline)}${fields.has('location')&&candidate.location?` · ${esc(candidate.location)}`:''}</p>${candidate.appliedRole?`<small class="deck-note">Applied for ${esc(candidate.appliedRole)} · ${esc(candidate.company)}</small>`:''}</div><div class="fit-score"><strong>${score}%</strong><span>job fit</span></div></div><span class="status-chip">${confidenceLabel(candidate)}</span><p class="candidate-summary">${esc(candidate.summary)}</p>${fields.has('skills')?`<div class="evidence-tags">${(candidate.skills||[]).slice(0,10).map(skill=>`<span class="${isEssential(skill)?'essential':''}">${esc(skill)}${isEssential(skill)?' · essential':''}</span>`).join('')}</div>`:''}${evidence?`<div class="summary-evidence">${evidence}</div>`:''}${fields.has('gaps')?`<div class="gap-box"><b>Missing evidence to check</b><p>${esc(gap)}</p></div>`:''}${candidate.mode==='keyword_fallback'?'<small class="deck-note">Summary built with keyword matching because the AI was unavailable. Check the resume.</small>':''}`;
   deckCard.classList.remove('entering');void deckCard.offsetWidth;deckCard.classList.add('entering');
   countUp(deckCard.querySelector('.fit-score strong'),score);
   $('#factorList').innerHTML=weightFactors.map(([key,label])=>`<div class="factor-row"><div><span>${label} · ${state.weights[key]}%</span><b>${factors[key]}</b></div><div class="factor-bar"><i style="width:${factors[key]}%"></i></div></div>`).join('')+`<p class="factor-total">Each factor × its weight, added up = <b>${score}% fit</b></p>`;
@@ -2431,30 +2463,18 @@ async function talentApi(path,options={}){
 async function loadTalent(){
   if(!(state.authenticated&&state.role==='recruiter')){candidates=[];talentError=''}
   else{
-    try{candidates=(await talentApi('/talent')).profiles||[];talentError=''}
-    catch(error){candidates=[];talentError=error.message==='Not Found'?'The server does not have the talent pool yet. Deploy the latest backend and run 004_talent_profiles.sql in SAP HANA.':error.message}
+    try{
+      const [submitted,reviewed]=await Promise.all([talentApi('/talent'),talentApi('/talent/applications/reviewed')]);
+      candidates=submitted.profiles||[];
+      const decisions=(reviewed.applications||[]).map(candidate=>({candidate,decision:candidate.applicationStatus,role:candidate.appliedRole}));
+      const known=new Set(decisions.map(item=>item.candidate.applicationId));
+      state.decisions=state.decisions.filter(item=>!item.candidate.applicationId||!known.has(item.candidate.applicationId)).concat(decisions);
+      talentError='';
+    }
+    catch(error){candidates=[];talentError=error.message}
   }
   if(deckReady){renderCandidate();renderDecisions()}
 }
-async function addResumes(files){
-  const list=[...files];if(!list.length||talentBusy)return;
-  talentBusy=true;$('#addResumes').disabled=true;
-  const status=$('#deckUploadStatus'),failed=[];let added=0;
-  for(const [i,file] of list.entries()){
-    status.textContent=`Reading ${i+1} of ${list.length}: ${file.name}…`;
-    if(file.size>MAX_FILE_BYTES){failed.push(`${file.name}: over 5 MB`);continue}
-    try{
-      const {profile}=await talentApi('/talent/resumes',{method:'POST',headers:{'X-File-Name':encodeURIComponent(file.name),'Content-Type':file.type||'application/octet-stream'},body:file});
-      const at=candidates.findIndex(c=>c.id===profile.id);if(at>=0)candidates[at]=profile;else candidates.push(profile);
-      added++;renderCandidate();
-    }catch(error){failed.push(`${file.name}: ${error.message}`)}
-  }
-  talentBusy=false;$('#addResumes').disabled=false;$('#resumeFiles').value='';
-  status.textContent=failed.length?`${added} added, ${failed.length} not added. ${failed[0]}`:`${added} resume${added===1?'':'s'} added.`;
-  renderDecisions();toast(failed.length?`${added} added, ${failed.length} could not be read`:`${added} resume${added===1?'':'s'} read and summarised`);
-}
-$('#addResumes').onclick=()=>$('#resumeFiles').click();
-$('#resumeFiles').onchange=e=>addResumes(e.target.files);
 function renderDeckRoles(){
   const select=$('#deckRole');if(!select)return;
   select.innerHTML=LISTINGS.length?LISTINGS.map(l=>`<option value="${l.id}">${esc(l.title)} · ${esc(l.place)}</option>`).join(''):'<option value="">No roles yet</option>';
@@ -2474,6 +2494,7 @@ $('#deckRole').onchange=e=>setActiveRole(Number(e.target.value));
 let onePageFor=null;
 function openOnePage(c){
   if(!c)return;onePageFor=c;
+  $('#onePageViewResume').hidden=!c.applicationId;
   const p=c.onePage||{},role=state.roleConfig;
   const list=(title,items)=>items&&items.length?`<section><h3>${title}</h3><ul>${items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul></section>`:'';
   const proof=(c.skillEvidence||[]).filter(e=>e.verified&&e.evidence);
@@ -2492,15 +2513,23 @@ $('#openOnePage').onclick=()=>openOnePage(currentCandidate());
 $$('[data-close-onepage]').forEach(b=>b.onclick=()=>closeDialog($('#onePageDialog')));
 $('#onePageDialog').onclick=e=>{if(e.target===e.currentTarget)closeDialog(e.currentTarget)};
 $('#onePagePrint').onclick=()=>window.print();
-$('#onePageRemove').onclick=async()=>{
-  if(!onePageFor||!confirm(`Remove ${onePageFor.name} from the talent pool? This deletes their summary.`))return;
-  try{await talentApi(`/talent/${encodeURIComponent(onePageFor.id)}`,{method:'DELETE'});candidates=candidates.filter(c=>c.id!==onePageFor.id);closeDialog($('#onePageDialog'));renderCandidate();renderDecisions();toast('Removed from the talent pool')}
-  catch(error){toast(error.message)}
+$('#onePageViewResume').onclick=async()=>{
+  if(!onePageFor?.applicationId)return;
+  const tab=window.open('about:blank','_blank');
+  try{
+    const response=await fetch(`${API_BASE}/talent/applications/${encodeURIComponent(onePageFor.applicationId)}/resume`,{headers:await candidateAuthHeaders()});
+    if(!response.ok){const data=await response.json().catch(()=>({}));throw new Error(data.detail||'Could not open the original resume')}
+    const url=URL.createObjectURL(await response.blob());
+    if(tab)tab.location.href=url;else window.location.href=url;
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
+  }catch(error){tab?.close();toast(error.message)}
 };
 function renderFairness(){setText('auditCriteria',String(inclusionIssues(readRole()).length));setText('auditLow',String(candidates.filter(c=>confidenceLabel(c).startsWith('Low')).length))}
 
-function decide(decision){
+async function decide(decision){
   const candidate=currentCandidate();if(!candidate)return;
+  try{await talentApi(`/talent/applications/${encodeURIComponent(candidate.applicationId)}/decision`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({decision})})}
+  catch(error){renderCandidate();toast(error.message);return}
   state.decisions.push({candidate,decision,role:state.roleConfig.title});
   addAudit('Human decision',`${candidate.name} ${decision.toLowerCase()} for ${state.roleConfig.title}`);
   renderCandidate();renderDecisions();
@@ -2515,10 +2544,14 @@ function flyOut(decision){
   deckCard.style.transform=`translateX(${dir*120}%) rotate(${dir*12}deg)`;deckCard.style.opacity='0';
   setTimeout(()=>decide(decision),220);
 }
-function undo(){
+async function undo(){
   const at=state.decisions.map(d=>d.role).lastIndexOf(state.roleConfig.title);
   if(at<0){toast('No decision to undo');return}
+  const item=state.decisions[at];
+  try{await talentApi(`/talent/applications/${encodeURIComponent(item.candidate.applicationId)}/undo`,{method:'POST'})}
+  catch(error){toast(error.message);return}
   const [last]=state.decisions.splice(at,1);
+  if(!candidates.some(candidate=>candidate.applicationId===last.candidate.applicationId))candidates.push(last.candidate);
   addAudit('Decision undone',`${last.candidate.name} returned to the Talent Deck`);
   renderCandidate();renderDecisions();
   toast(`${last.candidate.name} returned to the Talent Deck`);
@@ -2557,7 +2590,7 @@ function renderDecisions(){
     const action=item.decision!=='Shortlisted'?'':invite?(slot?`<span class="invite-state booked">Interview booked · ${esc(slotLabel(slot))}</span>`:'<span class="invite-state">Invite sent · waiting for a slot</span>'):`<button class="select-button" type="button" data-select-index="${index}">Select</button>`;
     return `<article><div><b>${esc(item.candidate.name)}</b><span>${esc(item.candidate.headline)}</span></div><strong>${item.decision}</strong><div class="row-actions">${action}</div><button data-undo-index="${index}">Undo</button></article>`;
   }).join('');
-  $$('[data-undo-index]').forEach(button=>button.onclick=()=>{const [removed]=state.decisions.splice(Number(button.dataset.undoIndex),1);addAudit('Decision undone',`${removed.candidate.name} returned to the Talent Deck`);renderCandidate();renderDecisions();toast(`${removed.candidate.name} returned to the Talent Deck`)});
+  $$('[data-undo-index]').forEach(button=>button.onclick=async()=>{const item=state.decisions[Number(button.dataset.undoIndex)];if(!item)return;try{await talentApi(`/talent/applications/${encodeURIComponent(item.candidate.applicationId)}/undo`,{method:'POST'});const [removed]=state.decisions.splice(Number(button.dataset.undoIndex),1);if(!candidates.some(candidate=>candidate.applicationId===removed.candidate.applicationId))candidates.push(removed.candidate);addAudit('Decision undone',`${removed.candidate.name} returned to the Talent Deck`);renderCandidate();renderDecisions();toast(`${removed.candidate.name} returned to the Talent Deck`)}catch(error){toast(error.message)}});
   $$('[data-select-index]').forEach(button=>button.onclick=()=>{selectForInterview(state.decisions[Number(button.dataset.selectIndex)].candidate)});
 }
 $$('.stat-filter').forEach(card=>{
@@ -3274,9 +3307,9 @@ function renderSearchExtras(){
   const jobs=LISTINGS.filter(l=>l.domain===sel).slice(0,4);
   const skills=uniq(LISTINGS.filter(l=>l.domain===sel).flatMap(l=>l.skills)).slice(0,6);
   recs.innerHTML=`<div class="recs-head"><h3>Recommended in ${esc(DOMAINS[sel].name)}</h3><button type="button" class="text-action" data-recs-all>See all ${LISTINGS.filter(l=>l.domain===sel).length} jobs</button></div>
-  <div class="listing-grid">${jobs.map(l=>`<article class="listing" style="--c:${DOMAINS[l.domain].color}"><div class="listing-top"><span class="listing-domain"><i></i>${esc(DOMAINS[l.domain].name)}</span><span class="listing-type">${esc(l.type)}</span></div><h4>${esc(l.title)}</h4><p class="listing-meta">${esc(l.company)} · ${esc(l.place)} · ${esc(l.pay)}</p><div class="listing-skills">${l.skills.map(sk=>`<span>${esc(sk)}</span>`).join('')}</div><button type="button" class="button button-primary listing-apply" data-apply-listing="${l.id}"${preparedListings.has(l.id)?' disabled':''}>${preparedListings.has(l.id)?'Prepared ✓':'Prepare application'}</button></article>`).join('')}</div>
+  <div class="listing-grid">${jobs.map(l=>`<article class="listing" style="--c:${DOMAINS[l.domain].color}"><div class="listing-top"><span class="listing-domain"><i></i>${esc(DOMAINS[l.domain].name)}</span><span class="listing-type">${esc(l.type)}</span></div><h4>${esc(l.title)}</h4><p class="listing-meta">${esc(l.company)} · ${esc(l.place)} · ${esc(l.pay)}</p><div class="listing-skills">${l.skills.map(sk=>`<span>${esc(sk)}</span>`).join('')}</div>${applicationActionMarkup(l)}</article>`).join('')}</div>
   <div class="recs-skills"><span>Skills in demand:</span>${skills.map(sk=>`<button type="button" data-recs-skill="${esc(sk)}">${esc(sk)}</button>`).join('')}</div>`;
-  $$('#searchRecs [data-apply-listing]').forEach(b=>b.onclick=()=>prepareApplication(Number(b.dataset.applyListing),b));
+  bindApplicationActions(recs);
   $('[data-recs-all]').onclick=()=>{searchInput.value=DOMAINS[sel].name;showListings({kind:'domain',value:sel})};
   $$('[data-recs-skill]').forEach(b=>b.onclick=()=>{setSearchMode('skills');searchInput.value=b.dataset.recsSkill;closeSearch();showListings({kind:'skill',value:b.dataset.recsSkill})});
 }
@@ -3459,8 +3492,8 @@ function showListings(query,chosenDomain,opts={}){
   $('#resultsLead').textContent=inDomain&&query.kind!=='domain'?`In ${DOMAINS[inDomain].name}${query.kind==='company'?'':' · '+listJoin(uniq(list.map(l=>l.company)))}`:query.kind==='domain'?`Open roles in ${DOMAINS[query.value].name} from companies on HigherUp.AI.`:`Across ${listJoin(domainNames(domains))}.`;
   const change=$('#candidate-results [data-change-domain]');change.hidden=domains.length<2;
   change.onclick=()=>{activateTab('candidate','search');searchInput.value=query.value&&query.kind!=='domain'?query.value:'';showListings(query,undefined,{ignoreSelected:true})};
-  $('#resultsBody').innerHTML=`<div class="listing-grid">${list.map(l=>`<article class="listing" style="--c:${DOMAINS[l.domain].color}"><div class="listing-top"><span class="listing-domain"><i></i>${esc(DOMAINS[l.domain].name)}</span><span class="listing-type">${esc(l.type)}</span></div><h4>${esc(l.title)}</h4><p class="listing-meta">${esc(l.company)} · ${esc(l.place)} · ${esc(l.pay)}</p><div class="listing-skills">${l.skills.map(sk=>`<span class="${query.kind==='skill'&&sk===query.value?'hit':''}">${esc(sk)}</span>`).join('')}</div><button type="button" class="button button-primary listing-apply" data-apply-listing="${l.id}"${preparedListings.has(l.id)?' disabled':''}>${preparedListings.has(l.id)?'Prepared ✓':'Prepare application'}</button></article>`).join('')}</div>`;
-  $$('#resultsBody [data-apply-listing]').forEach(b=>b.onclick=()=>prepareApplication(Number(b.dataset.applyListing),b));
+  $('#resultsBody').innerHTML=`<div class="listing-grid">${list.map(l=>`<article class="listing" style="--c:${DOMAINS[l.domain].color}"><div class="listing-top"><span class="listing-domain"><i></i>${esc(DOMAINS[l.domain].name)}</span><span class="listing-type">${esc(l.type)}</span></div><h4>${esc(l.title)}</h4><p class="listing-meta">${esc(l.company)} · ${esc(l.place)} · ${esc(l.pay)}</p><div class="listing-skills">${l.skills.map(sk=>`<span class="${query.kind==='skill'&&sk===query.value?'hit':''}">${esc(sk)}</span>`).join('')}</div>${applicationActionMarkup(l)}</article>`).join('')}</div>`;
+  bindApplicationActions($('#resultsBody'));
   activateTab('candidate','results');
 }
 // Results page helpers: back to Search, and restoring the last results after a refresh.
@@ -3472,16 +3505,27 @@ function restoreResults(){
   $('[data-back-to-search-empty]').onclick=()=>{activateTab('candidate','search');searchInput.focus()};
 }
 
-// "Prepare application" adds the job to the Apply Agent queue. Nothing is submitted until the candidate approves it there.
-const preparedListings=new Set();
-function prepareApplication(id,button){
-  const l=LISTINGS.find(x=>x.id===id);if(!l||preparedListings.has(id))return;
-  preparedListings.add(id);
-  $('#approvalList').insertAdjacentHTML('beforeend',`<article class="approval-item"><div><b>${esc(l.title)}</b><span>${esc(l.company)} · ${esc(l.place)}</span><small>Prepared from search · review before submission</small></div><button type="button">Review &amp; approve</button></article>`);
-  const approve=$('#approvalList .approval-item:last-child button');
-  approve.onclick=()=>{approve.textContent='Approved';approve.disabled=true;toast('Application approved and added to your tracker')};
-  button.textContent='Prepared ✓';button.disabled=true;
-  toast(`${l.title} added to your Apply Agent queue for approval`);
+// The candidate confirms before the application and attached resume are saved to HANA.
+async function submitJobApplication(id,button){
+  const l=LISTINGS.find(x=>x.id===id);if(!l||button.disabled)return;
+  if(!(state.authenticated&&state.role==='candidate')){openLogin('candidate');return}
+  button.disabled=true;const previous=button.textContent;button.textContent='Submitting…';
+  try{
+    const result=await talentApi('/talent/applications',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({job_id:l.id,company:l.company,role_title:l.title})});
+    if(result.status==='decision_recorded')await loadCandidateApplications();
+    else candidateApplications.set(applicationKey(l),{id:result.id,status:'Submitted',job_id:l.id,company:l.company,role_title:l.title});
+    toast(result.status==='already_submitted'?'Application was already submitted':`Application submitted to ${l.company}`);
+    refreshCandidateApplicationViews();
+  }catch(error){button.disabled=false;button.textContent=previous;toast(error.message||'Could not submit application')}
+}
+async function cancelJobApplication(id,button){
+  const l=LISTINGS.find(x=>x.id===id),application=l&&candidateApplications.get(applicationKey(l));if(!l||!application||button.disabled)return;
+  button.disabled=true;button.textContent='Cancelling…';
+  try{
+    const result=await talentApi(`/talent/applications/${encodeURIComponent(application.id)}/cancel`,{method:'POST'});
+    candidateApplications.set(applicationKey(l),{...application,status:result.status});
+    toast(`Application to ${l.company} cancelled`);refreshCandidateApplicationViews();
+  }catch(error){button.disabled=false;button.textContent='Cancel application';toast(error.message||'Could not cancel application')}
 }
 $$('[data-search-mode]').forEach(b=>b.onclick=()=>{setSearchMode(b.dataset.searchMode);searchInput.focus()});
 searchInput.addEventListener('input',runSearch);

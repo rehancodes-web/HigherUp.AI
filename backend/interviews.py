@@ -20,7 +20,7 @@ router = APIRouter(prefix="/interviews", tags=["interviews"])
 
 
 def get_supabase_user(authorization: str | None) -> dict:
-    """Verify a Supabase access token and return {email, role, name}."""
+    """Verify a Supabase access token and return its email, role, name and company."""
     token = (authorization or "").removeprefix("Bearer ").strip()
     supabase_url = os.getenv("SUPABASE_URL", "").rstrip("/")
     supabase_key = os.getenv("SUPABASE_PUBLISHABLE_KEY", "")
@@ -45,6 +45,7 @@ def get_supabase_user(authorization: str | None) -> dict:
         "email": email,
         "role": "recruiter" if meta.get("role") == "recruiter" else "candidate",
         "name": meta.get("full_name") or email,
+        "company": meta.get("company") or meta.get("company_name") or meta.get("organization") or os.getenv("RECRUITER_COMPANY", "Vergemount"),
     }
 
 

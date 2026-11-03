@@ -1,105 +1,282 @@
-"""Talent pool API (included by main.py).
-
-Recruiters add resumes (PDF, Word or text). The AI reads each one and writes a one-page summary,
-which is stored in SAP HANA and shown in the Talent Deck. Tables: see 004_talent_profiles.sql
-"""
+"""Candidate applications and recruiter review, backed by SAP HANA."""
 import json
-from urllib.parse import unquote
+from urllib.parse import quote
 from uuid import uuid4
 
-from fastapi import APIRouter, HTTPException, Request
-from fastapi.concurrency import run_in_threadpool
+from fastapi import APIRouter, HTTPException, Request, Response
 from pydantic import BaseModel, Field
 
 from interviews import db, require_role, run_db
 from resume_summary import ResumeReadError, extract_resume_text, summarize_resume
 
-router = APIRouter(prefix="/talent", tags=["talent"])
-MAX_RESUME_BYTES = 5 * 1024 * 1024
+router = APIRouter(prefix="/talent", tags=["applications"])
 
 
-def save_profile(cursor, profile: dict) -> dict:
-    """Insert the profile, or replace the one made from the same file name. Returns the profile with its id."""
-    cursor.execute("SELECT PROFILE_ID FROM TALENT_PROFILE WHERE SOURCE_FILE = ?", (profile["source"],))
-    existing = cursor.fetchone()
-    profile_id = existing[0] if existing else str(uuid4())
-    profile = {**profile, "id": profile_id}
-    payload = json.dumps(profile, ensure_ascii=False).encode("utf-8")
-    if existing:
-        cursor.execute(
-            "UPDATE TALENT_PROFILE SET CANDIDATE_NAME = ?, PROFILE_JSON = ?, CREATED_AT = CURRENT_UTCTIMESTAMP WHERE PROFILE_ID = ?",
-            (profile["name"], payload, profile_id),
-        )
-    else:
-        cursor.execute(
-            """
-            INSERT INTO TALENT_PROFILE (PROFILE_ID, SOURCE_FILE, CANDIDATE_NAME, PROFILE_JSON, CREATED_AT)
-            VALUES (?, ?, ?, ?, CURRENT_UTCTIMESTAMP)
-            """,
-            (profile_id, profile["source"], profile["name"], payload),
-        )
-    return profile
+class ApplicationRequest(BaseModel):
+    job_id: int = Field(ge=1)
+    company: str = Field(min_length=1, max_length=120)
+    role_title: str = Field(min_length=1, max_length=120)
+
+
+class DecisionRequest(BaseModel):
+    decision: str = Field(pattern=r"^(Shortlisted|Passed)$")
 
 
 @router.get("")
-def list_profiles(request: Request):
-    require_role(request.headers.get("Authorization"), "recruiter")
+def list_applications(request: Request):
+    recruiter = require_role(request.headers.get("Authorization"), "recruiter")
+    company = recruiter.get("company", "").strip()
 
     def work():
         with db() as cursor:
-            cursor.execute("SELECT PROFILE_ID, PROFILE_JSON FROM TALENT_PROFILE ORDER BY CREATED_AT, PROFILE_ID")
+            cursor.execute(
+                """SELECT A.APPLICATION_ID, A.PROFILE_JSON, A.COMPANY_NAME, A.ROLE_TITLE,
+                          A.CANDIDATE_EMAIL, A.JOB_ID, A.STATUS
+                   FROM JOB_APPLICATION A
+                   WHERE LOWER(A.COMPANY_NAME) = LOWER(?) AND A.STATUS = 'Submitted'
+                   ORDER BY A.SUBMITTED_AT, A.APPLICATION_ID""",
+                (company,),
+            )
             profiles = []
-            for profile_id, blob in cursor.fetchall():
+            for application_id, blob, company_name, role_title, email, job_id, status in cursor.fetchall():
                 profile = json.loads(bytes(blob).decode("utf-8"))
-                profile["id"] = profile_id
+                profile.update({
+                    "id": f"application:{application_id}",
+                    "applicationId": application_id,
+                    "company": company_name,
+                    "appliedRole": role_title,
+                    "jobId": job_id,
+                    "applicationStatus": status,
+                    "email": email,
+                })
                 profiles.append(profile)
             return {"profiles": profiles}
-    return run_db("load the talent pool", work)
+
+    return run_db("load submitted applications", work)
 
 
-@router.post("/resumes", status_code=201)
-async def add_resume(request: Request):
-    """Body = the resume file. The file name goes in X-File-Name. The AI reads it and a profile is saved."""
-    require_role(request.headers.get("Authorization"), "recruiter")
-    name = unquote(request.headers.get("X-File-Name", "")).strip()
-    if not name or len(name) > 255 or "/" in name or "\\" in name:
-        raise HTTPException(status_code=400, detail="Invalid file name")
-    data = await request.body()
-    if not data or len(data) > MAX_RESUME_BYTES:
-        raise HTTPException(status_code=413, detail="The resume must be between 1 byte and 5 MB")
+@router.get("/applications/reviewed")
+def list_reviewed_applications(request: Request):
+    recruiter = require_role(request.headers.get("Authorization"), "recruiter")
+
+    def work():
+        with db() as cursor:
+            cursor.execute(
+                """SELECT APPLICATION_ID, PROFILE_JSON, COMPANY_NAME, ROLE_TITLE, CANDIDATE_EMAIL,
+                          JOB_ID, STATUS
+                   FROM JOB_APPLICATION
+                   WHERE LOWER(COMPANY_NAME) = LOWER(?) AND STATUS IN ('Shortlisted', 'Passed')
+                   ORDER BY SUBMITTED_AT DESC, APPLICATION_ID""",
+                (recruiter.get("company", "").strip(),),
+            )
+            applications = []
+            for application_id, blob, company_name, role_title, email, job_id, status in cursor.fetchall():
+                profile = json.loads(bytes(blob).decode("utf-8"))
+                profile.update({
+                    "id": f"application:{application_id}", "applicationId": application_id,
+                    "company": company_name, "appliedRole": role_title, "jobId": job_id,
+                    "applicationStatus": status, "email": email,
+                })
+                applications.append(profile)
+            return {"applications": applications}
+
+    return run_db("load reviewed applications", work)
+
+
+@router.get("/applications/mine")
+def list_my_applications(request: Request):
+    candidate = require_role(request.headers.get("Authorization"), "candidate")
+
+    def work():
+        with db() as cursor:
+            cursor.execute(
+                """SELECT APPLICATION_ID, JOB_ID, COMPANY_NAME, ROLE_TITLE, STATUS, SUBMITTED_AT
+                   FROM JOB_APPLICATION WHERE LOWER(CANDIDATE_EMAIL) = LOWER(?)
+                   ORDER BY SUBMITTED_AT DESC""",
+                (candidate["email"],),
+            )
+            return {"applications": [{
+                "id": row[0], "job_id": row[1], "company": row[2], "role_title": row[3],
+                "status": row[4], "submitted_at": row[5].isoformat() if row[5] else None,
+            } for row in cursor.fetchall()]}
+
+    return run_db("load your applications", work)
+
+
+@router.post("/applications", status_code=201)
+def submit_application(body: ApplicationRequest, request: Request):
+    """Submit the candidate's latest saved resume to the employer with its generated summary."""
+    candidate = require_role(request.headers.get("Authorization"), "candidate")
+
+    def load_candidate_resume():
+        with db() as cursor:
+            cursor.execute(
+                """SELECT C.CANDIDATE_ID, C.FULL_NAME, C.HEADLINE, C.CITY, D.DOCUMENT_ID,
+                          D.FILE_NAME, D.FILE_DATA
+                   FROM CANDIDATE_PROFILE C
+                   JOIN CANDIDATE_DOCUMENT D ON D.CANDIDATE_ID = C.CANDIDATE_ID
+                   WHERE LOWER(C.EMAIL) = ? AND D.DOCUMENT_KIND = 'resume'
+                   ORDER BY D.UPLOADED_AT DESC""",
+                (candidate["email"].lower(),),
+            )
+            row = cursor.fetchone()
+            if row is None:
+                raise HTTPException(status_code=400, detail="Upload and save your resume in Profile & preferences before applying")
+
+            cursor.execute(
+                """SELECT APPLICATION_ID, STATUS FROM JOB_APPLICATION
+                   WHERE CANDIDATE_ID = ? AND JOB_ID = ? AND LOWER(COMPANY_NAME) = LOWER(?)""",
+                (row[0], body.job_id, body.company.strip()),
+            )
+            existing = cursor.fetchone()
+            if existing and existing[1] == "Submitted":
+                return {"application": existing[0], "status": "already_submitted"}
+            if existing and existing[1] in {"Shortlisted", "Passed"}:
+                return {"application": existing[0], "status": "decision_recorded"}
+
+            raw = row[6]
+            resume_bytes = bytes(raw) if not isinstance(raw, bytes) else raw
+            return {"row": row, "resume": resume_bytes, "existing_id": existing[0] if existing else None}
+
+    loaded = run_db("load your saved resume", load_candidate_resume)
+    if "application" in loaded:
+        return {"id": loaded["application"], "status": loaded["status"]}
+
+    row, resume_bytes = loaded["row"], loaded["resume"]
     try:
-        text = await run_in_threadpool(extract_resume_text, data, name)
+        profile_text = extract_resume_text(resume_bytes, row[5])
     except ResumeReadError as exc:
-        status = 415 if str(exc).startswith("Unsupported") else 422
-        raise HTTPException(status_code=status, detail=str(exc))
-    profile = await run_in_threadpool(summarize_resume, text, name)   # the AI call can take a few seconds
+        raise HTTPException(status_code=422, detail=str(exc))
+    profile = summarize_resume(profile_text, row[5])
+    if row[1]:
+        profile["name"] = row[1]
+        profile["initials"] = "".join(part[0].upper() for part in row[1].split()[:2]) or "?"
+    profile["email"] = candidate["email"]
+    profile["source"] = row[5]
+    if row[2] and not profile.get("headline"):
+        profile["headline"] = row[2]
+    if row[3] and not profile.get("location"):
+        profile["location"] = row[3]
+    application_id = loaded["existing_id"] or str(uuid4())
+
+    def save_application():
+        with db() as cursor:
+            if loaded["existing_id"]:
+                cursor.execute(
+                    """UPDATE JOB_APPLICATION
+                       SET RESUME_DOCUMENT_ID = ?, PROFILE_JSON = ?, ROLE_TITLE = ?,
+                           STATUS = 'Submitted', SUBMITTED_AT = CURRENT_UTCTIMESTAMP
+                       WHERE APPLICATION_ID = ? AND LOWER(CANDIDATE_EMAIL) = LOWER(?) AND STATUS = 'Cancelled'""",
+                    (row[4], json.dumps(profile, ensure_ascii=False).encode("utf-8"),
+                     body.role_title.strip(), application_id, candidate["email"]),
+                )
+            else:
+                cursor.execute(
+                    """INSERT INTO JOB_APPLICATION
+                       (APPLICATION_ID, CANDIDATE_ID, CANDIDATE_EMAIL, COMPANY_NAME, JOB_ID,
+                        ROLE_TITLE, RESUME_DOCUMENT_ID, PROFILE_JSON, STATUS, SUBMITTED_AT)
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Submitted', CURRENT_UTCTIMESTAMP)""",
+                    (application_id, row[0], candidate["email"], body.company.strip(), body.job_id,
+                     body.role_title.strip(), row[4], json.dumps(profile, ensure_ascii=False).encode("utf-8")),
+                )
+            return {"id": application_id, "status": "submitted"}
+
+    return run_db("submit the application to SAP HANA", save_application)
+
+
+@router.post("/applications/{application_id}/cancel")
+def cancel_application(application_id: str, request: Request):
+    candidate = require_role(request.headers.get("Authorization"), "candidate")
 
     def work():
         with db() as cursor:
-            return save_profile(cursor, profile)
-    return {"profile": await run_in_threadpool(run_db, "save the profile", work)}
+            cursor.execute(
+                """SELECT STATUS FROM JOB_APPLICATION
+                   WHERE APPLICATION_ID = ? AND LOWER(CANDIDATE_EMAIL) = LOWER(?)""",
+                (application_id, candidate["email"]),
+            )
+            row = cursor.fetchone()
+            if row is None:
+                raise HTTPException(status_code=404, detail="Application not found")
+            if row[0] != "Submitted":
+                raise HTTPException(status_code=409, detail="This application can no longer be cancelled")
+            cursor.execute("UPDATE JOB_APPLICATION SET STATUS = 'Cancelled' WHERE APPLICATION_ID = ?", (application_id,))
+            return {"id": application_id, "status": "Cancelled"}
+
+    return run_db("cancel the application", work)
 
 
-class SummarizeRequest(BaseModel):
-    text: str = Field(min_length=40, max_length=30_000)
-    source: str = Field(default="pasted text", max_length=255)
-
-
-@router.post("/summarize")
-async def summarize_text(body: SummarizeRequest, request: Request):
-    """Summarise pasted resume text without saving it (handy for trying the AI)."""
-    require_role(request.headers.get("Authorization"), "recruiter")
-    return {"profile": await run_in_threadpool(summarize_resume, body.text, body.source)}
-
-
-@router.delete("/{profile_id}")
-def delete_profile(profile_id: str, request: Request):
-    require_role(request.headers.get("Authorization"), "recruiter")
+@router.post("/applications/{application_id}/decision")
+def decide_application(application_id: str, body: DecisionRequest, request: Request):
+    recruiter = require_role(request.headers.get("Authorization"), "recruiter")
 
     def work():
         with db() as cursor:
-            cursor.execute("DELETE FROM TALENT_PROFILE WHERE PROFILE_ID = ?", (profile_id,))
-            if cursor.rowcount == 0:
-                raise HTTPException(status_code=404, detail="Profile not found")
-            return {"id": profile_id, "status": "deleted"}
-    return run_db("remove the profile", work)
+            cursor.execute(
+                """SELECT COMPANY_NAME, STATUS FROM JOB_APPLICATION WHERE APPLICATION_ID = ?""",
+                (application_id,),
+            )
+            row = cursor.fetchone()
+            if row is None or row[0].strip().casefold() != recruiter.get("company", "").strip().casefold():
+                raise HTTPException(status_code=404, detail="Application not found")
+            if row[1] != "Submitted":
+                raise HTTPException(status_code=409, detail="This application has already been reviewed")
+            cursor.execute(
+                "UPDATE JOB_APPLICATION SET STATUS = ? WHERE APPLICATION_ID = ?",
+                (body.decision, application_id),
+            )
+            return {"id": application_id, "status": body.decision}
+
+    return run_db("save the hiring decision", work)
+
+
+@router.post("/applications/{application_id}/undo")
+def undo_application_decision(application_id: str, request: Request):
+    recruiter = require_role(request.headers.get("Authorization"), "recruiter")
+
+    def work():
+        with db() as cursor:
+            cursor.execute(
+                """SELECT COMPANY_NAME, STATUS FROM JOB_APPLICATION WHERE APPLICATION_ID = ?""",
+                (application_id,),
+            )
+            row = cursor.fetchone()
+            if row is None or row[0].strip().casefold() != recruiter.get("company", "").strip().casefold():
+                raise HTTPException(status_code=404, detail="Application not found")
+            if row[1] not in {"Shortlisted", "Passed"}:
+                raise HTTPException(status_code=409, detail="There is no hiring decision to undo")
+            cursor.execute(
+                "UPDATE JOB_APPLICATION SET STATUS = 'Submitted' WHERE APPLICATION_ID = ?",
+                (application_id,),
+            )
+            return {"id": application_id, "status": "Submitted"}
+
+    return run_db("undo the hiring decision", work)
+
+
+@router.get("/applications/{application_id}/resume")
+def get_application_resume(application_id: str, request: Request):
+    recruiter = require_role(request.headers.get("Authorization"), "recruiter")
+
+    def work():
+        with db() as cursor:
+            cursor.execute(
+                """SELECT D.FILE_DATA, D.CONTENT_TYPE, D.FILE_NAME
+                   FROM JOB_APPLICATION A
+                   JOIN CANDIDATE_DOCUMENT D ON D.DOCUMENT_ID = A.RESUME_DOCUMENT_ID
+                       AND D.CANDIDATE_ID = A.CANDIDATE_ID
+                   WHERE A.APPLICATION_ID = ? AND LOWER(A.COMPANY_NAME) = LOWER(?)
+                     AND A.STATUS IN ('Submitted', 'Shortlisted', 'Passed')""",
+                (application_id, recruiter.get("company", "")),
+            )
+            row = cursor.fetchone()
+            if row is None:
+                raise HTTPException(status_code=404, detail="Resume not found")
+            return row
+
+    data, content_type, filename = run_db("load the candidate's resume", work)
+    return Response(
+        content=bytes(data),
+        media_type=content_type or "application/octet-stream",
+        headers={"Content-Disposition": f"inline; filename*=UTF-8''{quote(filename)}"},
+    )
