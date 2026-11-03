@@ -7,13 +7,14 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request, Response
 from pydantic import BaseModel, Field
 from hdbcli import dbapi
+
+# Load backend/.env before importing agents that read OPENAI_MODEL at startup.
+load_dotenv(Path(__file__).resolve().parent / ".env")
+
 from skills_agent import discover
 from pdf_extraction import PDFTextExtractionError, extract_pdf_text
 from interviews import router as interviews_router
 from talent import router as talent_router
-
-# Load the .env located beside main.py
-load_dotenv(Path(__file__).resolve().parent / ".env")
 
 app = FastAPI(title="HigherUp.AI API")
 cors_origins = [
@@ -653,6 +654,8 @@ def discover_skills_from_candidate_pdf(
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
     result = discover(text)
+    if result["mode"] != "openai_api":
+        raise HTTPException(status_code=503, detail=result["note"])
     return {
         "document_id": document_id,
         "file_name": file_name,
