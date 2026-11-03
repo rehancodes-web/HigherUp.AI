@@ -1469,7 +1469,7 @@ body:has(.workspace.active) .site-footer{display:none}
               </div>
               <p class="criteria-help">We match you on your <b>skills and real experience</b>. Your education and personal details simply help employers get to know you better.</p>
 
-              <div class="documents-head"><h3>Resume, CV and documents</h3><p>The Skills Discovery Agent will use your resume to suggest Skill Passport entries. You confirm every one.</p></div>
+              <div class="documents-head"><h3>Resume, CV and documents</h3><p>After you save your profile, the Skills Discovery Agent reads your saved PDF resume, adds evidence-backed skills as AI suggestions, and refreshes your job matches. Review the evidence in your Skill Passport.</p></div>
               <div class="upload-grid">
                 <div class="upload-zone" data-kind="resume" data-multiple="false" data-accept=".pdf,.doc,.docx">
                   <b>Resume / CV</b><span>PDF, DOC or DOCX · up to 5 MB</span>
@@ -2006,6 +2006,7 @@ const MAX_FILE_BYTES=5*1024*1024;
 const DOC_RULES={resume:{label:'Resume / CV',exts:['pdf','doc','docx'],max:1},cover:{label:'Cover letter',exts:['pdf','doc','docx'],max:1},proof:{label:'Certificate / proof',exts:['pdf','jpg','jpeg','png'],max:5}};
 let profileDocs=[];   // {id,kind,name,size,path?,uploadedAt?,file?,status:'saved'|'pending'|'failed',error?}
 let docSeq=0;
+let analyzedResumeDocumentId=null;
 const profileFields=['profName','profHeadline','profPhone','profCity','profLooking','profAvailable','profEducation','profLinkedin','profGithub','profPortfolio','profBio'];
 const initialsOf=name=>(name||'?').replace(/@.*/,'').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('')||'?';
 const formatSize=bytes=>bytes<1024*1024?`${Math.max(1,Math.round(bytes/1024))} KB`:`${(bytes/1024/1024).toFixed(1)} MB`;
@@ -2058,9 +2059,10 @@ async function loadCandidateProfileFromHana(user){
     profileDocs=docsResult.map(d=>({id:++docSeq,documentId:d.id,kind:d.kind,name:d.name,size:d.size,uploadedAt:d.uploaded_at,status:'saved'}));
     renderDocs();
     updateProfileCompleteness();
+    try{await loadCandidateMatchData();renderPassport()}catch(error){console.error('Could not load saved candidate matches:',error);$('#profileSaveStatus').textContent=`Profile loaded, but saved matches could not be loaded: ${error.message}`}
   }catch(error){
     console.error('Could not load candidate profile from SAP HANA:',error);
-    $('#profileSaveStatus').textContent='Could not load your HANA profile. Check that FastAPI is running.';
+    $('#profileSaveStatus').textContent=`Could not load your HANA profile: ${error.message}`;
   }
 }
 async function candidateAuthHeaders(extra={}){
@@ -2156,7 +2158,11 @@ $('#profileForm').addEventListener('submit',async e=>{
   applyNameEverywhere(name,profile.headline);
   const failed=profileDocs.filter(d=>d.status==='failed');
   if(failed.length){status.textContent=`Profile saved to SAP HANA, but ${failed.length} document${failed.length>1?'s':''} could not be uploaded (${failed[0].error}). Save again to retry.`;toast('Profile saved. Some documents were not uploaded.')}
-  else{status.textContent='Profile and documents saved to SAP HANA.';toast('Profile and documents saved to SAP HANA')}
+  else{
+    status.textContent='Profile and documents saved. Updating job matches…';
+    try{const mode=await refreshCandidateMatchesAfterSave();status.textContent=mode==='openai_api'?'Profile, AI skills and job matches saved to SAP HANA.':mode==='keyword_fallback'?'AI was unavailable; keyword-based skills and job matches were saved to SAP HANA.':'Profile and job matches saved to SAP HANA.';toast('Profile and job matches saved to SAP HANA')}
+    catch(error){status.textContent=`Profile saved, but job matches could not be updated: ${error.message}`;toast('Profile saved; match update failed')}
+  }
 });
 
 function setAuthenticatedUser(user){
@@ -2254,6 +2260,46 @@ function candidateMatch(job){
   return {job,score,factors,missing,matched};
 }
 const candidateMatches=()=>LISTINGS.map(candidateMatch).sort((a,b)=>b.score-a.score);
+async function loadCandidateMatchData(){
+  if(!state.authenticated||state.role!=='candidate'||!state.email)return;
+  const response=await fetch(`${API_BASE}/candidates/by-email/${encodeURIComponent(state.email)}/matches`,{headers:await candidateAuthHeaders()});
+  const data=await response.json();if(!response.ok)throw new Error(data.detail||`Request failed (${response.status})`);
+  analyzedResumeDocumentId=data.analyzed_document_id||null;
+  skills.splice(0,skills.length,...(data.skills||[]).map((skill,i)=>({...skill,id:Number(skill.id)||i+1})));
+  skillSeq=skills.reduce((max,skill)=>Math.max(max,Number(skill.id)||0),0);
+}
+async function saveCandidateMatchData(){
+  const matches=LISTINGS.map(job=>{const result=candidateMatch(job);return {job_id:job.id,title:job.title,company:job.company,place:job.place,score:result.score,
+    explanation:{factors:result.factors,missing:result.missing,matched:result.matched.map(skill=>skill.name)}}});
+  const response=await fetch(`${API_BASE}/candidates/by-email/${encodeURIComponent(state.email)}/matches`,{
+    method:'PUT',headers:await candidateAuthHeaders({'Content-Type':'application/json'}),
+    body:JSON.stringify({skills,matches,analyzed_document_id:analyzedResumeDocumentId})});
+  const data=await response.json();if(!response.ok)throw new Error(data.detail||`Request failed (${response.status})`);
+}
+async function refreshCandidateMatchesAfterSave(){
+  await loadCandidateMatchData();
+  const resume=profileDocs.find(doc=>doc.kind==='resume'&&doc.status==='saved'&&doc.documentId);
+  if(resume&&resume.name.toLowerCase().endsWith('.pdf')&&resume.documentId!==analyzedResumeDocumentId){
+    const response=await fetch(`${API_BASE}/candidates/by-email/${encodeURIComponent(state.email)}/documents/${encodeURIComponent(resume.documentId)}/discover-skills`,
+      {method:'POST',headers:await candidateAuthHeaders()});
+    const result=await response.json();if(!response.ok)throw new Error(result.detail||`Resume analysis failed (${response.status})`);
+    const skillStatus=result.mode==='openai_api'?'AI suggested':'Keyword suggested';
+    for(const suggestion of result.skills||[]){
+      const name=String(suggestion.skill_name||'').trim();if(!name)continue;
+      const existing=skills.find(skill=>sameSkill(skill.name,name));
+      const evidence=String(suggestion.evidence_text||'').trim();
+      if(existing)Object.assign(existing,{detail:evidence||existing.detail,type:suggestion.evidence_type||existing.type,status:skillStatus});
+      else skills.push({id:++skillSeq,name,level:suggestion.confidence_score>=75?'Advanced':suggestion.confidence_score>=50?'Intermediate':'Beginner',
+        type:suggestion.evidence_type||'Resume evidence',detail:evidence,status:skillStatus});
+    }
+    analyzedResumeDocumentId=resume.documentId;
+    renderPassport();
+    await saveCandidateMatchData();
+    return result.mode||'unknown';
+  }
+  await saveCandidateMatchData();
+  return 'cached';
+}
 function jobMarkup(m){const j=m.job;return `<article class="job-card"><div class="company-icon">${esc(j.company.split(/\s/).map(w=>w[0]).slice(0,2).join(''))}</div><div><h3>${esc(j.title)}</h3><p>${esc(j.company)} · ${esc(j.place)}<br>${esc(j.skills.join(' · '))}</p></div><strong class="job-score">${skills.length?m.score+'%':'—'}</strong><button class="explain-match" data-match-job="${j.id}">Why this match?</button></article>`}
 const setText=(id,text)=>{const el=document.getElementById(id);if(el)el.textContent=text};
 const preparedMatches=()=>applyActive?candidateMatches().filter(m=>m.score>=60).slice(0,3):[];
@@ -2309,6 +2355,7 @@ function renderPassport(){
     if(index<0)return;
     const [removed]=skills.splice(index,1);
     renderPassport();
+    if(state.authenticated&&state.role==='candidate')saveCandidateMatchData().catch(error=>{$('#profileSaveStatus').textContent=`Could not save updated matches: ${error.message}`});
     toast(`${removed.name} removed from your Skill Passport`);
   });
 }
@@ -2338,6 +2385,7 @@ $('#evidenceForm').addEventListener('submit',e=>{
   if(newDetail&&!evidenceSources.some(item=>item.title===detail))evidenceSources.push({title:detail,meta:`${type} · candidate supplied`});
   closeDialog($('#evidenceDialog'));
   renderPassport();
+  if(state.authenticated&&state.role==='candidate')saveCandidateMatchData().catch(error=>{$('#profileSaveStatus').textContent=`Could not save updated matches: ${error.message}`});
   toast(changed?`${name} saved to your Skill Passport`:'No changes to save');
 });
 renderPassport();

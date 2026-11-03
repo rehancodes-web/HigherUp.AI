@@ -158,6 +158,106 @@ class CandidateRequest(BaseModel):
     work_mode: str | None = Field(default=None, max_length=50)
 
 
+class CandidateJobMatch(BaseModel):
+    job_id: int = Field(ge=1)
+    title: str = Field(min_length=1, max_length=200)
+    company: str = Field(default="", max_length=200)
+    place: str = Field(default="", max_length=200)
+    score: int = Field(ge=0, le=100)
+    explanation: dict
+
+
+class CandidateJobMatches(BaseModel):
+    skills: list[dict] = Field(default_factory=list, max_length=100)
+    matches: list[CandidateJobMatch] = Field(max_length=100)
+    analyzed_document_id: str | None = Field(default=None, max_length=36)
+
+
+@app.get("/candidates/by-email/{email}/matches")
+def get_candidate_job_matches(email: str, http_request: Request):
+    require_candidate_email(http_request.headers.get("Authorization"), email)
+    connection = cursor = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT CANDIDATE_ID FROM CANDIDATE_PROFILE WHERE LOWER(EMAIL) = ?", (email.strip().lower(),))
+        candidate = cursor.fetchone()
+        if candidate is None:
+            raise HTTPException(status_code=404, detail="Candidate not found; save your profile first")
+        cursor.execute(
+            "SELECT SKILLS_JSON, MATCH_JSON, ANALYZED_DOCUMENT_ID FROM CANDIDATE_JOB_MATCH WHERE CANDIDATE_ID = ? ORDER BY JOB_ID",
+            (candidate[0],),
+        )
+        rows = cursor.fetchall()
+        if not rows:
+            return {"skills": [], "matches": [], "analyzed_document_id": None}
+        import json
+        skills = json.loads(bytes(rows[0][0]).decode("utf-8"))
+        matches = [json.loads(bytes(row[1]).decode("utf-8")) for row in rows]
+        return {"skills": skills, "matches": matches, "analyzed_document_id": rows[0][2]}
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Could not load saved job matches: {str(exc)[:300]}")
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if connection is not None:
+            connection.close()
+
+
+@app.put("/candidates/by-email/{email}/matches")
+def save_candidate_job_matches(email: str, body: CandidateJobMatches, http_request: Request):
+    require_candidate_email(http_request.headers.get("Authorization"), email)
+    import json
+    connection = cursor = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT CANDIDATE_ID FROM CANDIDATE_PROFILE WHERE LOWER(EMAIL) = ?", (email.strip().lower(),))
+        candidate = cursor.fetchone()
+        if candidate is None:
+            raise HTTPException(status_code=404, detail="Save your profile before saving job matches")
+        candidate_id = candidate[0]
+        skills_json = json.dumps(body.skills, ensure_ascii=False).encode("utf-8")
+        for match in body.matches:
+            match_json = json.dumps(match.model_dump(), ensure_ascii=False).encode("utf-8")
+            cursor.execute("SELECT 1 FROM CANDIDATE_JOB_MATCH WHERE CANDIDATE_ID = ? AND JOB_ID = ?", (candidate_id, match.job_id))
+            if cursor.fetchone():
+                cursor.execute(
+                    "UPDATE CANDIDATE_JOB_MATCH SET SKILLS_JSON = ?, MATCH_JSON = ?, ANALYZED_DOCUMENT_ID = ?, UPDATED_AT = CURRENT_UTCTIMESTAMP WHERE CANDIDATE_ID = ? AND JOB_ID = ?",
+                    (skills_json, match_json, body.analyzed_document_id, candidate_id, match.job_id),
+                )
+            else:
+                cursor.execute(
+                    "INSERT INTO CANDIDATE_JOB_MATCH (CANDIDATE_ID, JOB_ID, SKILLS_JSON, MATCH_JSON, ANALYZED_DOCUMENT_ID, UPDATED_AT) VALUES (?, ?, ?, ?, ?, CURRENT_UTCTIMESTAMP)",
+                    (candidate_id, match.job_id, skills_json, match_json, body.analyzed_document_id),
+                )
+        if body.matches:
+            placeholders = ",".join("?" for _ in body.matches)
+            cursor.execute(
+                f"DELETE FROM CANDIDATE_JOB_MATCH WHERE CANDIDATE_ID = ? AND JOB_ID NOT IN ({placeholders})",
+                (candidate_id, *[match.job_id for match in body.matches]),
+            )
+        else:
+            cursor.execute("DELETE FROM CANDIDATE_JOB_MATCH WHERE CANDIDATE_ID = ?", (candidate_id,))
+        connection.commit()
+        return {"status": "saved", "count": len(body.matches)}
+    except HTTPException:
+        if connection is not None:
+            connection.rollback()
+        raise
+    except Exception as exc:
+        if connection is not None:
+            connection.rollback()
+        raise HTTPException(status_code=500, detail=f"Could not save matches to SAP HANA: {str(exc)[:300]}")
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if connection is not None:
+            connection.close()
+
+
 @app.put("/candidates/by-email/{email}")
 def upsert_candidate_by_email(email: str, request: CandidateRequest, http_request: Request):
     require_candidate_email(http_request.headers.get("Authorization"), email)
