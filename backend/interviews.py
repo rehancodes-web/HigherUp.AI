@@ -6,6 +6,7 @@ Tables: see 003_interviews.sql
 """
 import json
 import os
+import re
 from contextlib import contextmanager
 from datetime import datetime, date as date_cls
 from urllib.error import HTTPError, URLError
@@ -93,6 +94,30 @@ def iso(value) -> str | None:
     return value.isoformat() + "Z" if value else None
 
 
+def minutes(hhmm: str) -> int:
+    hours, mins = hhmm.split(":")
+    return int(hours) * 60 + int(mins)
+
+
+def slot_conflicts(cursor, recruiter: str, slot_date: str, slot_time: str, length: int, extra=()) -> bool:
+    """True if [time, time+length) overlaps a slot this recruiter already has that day (or one in `extra`)."""
+    cursor.execute(
+        "SELECT SLOT_TIME, LENGTH_MIN FROM INTERVIEW_SLOT WHERE RECRUITER_EMAIL = ? AND SLOT_DATE = ?",
+        (recruiter, slot_date),
+    )
+    start = minutes(slot_time)
+    end = start + length
+    for other_time, other_length in list(cursor.fetchall()) + list(extra):
+        other_start = minutes(other_time)
+        if start < other_start + other_length and other_start < end:
+            return True
+    return False
+
+
+def mode_text(mode: str) -> str:
+    return {"Offline": "Offline (in person)"}.get(mode, mode)
+
+
 SLOT_SELECT = """
     SELECT S.SLOT_ID, S.SLOT_DATE, S.SLOT_TIME, S.LENGTH_MIN, S.MODE, S.INTERVIEWER, I.CANDIDATE_NAME, S.RECRUITER_EMAIL
     FROM INTERVIEW_SLOT S
@@ -131,6 +156,10 @@ def load_invites(cursor, where: str, params: tuple) -> list[dict]:
         )
         for r in cursor.fetchall():
             by_id[r[0]]["messages"].append({"from": r[1], "text": r[2], "slots": bool(r[3]), "at": iso(r[4])})
+    # When the candidate booked = the time of their "I'll take ..." message (shown to the recruiter).
+    for inv in invites:
+        booked_at = next((m["at"] for m in inv["messages"] if m["from"] == "you"), None)
+        inv["bookedAt"] = booked_at if inv["slotId"] else None
     return invites
 
 
@@ -192,12 +221,8 @@ def create_slot(body: SlotRequest, request: Request):
 
     def work():
         with db() as cursor:
-            cursor.execute(
-                "SELECT COUNT(*) FROM INTERVIEW_SLOT WHERE RECRUITER_EMAIL = ? AND SLOT_DATE = ? AND SLOT_TIME = ?",
-                (user["email"], body.date, body.time),
-            )
-            if cursor.fetchone()[0]:
-                raise HTTPException(status_code=409, detail="You already have a slot at that time")
+            if slot_conflicts(cursor, user["email"], body.date, body.time, body.length):
+                raise HTTPException(status_code=409, detail="That time overlaps a slot you already added")
             slot_id = str(uuid4())
             interviewer = (body.with_ or "").strip()
             cursor.execute(
@@ -211,6 +236,49 @@ def create_slot(body: SlotRequest, request: Request):
             return {"id": slot_id, "date": body.date, "time": body.time, "length": body.length,
                     "mode": body.mode, "with": interviewer, "bookedBy": None, "recruiter": user["email"]}
     return run_db("add slot", work)
+
+
+class BulkSlotRequest(BaseModel):
+    date: str = Field(pattern=r"^\d{4}-\d{2}-\d{2}$")
+    length: int = Field(default=45, ge=15, le=180)
+    mode: str = Field(default="Video call", max_length=30)
+    with_: str | None = Field(default=None, alias="with", max_length=120)
+    times: list[str] = Field(min_length=1, max_length=48)
+
+
+@router.post("/slots/bulk", status_code=201)
+def create_slots_bulk(body: BulkSlotRequest, request: Request):
+    """Publish several start times for one day in one go (all or nothing)."""
+    user = require_role(request.headers.get("Authorization"), "recruiter")
+    try:
+        day = datetime.strptime(body.date, "%Y-%m-%d").date()
+        times = sorted({datetime.strptime(t, "%H:%M").strftime("%H:%M") for t in body.times})
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid date or time")
+    if day < date_cls.today():
+        raise HTTPException(status_code=400, detail="That date has already passed")
+    interviewer = (body.with_ or "").strip()
+
+    def work():
+        with db() as cursor:
+            added, pending = [], []
+            for slot_time in times:
+                if slot_conflicts(cursor, user["email"], body.date, slot_time, body.length, extra=pending):
+                    raise HTTPException(status_code=409, detail=f"{slot_time} overlaps a slot you already added")
+                slot_id = str(uuid4())
+                cursor.execute(
+                    """
+                    INSERT INTO INTERVIEW_SLOT
+                        (SLOT_ID, RECRUITER_EMAIL, SLOT_DATE, SLOT_TIME, LENGTH_MIN, MODE, INTERVIEWER, BOOKED_INVITE_ID, CREATED_AT)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, NULL, CURRENT_UTCTIMESTAMP)
+                    """,
+                    (slot_id, user["email"], body.date, slot_time, body.length, body.mode, interviewer),
+                )
+                pending.append((slot_time, body.length))
+                added.append({"id": slot_id, "date": body.date, "time": slot_time, "length": body.length,
+                              "mode": body.mode, "with": interviewer, "bookedBy": None, "recruiter": user["email"]})
+            return {"slots": added}
+    return run_db("add slots", work)
 
 
 @router.delete("/slots/{slot_id}")
@@ -233,7 +301,9 @@ def delete_slot(slot_id: str, request: Request):
 def create_invite(body: InviteRequest, request: Request):
     """Recruiter selects a shortlisted candidate: the assistant sends them a Round 1 invite."""
     user = require_role(request.headers.get("Authorization"), "recruiter")
-    candidate_email = (body.candidate_email or "").strip().lower() or None
+    candidate_email = (body.candidate_email or "").strip().lower()
+    if not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", candidate_email):
+        raise HTTPException(status_code=400, detail="Enter the email of the candidate account that should get this invite")
 
     def work():
         with db() as cursor:
@@ -261,9 +331,9 @@ def create_invite(body: InviteRequest, request: Request):
             add_message(cursor, invite_id, "ai",
                         f"Hi {first}, congratulations! You have been shortlisted for a Round 1 interview "
                         f"at {body.company} for the {body.role} role.")
+            # show_slots=True marks the message that carries the "Go to Selections" button.
             add_message(cursor, invite_id, "ai",
-                        "Please pick a time slot that works for you below." if open_slots
-                        else "The hiring team will share interview times soon. You will see them here.",
+                        "Go to Selections in your workspace and pick an interview time that works for you.",
                         show_slots=True)
             invites = load_invites(cursor, "INVITE_ID = ?", (invite_id,))
             return {"invite": invites[0], "openSlots": open_slots}
@@ -277,7 +347,7 @@ def candidate_inbox(request: Request):
 
     def work():
         with db() as cursor:
-            invites = load_invites(cursor, "(LOWER(CANDIDATE_EMAIL) = ? OR CANDIDATE_EMAIL IS NULL)", (user["email"],))
+            invites = load_invites(cursor, "LOWER(CANDIDATE_EMAIL) = ?", (user["email"],))
             recruiters = sorted({inv["recruiter"] for inv in invites})
             slots = []
             if recruiters:
@@ -302,7 +372,7 @@ def mark_inbox_read(request: Request):
     def work():
         with db() as cursor:
             cursor.execute(
-                "UPDATE INTERVIEW_INVITE SET IS_READ = TRUE WHERE IS_READ = FALSE AND (LOWER(CANDIDATE_EMAIL) = ? OR CANDIDATE_EMAIL IS NULL)",
+                "UPDATE INTERVIEW_INVITE SET IS_READ = TRUE WHERE IS_READ = FALSE AND LOWER(CANDIDATE_EMAIL) = ?",
                 (user["email"],),
             )
             return {"status": "ok"}
@@ -319,7 +389,7 @@ def book_slot(invite_id: str, body: BookRequest, request: Request):
             cursor.execute(
                 """
                 SELECT RECRUITER_EMAIL, COMPANY, SLOT_ID FROM INTERVIEW_INVITE
-                WHERE INVITE_ID = ? AND (LOWER(CANDIDATE_EMAIL) = ? OR CANDIDATE_EMAIL IS NULL)
+                WHERE INVITE_ID = ? AND LOWER(CANDIDATE_EMAIL) = ?
                 """,
                 (invite_id, user["email"]),
             )
@@ -347,6 +417,6 @@ def book_slot(invite_id: str, body: BookRequest, request: Request):
             add_message(cursor, invite_id, "you", f"I'll take {label}.")
             add_message(cursor, invite_id, "ai",
                         f"You're booked! Round 1 interview at {invite[1]} on {label} "
-                        f"({s[2]} min, {s[3]}{' with ' + s[4] if s[4] else ''}). Good luck!")
+                        f"({s[2]} min, {mode_text(s[3])}{' with ' + s[4] if s[4] else ''}). Good luck!")
             return {"status": "booked", "slot_id": body.slot_id, "label": label}
     return run_db("book slot", work)

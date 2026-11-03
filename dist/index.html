@@ -809,6 +809,105 @@ body:has(.workspace.active) .site-footer{display:none}
 .chat-slots button:hover{border-color:var(--brand);background:#f8f7ff}
 .chat-slots button small{color:var(--muted)}
 .chat-button[hidden],.chat-badge[hidden],.decision-filter-bar[hidden]{display:none!important}
+.slot-picker{margin-top:18px;padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--bg,#f7f6f3)}
+.slot-picker-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:4px}
+.slot-picker-head b{font-size:17px}.slot-picker-head span{color:var(--muted);font-size:14px}
+.link-button{border:0;background:transparent;color:var(--brand);font-weight:700;cursor:pointer}
+.link-button[hidden]{display:none!important}
+.time-group h3{margin:14px 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.time-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+.time-cell{display:grid;gap:1px;place-items:center;min-height:46px;padding:8px 6px;border:1px solid #cfd2dc;border-radius:10px;background:#fff;color:var(--ink);font:inherit;font-size:14px;font-weight:650;cursor:pointer;transition:background-color 140ms ease,border-color 140ms ease,transform 140ms var(--ease-out)}
+.time-cell small{font-size:11px;font-weight:600;color:var(--muted)}
+.time-cell:hover:not(:disabled){border-color:var(--brand);background:#f8f7ff}
+.time-cell:active:not(:disabled){transform:scale(.97)}
+.time-cell:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.time-cell.selected,.time-cell.selected:hover{background:var(--brand);border-color:var(--brand);color:#fff}
+.time-cell.published{background:#eef0ff;border-style:dashed;border-color:#b9b4f0;color:var(--brand-dark)}
+.time-cell.booked{background:#e3f5ec;border-color:#b7e2c8;color:var(--green)}
+.time-cell.taken,.time-cell.past{background:#f0efec;border-color:#e4e1da;color:#9a9ca6}
+.time-cell:disabled{cursor:not-allowed}
+.time-legend{display:flex;flex-wrap:wrap;gap:16px;margin:16px 0 0;padding:0;list-style:none;color:var(--muted);font-size:12.5px}
+.time-legend i{display:inline-block;width:12px;height:12px;margin-right:6px;border:1px solid #cfd2dc;border-radius:4px;vertical-align:-1px}
+.time-legend .lg-selected{background:var(--brand);border-color:var(--brand)}
+.time-legend .lg-published{background:#eef0ff;border-style:dashed;border-color:#b9b4f0}
+.time-legend .lg-booked{background:#e3f5ec;border-color:#b7e2c8}
+.slot-publish{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:16px}
+.slot-publish .slot-error{margin:0}
+.slot-publish .button:disabled{opacity:.5;cursor:not-allowed}
+.slot-card .slot-time{color:var(--ink);font-weight:650}
+.booked-list{display:grid;gap:14px}
+.booked-card{display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:start;padding:20px;border:1px solid var(--line);border-radius:14px;background:var(--surface,#fff)}
+.booked-when{display:grid;place-items:center;width:72px;padding:10px 0;border-radius:12px;background:#eef0ff;color:var(--brand-dark);text-align:center;line-height:1.1}
+.booked-when span{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}.booked-when b{font-size:28px}
+.booked-main h3{margin:0;font-size:19px}.booked-main h3 small{margin-left:8px;color:var(--muted);font-size:13.5px;font-weight:500}
+.booked-role{margin:4px 0 14px;color:var(--muted);font-size:14px}
+.booked-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px 20px;margin:0}
+.booked-facts dt{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.booked-facts dd{margin:2px 0 0;font-size:14.5px;font-weight:650}
+.chat-foot{padding-top:12px;border-top:1px solid var(--line)}
+.chat-foot[hidden]{display:none!important}
+.chat-detail{display:block;margin-top:4px;color:var(--muted);font-size:13px}
+.chat-msg.wide{width:100%;max-width:100%}
+.deck-toolbar{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;margin:0 0 18px}
+.deck-toolbar label{display:grid;gap:6px;font-size:13px;font-weight:650}
+.deck-toolbar select{min-width:min(100%,300px);min-height:44px;padding:8px 12px;border:1px solid var(--line-strong,#cfd6de);border-radius:10px;background:#fff;font:inherit}
+.deck-toolbar-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.deck-upload-status{max-width:380px;color:var(--muted);font-size:13.5px}
+.deck-empty{padding:30px 22px;text-align:center}
+.deck-empty h2{margin:0 0 8px}.deck-empty p{max-width:46ch;margin:0 auto;color:var(--muted)}
+.deck-empty .button{margin-top:16px}
+.deck-note{display:block;margin-top:10px;color:var(--amber,#a16207);font-size:12.5px}
+#openOnePage{margin-top:10px}#openOnePage:disabled{opacity:.5;cursor:not-allowed}
+.domain-list .muted,.muted{color:var(--muted)}
+.onepage-dialog{width:min(820px,calc(100vw - 32px));max-height:calc(100vh - 40px);overflow:auto}
+.onepage-head{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;padding:6px 40px 16px 0;border-bottom:2px solid var(--ink)}
+.onepage-head h2{margin:0;font-size:26px}.onepage-head p{margin:4px 0 0;color:var(--muted);font-size:14px}
+#onePageBody section{margin-top:18px}
+#onePageBody h3{margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
+#onePageBody p{margin:0;line-height:1.55}
+#onePageBody ul{margin:0;padding-left:18px;line-height:1.55}
+.onepage-cols{display:grid;grid-template-columns:1fr 1fr;gap:0 32px}
+.onepage-foot{margin-top:20px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
+.onepage-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+@media(max-width:700px){.onepage-head{grid-template-columns:auto 1fr}.onepage-head .fit-score{grid-column:1/-1}.onepage-cols{grid-template-columns:1fr}}
+@media print{body>*:not(#onePageDialog){display:none!important}#onePageDialog{position:static!important;display:block!important;opacity:1!important;visibility:visible!important;background:none!important;padding:0!important}#onePageDialog .dialog-card{max-height:none!important;width:100%!important;overflow:visible!important;box-shadow:none!important;border:0!important;transform:none!important}#onePageDialog .dialog-close,#onePageDialog .onepage-actions{display:none!important}}
+.nav-badge{display:inline-grid;place-items:center;min-width:20px;height:20px;margin-left:8px;padding:0 6px;border-radius:999px;background:var(--rose,#be123c);color:#fff;font-size:11.5px;font-weight:800;line-height:1}
+.nav-badge[hidden]{display:none!important}
+.selection-list{display:grid;gap:16px}
+.selection-card{padding:22px;border:1px solid var(--line);border-radius:14px;background:var(--surface,#fff)}
+.selection-card header{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;margin-bottom:16px}
+.selection-card h3{margin:0;font-size:19px}
+.selection-card header p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.selection-card .slot-status,.booked-card .slot-status{display:inline-block;padding:4px 10px;border-radius:999px;background:#eef0ff;color:var(--brand-dark);font-size:12px;font-weight:700;white-space:nowrap}
+.selection-card .slot-status.booked,.booked-card .slot-status.booked{background:#e3f5ec;color:var(--green)}
+.selection-help{margin:0 0 4px;color:var(--muted);font-size:14px}
+.selection-empty{margin:0;padding:14px 16px;border-radius:10px;background:#f3f2ee;color:var(--muted);font-size:14px}
+.sel-day b{display:block;margin:12px 0 6px;color:var(--muted);font-size:12.5px;letter-spacing:.04em}
+.sel-times{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.sel-time{display:grid;gap:2px;padding:10px 8px;border:1px solid #c7c3f5;border-radius:10px;background:#fff;color:var(--ink);font:inherit;text-align:center;cursor:pointer;transition:background-color 140ms ease,border-color 140ms ease,transform 140ms var(--ease-out)}
+.sel-time span{font-size:15px;font-weight:700}
+.sel-time small{color:var(--muted);font-size:11.5px}
+.sel-time:hover{border-color:var(--brand);background:#f8f7ff}
+.sel-time:active{transform:scale(.97)}
+.sel-time:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.sel-time.selected,.sel-time.selected:hover{background:var(--brand);border-color:var(--brand);color:#fff}
+.sel-time.selected small{color:#dcd9ff}
+.selection-confirm{margin-top:18px}
+.selection-confirm .button:disabled{opacity:.5;cursor:not-allowed}
+.chat-link{margin-top:10px}
+.invite-dialog{width:min(460px,calc(100vw - 32px))}
+.invite-dialog h2{margin:4px 0 8px;font-size:24px}
+.invite-help{margin:0 0 16px;color:var(--muted);font-size:14.5px;line-height:1.5}
+.invite-dialog label{display:grid;gap:6px;font-size:13px;font-weight:650}
+.invite-dialog input{min-height:44px;padding:8px 12px;border:1px solid var(--line-strong,#cfd6de);border-radius:8px;font:inherit}
+.invite-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
+@media(max-width:860px){.selection-card header{grid-template-columns:auto 1fr}.selection-card header .slot-status{grid-column:1/-1;justify-self:start}}
+.chat-day b{display:block;margin:10px 0 6px;color:var(--muted);font-size:12.5px}
+.chat-slots .chat-times{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:8px}
+.chat-slots .chat-times button{display:grid;justify-content:stretch;gap:2px;padding:9px 8px;text-align:center}
+.chat-slots .chat-times button span{font-weight:700}
+.chat-slots .chat-times button:disabled{opacity:.55;cursor:wait}
+@media(max-width:860px){.booked-card{grid-template-columns:1fr}.booked-when{width:auto;grid-auto-flow:column;gap:8px;justify-content:start;padding:8px 14px}.slot-publish{flex-direction:column;align-items:stretch}}
 @media(max-width:860px){.slot-form{grid-template-columns:1fr 1fr}.slot-form .slot-span{grid-column:span 2}.decision-list article{grid-template-columns:1fr}.chat-button{width:44px;height:44px}}
 .audit-grid strong{color:var(--brand)}
 .empty-state{border-radius:14px;border-color:var(--line-strong)}
@@ -1191,7 +1290,7 @@ body:has(.workspace.active) .site-footer{display:none}
       <button class="button button-ghost" id="logoutButton" type="button" hidden>Log out</button>
       <button class="profile-button" id="profileButton" type="button" hidden>
         <span class="profile-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5"></circle><path d="M5.5 19c.7-3.4 3.1-5.2 6.5-5.2s5.8 1.8 6.5 5.2"></path></svg></span>
-        <span class="profile-copy"><small id="profileRole">Candidate profile</small><b id="profileLabel">Aisha Khan</b></span>
+        <span class="profile-copy"><small id="profileRole">Candidate profile</small><b id="profileLabel">Account</b></span>
       </button>
     </div>
   </header>
@@ -1227,12 +1326,12 @@ body:has(.workspace.active) .site-footer{display:none}
             <h2 class="domain-heading" id="domainPickerTitle">Find your field</h2>
             <p class="domain-sub">Pick a domain to see the roles, in-demand skills and the evidence that proves them.</p>
             <div class="domain-list">
-              <button type="button" class="domain-pill" data-domain="tech" style="--c:#818cf8"><b>Technology</b><small>Software, web, IT</small><span class="pill-count" data-count="86"><b>86</b><i>open roles</i></span></button>
-              <button type="button" class="domain-pill" data-domain="data" style="--c:#67e8f9"><b>Data &amp; Analytics</b><small>SQL, dashboards, insight</small><span class="pill-count" data-count="64"><b>64</b><i>open roles</i></span></button>
-              <button type="button" class="domain-pill" data-domain="finance" style="--c:#6ee7b7"><b>Finance</b><small>Accounts, audit, analysis</small><span class="pill-count" data-count="42"><b>42</b><i>open roles</i></span></button>
-              <button type="button" class="domain-pill" data-domain="core" style="--c:#fcd34d"><b>Core Engineering</b><small>Mechanical, civil, electrical</small><span class="pill-count" data-count="35"><b>35</b><i>open roles</i></span></button>
-              <button type="button" class="domain-pill" data-domain="marketing" style="--c:#f9a8d4"><b>Sales &amp; Marketing</b><small>Growth, brand, customers</small><span class="pill-count" data-count="71"><b>71</b><i>open roles</i></span></button>
-              <button type="button" class="domain-pill" data-domain="design" style="--c:#fdba74"><b>Design</b><small>UI/UX, graphics, video</small><span class="pill-count" data-count="28"><b>28</b><i>open roles</i></span></button>
+              <button type="button" class="domain-pill" data-domain="tech" style="--c:#818cf8"><b>Technology</b><small>Software, web, IT</small><span class="pill-count" data-count="0"><b>0</b><i>open roles</i></span></button>
+              <button type="button" class="domain-pill" data-domain="data" style="--c:#67e8f9"><b>Data &amp; Analytics</b><small>SQL, dashboards, insight</small><span class="pill-count" data-count="0"><b>0</b><i>open roles</i></span></button>
+              <button type="button" class="domain-pill" data-domain="finance" style="--c:#6ee7b7"><b>Finance</b><small>Accounts, audit, analysis</small><span class="pill-count" data-count="0"><b>0</b><i>open roles</i></span></button>
+              <button type="button" class="domain-pill" data-domain="core" style="--c:#fcd34d"><b>Core Engineering</b><small>Mechanical, civil, electrical</small><span class="pill-count" data-count="0"><b>0</b><i>open roles</i></span></button>
+              <button type="button" class="domain-pill" data-domain="marketing" style="--c:#f9a8d4"><b>Sales &amp; Marketing</b><small>Growth, brand, customers</small><span class="pill-count" data-count="0"><b>0</b><i>open roles</i></span></button>
+              <button type="button" class="domain-pill" data-domain="design" style="--c:#fdba74"><b>Design</b><small>UI/UX, graphics, video</small><span class="pill-count" data-count="0"><b>0</b><i>open roles</i></span></button>
             </div>
           </div>
           <div class="system-principle"><span aria-hidden="true"></span><p>AI prepares the context.<br><em>Humans remain accountable.</em></p></div>
@@ -1287,9 +1386,10 @@ body:has(.workspace.active) .site-footer{display:none}
 
     <section class="page workspace" id="candidatePage" aria-label="Candidate workspace">
       <aside class="workspace-nav">
-        <div><p class="workspace-persona">Candidate portal</p><h2 id="candidateName">Aisha Khan</h2><span id="candidateHeadline">Early-career Data Analyst</span><button class="workspace-edit" id="editProfileNav" type="button">Edit profile</button></div>
+        <div><p class="workspace-persona">Candidate portal</p><h2 id="candidateName">Your profile</h2><span id="candidateHeadline">Add your skills to get matched</span><button class="workspace-edit" id="editProfileNav" type="button">Edit profile</button></div>
         <nav aria-label="Candidate sections">
           <button class="active" data-candidate-tab="overview">Overview</button>
+          <button data-candidate-tab="selections">Selections<span class="nav-badge" id="selectionsBadge" hidden>0</span></button>
           <button data-candidate-tab="search">Search</button>
           <button data-candidate-tab="profile">Profile & preferences</button>
           <button data-candidate-tab="passport">Skill Passport</button>
@@ -1301,12 +1401,12 @@ body:has(.workspace.active) .site-footer{display:none}
       </aside>
       <div class="workspace-content">
         <section class="tab-panel active" id="candidate-overview">
-          <div class="workspace-heading"><div><p class="overline dark">Candidate overview</p><h1>Good morning, <em id="candidateGreeting">Aisha.</em></h1><p>Your evidence is strong. One focused Power BI task could improve 11 current matches.</p></div><span class="status-chip success">Profile verified</span></div>
+          <div class="workspace-heading"><div><p class="overline dark">Candidate overview</p><h1>Good morning, <em id="candidateGreeting">there.</em></h1><p id="ovLead">Add your skills to see how you match Vergemount's open roles.</p></div><span class="status-chip" id="ovChip">No skills yet</span></div>
           <div class="summary-grid">
-            <article class="summary-feature"><span>Profile strength</span><strong>78%</strong><p>7 of 9 skills have verified evidence.</p></article>
-            <article><span>Best match</span><strong>83%</strong><p>Junior Data Analyst</p></article>
-            <article><span>Prepared applications</span><strong>2</strong><p>Waiting for your approval</p></article>
-            <article><span>Next useful step</span><strong>1</strong><p>Power BI proof task</p></article>
+            <article class="summary-feature"><span>Profile strength</span><strong id="ovStrength">—</strong><p id="ovStrengthNote">Add your first skill with proof.</p></article>
+            <article><span>Best match</span><strong id="ovBest">—</strong><p id="ovBestNote">Add skills to see matches</p></article>
+            <article><span>Prepared applications</span><strong id="ovPrepared">0</strong><p>Waiting for your approval</p></article>
+            <article><span>Next useful step</span><strong id="ovNext">—</strong><p id="ovNextNote">Nothing yet</p></article>
           </div>
           <div class="content-block"><div class="block-heading"><div><h2>Top opportunities</h2><p>Recommended from verified evidence and your preferences.</p></div><button class="text-action" data-candidate-tab="matches">See all matches</button></div><div class="job-list" id="overviewJobs"></div></div>
         </section>
@@ -1328,7 +1428,7 @@ body:has(.workspace.active) .site-footer{display:none}
             </div>
             <ul class="search-results" id="searchResults" role="listbox" hidden></ul>
             <div class="search-outcome" id="searchOutcome" aria-live="polite"></div>
-            <p class="search-popular"><span>Popular:</span><button type="button" data-search-q="Data Analyst">Data Analyst</button><button type="button" data-search-q="Intern">Internships</button><button type="button" data-search-q="SQL" data-search-set="skills">SQL</button><button type="button" data-search-q="Pixelnest" data-search-set="companies">Pixelnest Studio</button></p>
+            <p class="search-popular"><span>Popular:</span><button type="button" data-search-q="AI / ML Engineer">AI / ML Engineer</button><button type="button" data-search-q="Intern">Internships</button><button type="button" data-search-q="Python" data-search-set="skills">Python</button><button type="button" data-search-q="Vergemount" data-search-set="companies">Vergemount</button></p>
             <div class="search-recs" id="searchRecs"></div>
           </div>
           </div>
@@ -1358,7 +1458,7 @@ body:has(.workspace.active) .site-footer{display:none}
                 <label>Headline<input id="profHeadline" maxlength="80" placeholder="e.g. Aspiring Data Analyst"></label>
                 <label><span>Email <small>· from your account</small></span><input id="profEmail" type="email" readonly></label>
                 <label>Phone<input id="profPhone" type="tel" autocomplete="tel" maxlength="20" placeholder="+91 98765 43210"></label>
-                <label>Current city<input id="profCity" autocomplete="address-level2" maxlength="60" placeholder="e.g. Pune"></label>
+                <label>Current city<input id="profCity" autocomplete="address-level2" maxlength="60" placeholder="e.g. Bengaluru"></label>
                 <label>Looking for<select id="profLooking"><option>Jobs and internships</option><option>Full-time jobs</option><option>Internships</option><option>Part-time or freelance</option></select></label>
                 <label>Available<select id="profAvailable"><option>Immediately</option><option>Within 2 weeks</option><option>Within a month</option><option>After my course ends</option></select></label>
                 <label><span>Education <small>· optional</small></span><input id="profEducation" maxlength="120" placeholder="e.g. B.Com, 3rd year, or self-taught"></label>
@@ -1398,10 +1498,10 @@ body:has(.workspace.active) .site-footer{display:none}
           <div class="content-block">
             <div class="block-heading"><div><h2>Job preferences</h2><p>These preferences help explain job-fit recommendations.</p></div></div>
             <div class="preference-form">
-              <label>Preferred roles<input id="prefRoles" value="Data Analyst, Operations Analyst" maxlength="500"></label>
-              <label>Preferred cities<input id="prefCities" value="Bengaluru, Pune, Remote" maxlength="500"></label>
+              <label>Preferred roles<input id="prefRoles" value="" placeholder="e.g. Backend Developer, Data Analyst" maxlength="500"></label>
+              <label>Preferred cities<input id="prefCities" value="" placeholder="e.g. Bengaluru, Remote" maxlength="500"></label>
               <label>Work mode<select id="prefMode"><option>Hybrid or Remote</option><option>Remote only</option><option>On-site</option><option>Any</option></select></label>
-              <label>Minimum salary<input id="prefSalary" value="₹4.5 LPA" maxlength="100"></label>
+              <label>Minimum salary<input id="prefSalary" value="" placeholder="e.g. ₹6 LPA" maxlength="100"></label>
             </div>
             <p class="criteria-help">Your preferences are saved under your account <b id="prefEmail">your email</b>.</p>
             <button class="button button-primary" id="savePreferences" type="button">Save preferences</button>
@@ -1425,23 +1525,26 @@ body:has(.workspace.active) .site-footer{display:none}
           <div class="approval-list" id="approvalList"></div>
         </section>
 
+        <section class="tab-panel" id="candidate-selections"><div class="workspace-heading"><div><p class="overline dark">Interview invitations</p><h1>Your <em>selections</em></h1><p>Every company that has selected you for an interview. Pick a time that works for you and it's booked.</p></div><span class="status-chip" id="selectionsCount">0 selections</span></div><div class="selection-list" id="selectionList"></div></section>
+
         <section class="tab-panel" id="candidate-scaleup">
           <div class="workspace-heading"><div><p class="overline dark">Learning Pathway Agent</p><h1>ScaleUp turns gaps into <em>opportunity.</em></h1><p>Confirmed recruiter feedback stays separate from AI-inferred market patterns.</p></div></div>
-          <div class="scaleup-grid"><article class="scaleup-focus"><span>Most repeated gap</span><h2>Power BI evidence</h2><p>Appeared in all 3 suitable applications and 64% of current analyst openings.</p><button class="button button-light" id="completeTask">Complete 90-minute proof task</button></article><article class="content-block"><h2>Why this matters</h2><dl><div><dt>Confirmed feedback</dt><dd>“Dashboard evidence was weaker than shortlisted profiles.”</dd></div><div><dt>Market pattern</dt><dd>Power BI appears across 11 roles matching your preferences.</dd></div><div><dt>Smallest next action</dt><dd>Build a two-page retail dashboard and explain 3 business decisions.</dd></div></dl></article></div>
+          <div class="scaleup-grid"><article class="scaleup-focus"><span>Most repeated gap</span><h2 id="gapSkill">Nothing to fix yet</h2><p id="gapText">Add skills to your Skill Passport and ScaleUp will show what to prove next.</p><button class="button button-light" id="completeTask" type="button" hidden>Add proof</button></article><article class="content-block"><h2>Why this matters</h2><dl><div><dt>Confirmed feedback</dt><dd id="gapFeedback">No recruiter feedback yet.</dd></div><div><dt>Market pattern</dt><dd id="gapMarket">Shown once you add skills.</dd></div><div><dt>Smallest next action</dt><dd id="gapNext">Add one skill with a project, course or work sample.</dd></div></dl></article></div>
         </section>
       </div>
     </section>
 
     <section class="page workspace" id="recruiterPage" aria-label="Recruiter workspace">
       <aside class="workspace-nav recruiter-nav">
-        <div><p class="workspace-persona">Recruiter workspace</p><h2>BrightForge</h2><span id="recruiterRoleLabel">Junior Data Analyst · Pune · Hybrid</span></div>
-        <nav aria-label="Recruiter sections"><button class="active" data-recruiter-tab="deck">Talent deck</button><button data-recruiter-tab="role">Role setup</button><button data-recruiter-tab="decisions">Decisions</button><button data-recruiter-tab="schedule">Schedule</button><button data-recruiter-tab="fairness">Fairness review</button></nav>
+        <div><p class="workspace-persona">Recruiter workspace</p><h2>Vergemount</h2><span id="recruiterRoleLabel">No role selected</span></div>
+        <nav aria-label="Recruiter sections"><button class="active" data-recruiter-tab="deck">Talent deck</button><button data-recruiter-tab="role">Role setup</button><button data-recruiter-tab="decisions">Decisions</button><button data-recruiter-tab="schedule">Schedule</button><button data-recruiter-tab="booked">Booked</button><button data-recruiter-tab="fairness">Fairness review</button></nav>
         <button class="workspace-exit" data-route="home">Return to home</button>
       </aside>
       <div class="workspace-content">
         <section class="tab-panel active" id="recruiter-deck">
-          <div class="workspace-heading"><div><p class="overline dark">Skills-first review</p><h1>Talent <em>Deck</em></h1><p>Review one role-specific summary at a time. Drag the card right to shortlist or left to pass, or use the buttons. Every decision can be undone.</p></div><span class="status-chip" id="deckProgress">1 of 4</span></div>
-          <div class="deck-layout"><div><div class="candidate-summary-card" id="candidateCard"></div><div class="deck-actions"><button class="decision-button pass" id="passButton" aria-label="Pass candidate">Pass</button><button class="decision-button undo" id="undoButton" aria-label="Undo last decision">Undo</button><button class="decision-button shortlist" id="shortlistButton" aria-label="Shortlist candidate">Shortlist</button></div><p class="deck-keys">Keyboard: ← pass · → shortlist · U undo</p></div><aside class="explanation-panel"><span>Inclusive Matching Agent</span><h2>Fit is evidence, not a verdict.</h2><div id="factorList"></div><div class="human-note"><b>Human decision required</b><p>College brand, degree status, gender, age and payment status have zero score weight.</p></div></aside></div>
+          <div class="workspace-heading"><div><p class="overline dark">Skills-first review</p><h1>Talent <em>Deck</em></h1><p>Review one role-specific summary at a time. Drag the card right to shortlist or left to pass, or use the buttons. Every decision can be undone.</p></div><span class="status-chip" id="deckProgress">0 candidates</span></div>
+          <div class="deck-toolbar"><label>Reviewing candidates for<select id="deckRole"></select></label><div class="deck-toolbar-actions"><span class="deck-upload-status" id="deckUploadStatus" aria-live="polite"></span><button type="button" class="button button-outline-light" id="addResumes">Add resumes</button><input type="file" id="resumeFiles" accept=".pdf,.docx,.txt" multiple hidden></div></div>
+          <div class="deck-layout"><div><div class="candidate-summary-card" id="candidateCard"></div><div class="deck-actions"><button class="decision-button pass" id="passButton" aria-label="Pass candidate">Pass</button><button class="decision-button undo" id="undoButton" aria-label="Undo last decision">Undo</button><button class="decision-button shortlist" id="shortlistButton" aria-label="Shortlist candidate">Shortlist</button></div><p class="deck-keys">Keyboard: ← pass · → shortlist · U undo</p><button type="button" class="text-action" id="openOnePage" disabled>View the full one-page summary</button></div><aside class="explanation-panel"><span>Inclusive Matching Agent</span><h2>Fit is evidence, not a verdict.</h2><div id="factorList"></div><div class="human-note"><b>Human decision required</b><p>College brand, degree status, gender, age and payment status have zero score weight.</p></div></aside></div>
         </section>
 
         <section class="tab-panel" id="recruiter-role">
@@ -1452,9 +1555,9 @@ body:has(.workspace.active) .site-footer{display:none}
               <div class="content-block role-builder">
                 <div class="block-heading"><div><h2>Job basics</h2><p>The essentials candidates look at first.</p></div></div>
                 <div class="role-form">
-                  <label class="span-2">Job title<input id="roleTitle" value="Junior Data Analyst" maxlength="80" required></label>
+                  <label class="span-2">Job title<input id="roleTitle" value="" maxlength="80" required placeholder="e.g. AI / ML Engineer"></label>
                   <label class="span-2">Company <small>start typing to pick from registered companies</small>
-                    <span class="company-combo"><input id="roleCompany" value="BrightForge Tools" maxlength="80" autocomplete="off" required role="combobox" aria-expanded="false" aria-controls="companyOptions" aria-autocomplete="list"><ul class="company-options" id="companyOptions" role="listbox" hidden></ul></span>
+                    <span class="company-combo"><input id="roleCompany" value="Vergemount" maxlength="80" autocomplete="off" required role="combobox" aria-expanded="false" aria-controls="companyOptions" aria-autocomplete="list"><ul class="company-options" id="companyOptions" role="listbox" hidden></ul></span>
                     <span class="company-status" id="companyStatus" aria-live="polite"></span>
                   </label>
                   <label class="span-2" id="roleCinWrap" hidden>Company registration number (CIN) <small>optional · helps us verify new companies</small><input id="roleCin" maxlength="21" placeholder="e.g. U72200MH2015PTC123456" autocomplete="off"></label>
@@ -1472,11 +1575,11 @@ body:has(.workspace.active) .site-footer{display:none}
                   <label id="roleDomainOtherWrap" hidden>Domain name <small>not in the list</small><input id="roleDomainOther" maxlength="40" placeholder="e.g. Healthcare, Logistics, Education"></label>
                   <label>Employment type<select id="roleType"><option>Full-time</option><option>Internship</option><option>Part-time</option><option>Contract</option></select></label>
                   <label>Experience level<select id="roleLevel"><option value="fresher">Fresher (0–1 year)</option><option value="junior" selected>Junior (1–3 years)</option><option value="mid">Mid-level (3–5 years)</option></select></label>
-                  <label>Openings<input id="roleOpenings" type="number" min="1" max="99" value="2"></label>
-                  <label>City<input id="roleCity" value="Pune" maxlength="40" placeholder="e.g. Pune"></label>
+                  <label>Openings<input id="roleOpenings" type="number" min="1" max="99" value="1"></label>
+                  <label>City<input id="roleCity" value="" maxlength="40" placeholder="e.g. Bengaluru"></label>
                   <label>Work mode<select id="roleMode"><option>On-site</option><option selected>Hybrid</option><option>Remote</option></select></label>
                   <label class="span-2">Salary <small>shown to candidates · roles with a range get more applicants</small>
-                    <span class="salary-row"><input id="payMin" type="number" min="0" step="0.5" value="4.5" aria-label="Minimum salary"><span>to</span><input id="payMax" type="number" min="0" step="0.5" value="6" aria-label="Maximum salary"><select id="payUnit" aria-label="Salary unit"><option value="LPA">LPA</option><option value="k/month">thousand / month</option></select></span>
+                    <span class="salary-row"><input id="payMin" type="number" min="0" step="0.5" value="" placeholder="min" aria-label="Minimum salary"><span>to</span><input id="payMax" type="number" min="0" step="0.5" value="" placeholder="max" aria-label="Maximum salary"><select id="payUnit" aria-label="Salary unit"><option value="LPA">LPA</option><option value="k/month">thousand / month</option></select></span>
                   </label>
                   <label>Apply by<input id="roleDeadline" type="date"></label>
                   <label>Start date<select id="roleStart"><option>Immediately</option><option selected>Within a month</option><option>Flexible</option></select></label>
@@ -1486,15 +1589,15 @@ body:has(.workspace.active) .site-footer{display:none}
               <div class="content-block role-builder">
                 <div class="block-heading"><div><h2>Skills</h2><p>Type a skill and press Enter. Keep must-haves short — three to five is ideal.</p></div></div>
                 <label class="chip-label">Must-have skills</label>
-                <div class="chip-input" id="mustSkills" data-initial="SQL,Excel,Power BI"><input placeholder="Add a skill" aria-label="Add a must-have skill"></div>
+                <div class="chip-input" id="mustSkills" data-initial=""><input placeholder="Add a skill" aria-label="Add a must-have skill"></div>
                 <label class="chip-label">Nice to have</label>
-                <div class="chip-input" id="niceSkills" data-initial="Python,Data storytelling,Communication"><input placeholder="Add a skill" aria-label="Add a nice-to-have skill"></div>
+                <div class="chip-input" id="niceSkills" data-initial=""><input placeholder="Add a skill" aria-label="Add a nice-to-have skill"></div>
                 <div class="skill-suggest" id="skillSuggest"></div>
               </div>
 
               <div class="content-block role-builder">
                 <div class="block-heading"><div><h2>About the role</h2><p>What the person will do day to day. Plain language works best.</p></div></div>
-                <label class="role-textarea"><span class="sr-only">Job description</span><textarea id="roleDescription" rows="6" maxlength="2000">You'll turn sales and customer data into clear weekly reports for our operations team, build simple dashboards, and help managers answer questions with data. You'll work closely with a senior analyst who will help you grow.</textarea><small class="char-count" id="roleDescCount"></small></label>
+                <label class="role-textarea"><span class="sr-only">Job description</span><textarea id="roleDescription" rows="6" maxlength="2000" placeholder="What will the person do day to day? Two or three plain sentences work best."></textarea><small class="char-count" id="roleDescCount"></small></label>
               </div>
 
               <div class="content-block role-builder">
@@ -1537,25 +1640,33 @@ body:has(.workspace.active) .site-footer{display:none}
 
         <section class="tab-panel" id="recruiter-decisions"><div class="workspace-heading"><div><p class="overline dark">Human decisions</p><h1>Shortlisted and passed <em>candidates</em></h1><p>Every decision can be undone and remains part of the audit trail.</p></div></div><div class="decision-stats"><article class="stat-filter" data-filter="Shortlisted" role="button" tabindex="0" aria-pressed="false"><strong id="shortlistedCount">0</strong><span>Shortlisted</span><small>Show only shortlisted</small></article><article class="stat-filter" data-filter="Passed" role="button" tabindex="0" aria-pressed="false"><strong id="passedCount">0</strong><span>Passed for this role</span><small>Show only passed</small></article><article><strong id="remainingCount">4</strong><span>Remaining</span></article></div><div class="decision-filter-bar" id="decisionFilterBar" hidden><span id="decisionFilterLabel">Showing shortlisted only</span><button type="button" id="clearDecisionFilter">Show all</button></div><div class="decision-list" id="decisionList"><p class="empty-state">No decisions yet. Review candidates in the Talent Deck.</p></div></section>
 
-        <section class="tab-panel" id="recruiter-schedule"><div class="workspace-heading"><div><p class="overline dark">Interview scheduling</p><h1>Interview <em>slots</em></h1><p>Add the times your team can interview. Selected candidates pick one of these open slots from their HigherUp.AI inbox.</p></div><span class="status-chip" id="slotSummary">0 open slots</span></div>
-          <div class="content-block schedule-block">
-            <div class="block-heading"><div><h2>Add a slot</h2><p>Round 1 interviews for the role you're hiring for.</p></div></div>
-            <form class="slot-form" id="slotForm">
+        <section class="tab-panel" id="recruiter-schedule"><div class="workspace-heading"><div><p class="overline dark">Interview scheduling</p><h1>Interview <em>slots</em></h1><p>Pick a day, choose how long each interview is, then tap the times you're free. Candidates you select pick from these slots in their HigherUp.AI chat.</p></div><span class="status-chip" id="slotSummary">0 open slots</span></div>
+          <form class="content-block schedule-block" id="slotForm">
+            <div class="block-heading"><div><h2>Add interview slots</h2><p>Round 1 interviews for the role you're hiring for.</p></div></div>
+            <div class="slot-form">
               <label>Date<input type="date" id="slotDate" required></label>
-              <label>Start time<input type="time" id="slotTime" value="10:00" required></label>
-              <label>Length<select id="slotLength"><option value="30">30 minutes</option><option value="45" selected>45 minutes</option><option value="60">1 hour</option></select></label>
-              <label>Format<select id="slotMode"><option>Video call</option><option>On-site</option><option>Phone call</option></select></label>
-              <label class="slot-span">Interviewer <small>optional</small><input id="slotWith" maxlength="60" placeholder="e.g. Priya Nair, Data Lead"></label>
-              <button class="button button-primary" type="submit">Add slot</button>
-            </form>
-            <p class="slot-error" id="slotError" aria-live="polite"></p>
-          </div>
+              <label>Duration<select id="slotLength"><option value="30">30 minutes</option><option value="45" selected>45 minutes</option><option value="60">1 hour</option></select></label>
+              <label>Interview type<select id="slotMode"><option value="Offline">Offline (in person)</option><option value="Video call" selected>Video call</option><option value="Voice call">Voice call</option></select></label>
+              <label>Interviewer <small>optional</small><input id="slotWith" maxlength="60" placeholder="e.g. Priya Nair"></label>
+            </div>
+            <div class="slot-picker">
+              <div class="slot-picker-head"><div><b id="slotPickerTitle"></b><span id="slotPickerSub"></span></div><button type="button" class="link-button" id="slotClear" hidden>Clear selection</button></div>
+              <div class="time-grid" id="timeGrid"></div>
+              <ul class="time-legend"><li><i class="lg-open"></i>Available</li><li><i class="lg-selected"></i>Selected</li><li><i class="lg-published"></i>Already published</li><li><i class="lg-booked"></i>Booked</li></ul>
+            </div>
+            <div class="slot-publish"><p class="slot-error" id="slotError" aria-live="polite"></p><button class="button button-primary" type="submit" id="slotPublish" disabled>Select times to publish</button></div>
+          </form>
+          <h2 class="invite-heading">Your published slots</h2>
           <div class="slot-list" id="slotList"></div>
-          <h2 class="invite-heading">Interview invites</h2>
+          <h2 class="invite-heading">Waiting for a time</h2>
           <div class="decision-list" id="inviteList"></div>
         </section>
 
-        <section class="tab-panel" id="recruiter-fairness"><div class="workspace-heading"><div><p class="overline dark">Bias Audit Agent</p><h1>Fairness <em>review</em></h1><p>The audit flags risk patterns for human review. It does not claim to eliminate bias.</p></div><span class="status-chip success">Protected traits: zero weight</span></div><div class="audit-grid"><article><strong>3</strong><h2>Criteria suggestions</h2><p>Degree, experience and vague language require review.</p></article><article><strong>2</strong><h2>Low-confidence cases</h2><p>Request proof or context instead of guessing.</p></article><article><strong>0</strong><h2>Automatic rejections</h2><p>Recruiters own every consequential decision.</p></article></div><div class="content-block audit-trail" id="auditTrail"><h2>Recent audit events</h2><div><span>Role criteria changed</span><b>Degree requirement removed</b><time>Today, 10:42</time></div><div><span>Human override recorded</span><b>Candidate moved to interview</b><time>Yesterday, 16:18</time></div></div></section>
+        <section class="tab-panel" id="recruiter-booked"><div class="workspace-heading"><div><p class="overline dark">Confirmed interviews</p><h1>Booked <em>interviews</em></h1><p>Every candidate who has picked a slot, with the day, time, duration and interview type.</p></div><span class="status-chip" id="bookedCount">0 booked</span></div>
+          <div class="booked-list" id="bookedList"></div>
+        </section>
+
+        <section class="tab-panel" id="recruiter-fairness"><div class="workspace-heading"><div><p class="overline dark">Bias Audit Agent</p><h1>Fairness <em>review</em></h1><p>The audit flags risk patterns for human review. It does not claim to eliminate bias.</p></div><span class="status-chip success">Protected traits: zero weight</span></div><div class="audit-grid"><article><strong id="auditCriteria">0</strong><h2>Criteria suggestions</h2><p>Degree, experience and vague language in the role you are writing.</p></article><article><strong id="auditLow">0</strong><h2>Low-confidence cases</h2><p>Candidates with thin evidence for this role. Ask for proof instead of guessing.</p></article><article><strong>0</strong><h2>Automatic rejections</h2><p>Recruiters own every consequential decision.</p></article></div><div class="content-block audit-trail" id="auditTrail"><h2>Recent audit events</h2><p class="empty-state" id="auditEmpty">No audit events yet. Criteria changes and every human decision are recorded here.</p></div></section>
       </div>
     </section>
 
@@ -1665,11 +1776,34 @@ body:has(.workspace.active) .site-footer{display:none}
       </div>
     </div>
   </div>
+  <div class="dialog-backdrop" id="onePageDialog" role="dialog" aria-modal="true" aria-labelledby="onePageTitle" aria-hidden="true">
+    <div class="dialog-card onepage-dialog">
+      <button class="dialog-close" type="button" data-close-onepage aria-label="Close summary">×</button>
+      <div id="onePageBody"></div>
+      <div class="onepage-actions"><button type="button" class="button button-outline-light" id="onePageRemove">Remove from talent pool</button><button type="button" class="button button-primary" id="onePagePrint">Print / save as PDF</button></div>
+    </div>
+  </div>
+
+  <div class="dialog-backdrop" id="inviteDialog" role="dialog" aria-modal="true" aria-labelledby="inviteTitle" aria-hidden="true">
+    <div class="dialog-card invite-dialog">
+      <button class="dialog-close" type="button" data-close-invite aria-label="Close">×</button>
+      <p class="overline dark">Round 1 interview</p>
+      <h2 id="inviteTitle">Invite <span id="inviteName"></span></h2>
+      <p class="invite-help">Which candidate account should get this? They are notified in their HigherUp.AI chat and pick a time under Selections. Only that account can see it.</p>
+      <form id="inviteForm" novalidate>
+        <label>Candidate's login email<input type="email" id="inviteEmail" list="inviteEmails" autocomplete="off" placeholder="name@example.com"></label>
+        <datalist id="inviteEmails"></datalist>
+        <p class="slot-error" id="inviteError" aria-live="polite"></p>
+        <div class="invite-actions"><button type="button" class="button button-outline-light" data-close-invite>Cancel</button><button class="button button-primary" type="submit">Send invite</button></div>
+      </form>
+    </div>
+  </div>
   <div class="dialog-backdrop" id="chatDialog" role="dialog" aria-modal="true" aria-labelledby="chatTitle" aria-hidden="true">
     <div class="dialog-card chat-dialog">
       <button class="dialog-close" type="button" data-close-chat aria-label="Close messages">×</button>
-      <div class="chat-head"><span class="chat-avatar" aria-hidden="true">AI</span><div><h2 id="chatTitle">HigherUp.AI Assistant</h2><p>Updates from employers about your applications</p></div></div>
+      <div class="chat-head"><span class="chat-avatar" aria-hidden="true">AI</span><div><h2 id="chatTitle">HigherUp.AI Assistant</h2><p id="chatSub">Updates from employers about your applications</p></div></div>
       <div class="chat-thread" id="chatThread"></div>
+      <div class="chat-foot" id="chatFoot" hidden><button type="button" class="button button-primary" id="chatOpenBooked">View booked interviews</button></div>
     </div>
   </div>
 
@@ -1702,7 +1836,7 @@ body:has(.workspace.active) .site-footer{display:none}
     </div>
   </div>
 
-  <div class="dialog-backdrop" id="matchDialog" role="dialog" aria-modal="true" aria-labelledby="matchTitle" aria-hidden="true"><div class="dialog-card match-dialog"><button class="dialog-close" data-close-match aria-label="Close match explanation">×</button><p class="overline dark">Inclusive Matching Agent</p><h2 id="matchTitle">Why this role matches</h2><div class="dialog-score">83% <span>fit · high evidence confidence</span></div><div class="dialog-factors"><div><span>Essential skill coverage · 35%</span><b>80 / 100</b></div><div><span>Evidence strength · 25%</span><b>82 / 100</b></div><div><span>Relevant projects & experience · 15%</span><b>76 / 100</b></div><div><span>Transferable skills · 10%</span><b>91 / 100</b></div><div><span>Evidence recency · 5%</span><b>88 / 100</b></div><div><span>Preferences · 10%</span><b>100 / 100</b></div></div><p class="dialog-note"><b>Missing proof:</b> Power BI dashboard evidence. Missing information lowers confidence; it is never guessed.</p></div></div>
+  <div class="dialog-backdrop" id="matchDialog" role="dialog" aria-modal="true" aria-labelledby="matchTitle" aria-hidden="true"><div class="dialog-card match-dialog"><button class="dialog-close" data-close-match aria-label="Close match explanation">×</button><p class="overline dark">Inclusive Matching Agent</p><h2 id="matchTitle">Why this role matches</h2><div class="dialog-score" id="matchScore">—</div><div class="dialog-factors" id="matchFactors"></div><p class="dialog-note" id="matchNote"></p></div></div>
 
   <div class="dialog-backdrop" id="evidenceDialog" role="dialog" aria-modal="true" aria-labelledby="evidenceTitle" aria-hidden="true">
     <div class="dialog-card auth-dialog">
@@ -1738,45 +1872,49 @@ document.documentElement.classList.add('motion-ready');
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const state={authenticated:false,role:null,decisions:[],lastFocus:null,page:'home',tabs:{candidate:'overview',recruiter:'deck'},routing:false,pendingRoute:null};
 
-const jobs=[
-  {title:'Junior Data Analyst',company:'BrightForge Tools',place:'Pune · Hybrid',score:83,skills:'SQL · Power BI · Communication'},
-  {title:'Operations Analyst',company:'NorthLoop Logistics',place:'Remote',score:76,skills:'Excel · Dashboards · Problem solving'},
-  {title:'Reporting Associate',company:'GreenCart Retail',place:'Mumbai · On-site',score:71,skills:'Excel · SQL · Data quality'},
-  {title:'Customer Insights Intern',company:'LoopLearn',place:'Bengaluru · Hybrid',score:67,skills:'Research · Storytelling · Dashboards'}
+// ============================== REAL DATA: edit this block ==============================
+// Company: Vergemount. These five jobs are what candidates see and what the Talent Deck ranks resumes against.
+// Location and pay are placeholders: replace them with Vergemount's real details. To add, change or remove a job, edit a row.
+const COMPANY_NAME='Vergemount';
+const VERGEMOUNT_JOBS=[
+  {domain:'tech',title:'AI / ML Engineer',type:'Full-time',level:'Junior (1–3 years)',openings:2,place:'Bengaluru · Hybrid',pay:'₹8–12 LPA',
+   essential:['Python','Machine Learning','PyTorch'],preferred:['LLMs','RAG','Docker','SQL'],
+   about:'Build and ship machine-learning and LLM features: train and evaluate models, put them behind APIs and keep them reliable in production.'},
+  {domain:'tech',title:'Backend Developer',type:'Full-time',level:'Junior (1–3 years)',openings:3,place:'Bengaluru · Hybrid',pay:'₹6–10 LPA',
+   essential:['Python','FastAPI','SQL'],preferred:['REST APIs','Docker','PostgreSQL','Git'],
+   about:'Design and build the APIs and services behind our products, with clean data models, tests and clear documentation.'},
+  {domain:'data',title:'Data Analyst',type:'Full-time',level:'Fresher (0–1 year)',openings:2,place:'Bengaluru · On-site',pay:'₹4.5–7 LPA',
+   essential:['SQL','Python','Data Analysis'],preferred:['Power BI','Excel','Data Visualization'],
+   about:'Turn raw data into clear weekly reports and dashboards, and help teams answer business questions with evidence.'},
+  {domain:'tech',title:'Cybersecurity Analyst',type:'Full-time',level:'Junior (1–3 years)',openings:2,place:'Remote',pay:'₹7–11 LPA',
+   essential:['Network Security','Linux','Python'],preferred:['Cybersecurity','Wireshark','SIEM','Cryptography'],
+   about:'Monitor and analyse network traffic, find and investigate threats, and automate security checks with scripts.'},
+  {domain:'tech',title:'Cloud & DevOps Intern',type:'Internship',level:'Fresher (0–1 year)',openings:3,place:'Bengaluru · Hybrid',pay:'₹25k/month',
+   essential:['Linux','Docker','Git'],preferred:['AWS','Kubernetes','Python','CI/CD'],
+   about:'Learn by doing: help build deployment pipelines, containerise services and keep our cloud environments tidy and secure.'}
 ];
+// Every open job, in the shape the site's search and listings use.
+const LISTINGS=VERGEMOUNT_JOBS.map((j,i)=>({id:i+1,company:COMPANY_NAME,...j,skills:[...j.essential,...j.preferred].slice(0,5)}));
+// Skill matching used for candidates (their Skill Passport) and for resumes in the Talent Deck.
+const SKILL_ALIASES={ml:'machine learning',js:'javascript',nlp:'natural language processing',k8s:'kubernetes',postgres:'postgresql',tf:'tensorflow',dl:'deep learning','rest api':'rest apis','restful apis':'rest apis',reactjs:'react',nodejs:'node.js'};
+const skillKey=s=>{const n=String(s||'').toLowerCase().replace(/[^a-z0-9+#.]+/g,' ').trim();return SKILL_ALIASES[n]||n};
+function sameSkill(a,b){const A=skillKey(a).split(' ').filter(Boolean),B=skillKey(b).split(' ').filter(Boolean);if(!A.length||!B.length)return false;const [small,big]=A.length<=B.length?[A,B]:[B,A];return small.every(w=>big.includes(w))}
+var approvedJobs=new Set(),applyActive=true,scaleGap='',deckReady=false;
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 // Skill Passport: candidate-controlled. Anything the candidate adds or edits is "Candidate supplied" until reviewed.
 let skillSeq=0;
-const skills=[
-  ['SQL','Advanced','Verified','Project','Retail sales analysis · cleaned 12,000 records'],
-  ['Excel','Advanced','Verified','Internship','Business data internship · weekly reporting'],
-  ['Data storytelling','Strong','Verified','Hackathon','Inclusive Workforce hackathon · analytics and pitch lead'],
-  ['Problem solving','Strong','Verified','Work or freelance','Freelance data cleanup for a local retailer'],
-  ['Power BI','Intermediate','Developing','Project',''],
-  ['Python','Developing','Candidate supplied','Course or certificate',''],
-  ['Communication','Strong','Verified','Hackathon','Hackathon pitch · internship reports']
-].map(([name,level,status,type,detail])=>({id:++skillSeq,name,level,status,type,detail}));
-const evidenceSources=[
-  {title:'Retail sales analysis',meta:'Project · verified'},
-  {title:'Business data internship',meta:'3 months · verified'},
-  {title:'Freelance data cleanup',meta:'Candidate supplied'},
-  {title:'Power BI dashboard',meta:'Proof not added',warning:true}
-];
+const skills=[];
+const evidenceSources=[];
 
 // Scoring: each factor is 0–100; fit = Σ factor × weight / 100. Recommended weights from the product brief.
 const weightFactors=[['essential','Essential skill coverage'],['evidence','Evidence strength'],['experience','Relevant projects & experience'],['transferable','Transferable skills'],['recency','Evidence recency'],['preferences','Preferences & practical fit']];
 const defaultWeights={essential:35,evidence:25,experience:15,transferable:10,recency:5,preferences:10};
 state.weights={...defaultWeights};
-state.roleConfig={title:'Junior Data Analyst',place:'Pune · Hybrid',essential:['SQL','Excel','Power BI'],preferred:['Python','Data storytelling','Communication']};
+state.roleConfig={title:'',company:COMPANY_NAME,place:'',essential:[],preferred:[]};state.activeListingId=null;
 state.summaryFields=new Set(['skills','projects','internships','work','hackathons','certifications','location','gaps']);
 
-const candidates=[
-  {name:'Aisha Khan',initials:'AK',headline:'Project-trained Data Analyst',location:'Pune · Available in 2 weeks',confidence:'High evidence confidence',summary:'Turns messy business data into clear decisions through projects, freelance tasks and hackathons.',skills:['SQL','Excel','Power BI','Data storytelling'],project:'Retail analysis · cleaned 12,000 records',internships:'Business data intern · 3 months · weekly reporting',experience:'Freelance data cleanup for a local retailer',hackathons:'Inclusive Workforce hackathon · analytics and pitch lead',certifications:'SQL Fundamentals · Excel for Business',gap:'No Power BI dashboard proof yet. Ask for a short work sample.',factors:{essential:80,evidence:82,experience:76,transferable:91,recency:88,preferences:100}},
-  {name:'Vikram Joshi',initials:'VJ',headline:'Operations & Reporting Analyst',location:'Pune · Available now',confidence:'High evidence confidence',summary:'Combines shop-floor operations knowledge with spreadsheet reporting and process improvement.',skills:['Advanced Excel','Dashboards','Process mapping','SQL'],project:'Inventory tracker · reduced reconciliation time 30%',internships:'',experience:'Operations reporting · 2 years',hackathons:'Operations automation challenge participant',certifications:'Advanced Excel · SQL assessment verified',gap:'Power BI evidence is basic; adjacent dashboard skills are strong.',factors:{essential:71,evidence:88,experience:92,transferable:84,recency:82,preferences:70}},
-  {name:'Sana Ali',initials:'SA',headline:'Self-taught Business Data Explorer',location:'Remote · Open to hybrid',confidence:'Medium evidence confidence',summary:'A fast learner with analytical reasoning, customer research and clear presentation skills.',skills:['Excel','Research','Storytelling','Data cleaning'],project:'Customer survey · analysed 430 responses',internships:'Community research internship · 8 weeks',experience:'Volunteer reporting for a local organisation',hackathons:'Data for Good challenge · finalist',certifications:'Excel Skills for Business',gap:'Needs stronger SQL proof. Request a short work sample.',factors:{essential:69,evidence:67,experience:70,transferable:94,recency:90,preferences:90}},
-  {name:'Arjun Das',initials:'AD',headline:'Commerce Learner turned Analyst',location:'Mumbai · Ready to relocate',confidence:'High evidence confidence',summary:'Applies commercial understanding to data analysis with strong Excel, reporting and communication.',skills:['Excel','SQL','Business metrics','Communication'],project:'Profitability analysis · compared 60 products',internships:'Finance operations intern · 2 months',experience:'Peer mentor for 25 spreadsheet learners',hackathons:'Commerce analytics sprint participant',certifications:'SQL Basics · Business Metrics',gap:'No formal analyst title; project evidence covers the core tasks.',factors:{essential:75,evidence:80,experience:68,transferable:92,recency:86,preferences:80}}
-];
+let candidates=[];   // resumes read by the AI (loaded from the talent pool after a recruiter signs in)
 
 function toast(message){const el=$('#toast');el.textContent=message;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),2600)}
 function showPage(name){$$('.page').forEach(page=>page.classList.remove('active'));$(`#${name}Page`).classList.add('active');state.page=name;syncRoute();window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches||state.routing?'auto':'smooth'})}
@@ -2097,15 +2235,72 @@ if(initialSession?.user){
 }
 supabase.auth.onAuthStateChange((_event,session)=>{setAuthenticatedUser(session?.user||null)});
 
-function activateTab(type,name){$$(`[data-${type}-tab]`).forEach(button=>button.classList.toggle('active',button.dataset[`${type}Tab`]===name));$$(`#${type}Page .tab-panel`).forEach(panel=>panel.classList.toggle('active',panel.id===`${type}-${name}`));state.tabs[type]=name;if(state.page===type)syncRoute();window.scrollTo({top:0,behavior:'auto'});if(name==='decisions')renderDecisions();if(name==='schedule')renderSchedule()}
+function activateTab(type,name){$$(`[data-${type}-tab]`).forEach(button=>button.classList.toggle('active',button.dataset[`${type}Tab`]===name));$$(`#${type}Page .tab-panel`).forEach(panel=>panel.classList.toggle('active',panel.id===`${type}-${name}`));state.tabs[type]=name;if(state.page===type)syncRoute();window.scrollTo({top:0,behavior:'auto'});if(name==='decisions')renderDecisions();if(name==='schedule')renderSchedule();if(name==='booked')renderBooked();if(name==='selections')renderSelections();if(name==='fairness')renderFairness()}
 $$('[data-candidate-tab]').forEach(button=>button.onclick=()=>activateTab('candidate',button.dataset.candidateTab));
 $$('[data-recruiter-tab]').forEach(button=>button.onclick=()=>activateTab('recruiter',button.dataset.recruiterTab));
 
-function jobMarkup(job){return `<article class="job-card"><div class="company-icon">${job.company.split(/\s/).map(word=>word[0]).slice(0,2).join('')}</div><div><h3>${job.title}</h3><p>${job.company} · ${job.place}<br>${job.skills}</p></div><strong class="job-score">${job.score}%</strong><button class="explain-match">Why this match?</button></article>`}
-$('#overviewJobs').innerHTML=jobs.slice(0,2).map(jobMarkup).join('');$('#allJobs').innerHTML=jobs.map(jobMarkup).join('');
-$$('.explain-match').forEach(button=>button.onclick=()=>openDialog($('#matchDialog')));$$('[data-close-match]').forEach(button=>button.onclick=()=>closeDialog($('#matchDialog')));$('#matchDialog').onclick=e=>{if(e.target===e.currentTarget)closeDialog(e.currentTarget)};
+// Candidate side: how the Skill Passport matches each open job. Every number comes from the passport, none is made up.
+function candidateMatch(job){
+  const ess=job.essential||[],pref=job.preferred||[];
+  const find=sk=>skills.find(s=>sameSkill(s.name,sk));
+  const matched=ess.map(find).filter(Boolean),missing=ess.filter(sk=>!find(sk));
+  const strength=s=>s.status==='Verified'?100:s.status==='Developing'?70:50;
+  const essential=ess.length?matched.length/ess.length*100:0;
+  const evidence=matched.length?matched.reduce((a,s)=>a+strength(s),0)/matched.length:0;
+  const proof=matched.length?matched.filter(s=>s.detail).length/matched.length*100:0;
+  const nice=pref.length?pref.filter(find).length/pref.length*100:0;
+  const factors=[['Essential skill coverage',55,essential],['Evidence strength',20,evidence],['Proof of work',10,proof],['Nice-to-have skills',15,nice]];
+  const score=skills.length?Math.round(factors.reduce((a,[,w,v])=>a+w*v/100,0)):0;
+  return {job,score,factors,missing,matched};
+}
+const candidateMatches=()=>LISTINGS.map(candidateMatch).sort((a,b)=>b.score-a.score);
+function jobMarkup(m){const j=m.job;return `<article class="job-card"><div class="company-icon">${esc(j.company.split(/\s/).map(w=>w[0]).slice(0,2).join(''))}</div><div><h3>${esc(j.title)}</h3><p>${esc(j.company)} · ${esc(j.place)}<br>${esc(j.skills.join(' · '))}</p></div><strong class="job-score">${skills.length?m.score+'%':'—'}</strong><button class="explain-match" data-match-job="${j.id}">Why this match?</button></article>`}
+const setText=(id,text)=>{const el=document.getElementById(id);if(el)el.textContent=text};
+const preparedMatches=()=>applyActive?candidateMatches().filter(m=>m.score>=60).slice(0,3):[];
+function openMatch(id){
+  const m=candidateMatches().find(x=>x.job.id===Number(id));if(!m)return;
+  setText('matchTitle',`Why ${m.job.title} matches`);
+  $('#matchScore').innerHTML=skills.length?`${m.score}% <span>fit · ${m.matched.length} of ${m.job.essential.length} must-have skills</span>`:'— <span>add skills to see your fit</span>';
+  $('#matchFactors').innerHTML=m.factors.map(([label,w,v])=>`<div><span>${label} · ${w}%</span><b>${Math.round(v)} / 100</b></div>`).join('');
+  $('#matchNote').innerHTML=m.missing.length?`<b>Missing proof:</b> ${esc(m.missing.join(', '))}. Missing information lowers confidence; it is never guessed.`:skills.length?'<b>Every must-have skill is in your Skill Passport.</b> Keep the proof up to date.':'<b>Add skills with proof to see how you match.</b>';
+  openDialog($('#matchDialog'));
+}
+$$('[data-close-match]').forEach(button=>button.onclick=()=>closeDialog($('#matchDialog')));$('#matchDialog').onclick=e=>{if(e.target===e.currentTarget)closeDialog(e.currentTarget)};
+function renderApprovals(){
+  const prepared=preparedMatches(),list=$('#approvalList');
+  list.innerHTML=prepared.length?prepared.map(m=>`<article class="approval-item"><div><b>${esc(m.job.title)}</b><span>${esc(m.job.company)} · ${esc(m.job.place)} · ${m.score}% fit</span><small>Prepared from your evidence · review before submission</small></div><button data-approve-job="${m.job.id}"${approvedJobs.has(m.job.id)?' disabled':''}>${approvedJobs.has(m.job.id)?'Approved':'Review & approve'}</button></article>`).join(''):`<p class="empty-state">${!applyActive?'The Apply Agent is paused.':skills.length?'No strong matches to prepare yet. Add more skills with proof.':'Add skills to your Skill Passport and the agent prepares applications for strong matches.'}</p>`;
+  $$('[data-approve-job]').forEach(b=>b.onclick=()=>{approvedJobs.add(Number(b.dataset.approveJob));toast('Application approved and added to your tracker');renderCandidateDashboard()});
+}
+function renderScaleUp(){
+  const gaps=new Map();
+  LISTINGS.forEach(l=>l.essential.forEach(sk=>{if(!skills.some(s=>sameSkill(s.name,sk)))gaps.set(sk,(gaps.get(sk)||0)+1)}));
+  const top=[...gaps].sort((a,b)=>b[1]-a[1])[0];
+  scaleGap=top?top[0]:'';
+  setText('gapSkill',top?`${top[0]} evidence`:skills.length?'No gaps right now':'Nothing to fix yet');
+  setText('gapText',top?`Missing from your Skill Passport. It is a must-have in ${top[1]} of ${LISTINGS.length} open ${COMPANY_NAME} roles.`:skills.length?'Your Skill Passport covers every must-have skill we are hiring for.':'Add skills to your Skill Passport and ScaleUp will show what to prove next.');
+  setText('gapMarket',top?`${top[0]} is a must-have in ${top[1]} of ${LISTINGS.length} open roles.`:'Shown once you add skills.');
+  setText('gapNext',top?`Add one project, course or work sample that shows ${top[0]}.`:'Add one skill with a project, course or work sample.');
+  const button=$('#completeTask');button.hidden=!top;if(top)button.textContent=`Add proof for ${top[0]}`;
+}
+function renderCandidateDashboard(){
+  const matches=candidateMatches(),has=skills.length>0,best=matches[0],verified=skills.filter(s=>s.status==='Verified').length;
+  const strong=matches.filter(m=>m.score>=60).length,waiting=preparedMatches().filter(m=>!approvedJobs.has(m.job.id)).length;
+  setText('ovLead',has?`You match ${strong} of ${LISTINGS.length} open roles at ${COMPANY_NAME}.${best.missing.length?` Adding proof for ${best.missing[0]} would strengthen your top match.`:''}`:`Add your skills to see how you match ${COMPANY_NAME}'s open roles.`);
+  setText('ovChip',has?`${verified} of ${skills.length} skills verified`:'No skills yet');$('#ovChip')?.classList.toggle('success',verified>0);
+  setText('ovStrength',has?`${Math.round(verified/skills.length*100)}%`:'—');
+  setText('ovStrengthNote',has?`${verified} of ${skills.length} skills have verified evidence.`:'Add your first skill with proof.');
+  setText('ovBest',has?`${best.score}%`:'—');setText('ovBestNote',has?best.job.title:'Add skills to see matches');
+  setText('ovPrepared',String(waiting));
+  setText('ovNext',has&&best.missing.length?String(best.missing.length):'—');
+  setText('ovNextNote',has&&best.missing.length?`Proof for ${best.missing[0]}`:has?'Nothing missing for your top match':'Nothing yet');
+  const none='<p class="empty-state">No open jobs yet.</p>';
+  $('#overviewJobs').innerHTML=matches.length?matches.slice(0,2).map(jobMarkup).join(''):none;$('#allJobs').innerHTML=matches.length?matches.map(jobMarkup).join(''):none;
+  $$('[data-match-job]').forEach(b=>b.onclick=()=>openMatch(b.dataset.matchJob));
+  renderApprovals();renderScaleUp();
+}
 const statusClass=status=>status==='Verified'?'verified':status==='Developing'?'developing':'supplied';
 function renderPassport(){
+  renderCandidateDashboard();
   $('#skillList').innerHTML=skills.length?skills.map(skill=>`<div class="skill-row"><div><b>${esc(skill.name)}</b><small>${skill.detail?`${esc(skill.type)} · ${esc(skill.detail)}`:'No proof added yet'}</small></div><span>${esc(skill.level)}</span><span class="skill-state ${statusClass(skill.status)}">${esc(skill.status)}</span><div class="skill-actions"><button type="button" data-edit-skill="${skill.id}" aria-label="Edit ${esc(skill.name)}">Edit</button><button type="button" data-remove-skill="${skill.id}" aria-label="Remove ${esc(skill.name)}">Remove</button></div></div>`).join(''):'<p class="empty-state">No skills yet. Add evidence to start your Skill Passport.</p>';
   $('#evidenceSources').innerHTML=evidenceSources.map(item=>`<article><b>${esc(item.title)}</b><span class="${item.warning?'warning-text':''}">${esc(item.meta)}</span></article>`).join('');
   $$('[data-edit-skill]').forEach(button=>button.onclick=()=>openEvidence(Number(button.dataset.editSkill)));
@@ -2147,30 +2342,46 @@ $('#evidenceForm').addEventListener('submit',e=>{
 });
 renderPassport();
 
-const approvals=[['Junior Data Analyst','BrightForge Tools · Pune · 83% fit'],['Operations Analyst','NorthLoop Logistics · Remote · 81% fit']];
-$('#approvalList').innerHTML=approvals.map(([role,detail])=>`<article class="approval-item"><div><b>${role}</b><span>${detail}</span><small>Prepared from verified evidence · review before submission</small></div><button>Review & approve</button></article>`).join('');
-$$('.approval-item button').forEach(button=>button.onclick=()=>{button.textContent='Approved';button.disabled=true;toast('Application approved and added to your tracker')});
-$('#applyToggle').onchange=e=>{e.currentTarget.closest('label').querySelector('b').textContent=e.currentTarget.checked?'Active':'Paused';toast(e.currentTarget.checked?'Apply Agent activated':'Apply Agent paused')};
-$('#completeTask').onclick=e=>{
-  e.currentTarget.textContent='Proof task completed';e.currentTarget.disabled=true;
-  const powerBi=skills.find(skill=>skill.name==='Power BI');
-  if(powerBi)Object.assign(powerBi,{status:'Verified',type:'Project',detail:'Two-page retail dashboard · ScaleUp proof task'});
-  const source=evidenceSources.find(item=>item.title==='Power BI dashboard');
-  if(source)Object.assign(source,{meta:'Proof task · verified',warning:false});
-  renderPassport();
-  toast('Power BI proof added to your Skill Passport');
-};
+$('#applyToggle').onchange=e=>{applyActive=e.currentTarget.checked;e.currentTarget.closest('label').querySelector('b').textContent=applyActive?'Active':'Paused';toast(applyActive?'Apply Agent activated':'Apply Agent paused');renderCandidateDashboard()};
+$('#completeTask').onclick=()=>{if(!scaleGap)return;openEvidence(null);$('#evidenceSkill').value=scaleGap};
 
 // Audit trail: criteria changes and human decisions are logged for the Bias Audit view.
 function addAudit(type,detail){
+  document.getElementById('auditEmpty')?.remove();
   const time=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   $('#auditTrail h2').insertAdjacentHTML('afterend',`<div><span>${esc(type)}</span><b>${esc(detail)}</b><time>Today, ${time}</time></div>`);
 }
 
 // Talent Deck. The current card is the first candidate without a decision, so undoing any decision returns that person to the deck.
 const summaryFieldDefs=[['projects','Strongest project','project'],['internships','Internships','internships'],['work','Work & freelance','experience'],['hackathons','Hackathons','hackathons'],['certifications','Courses & certifications','certifications']];
-const scoreFor=candidate=>Math.round(weightFactors.reduce((sum,[key])=>sum+candidate.factors[key]*state.weights[key],0)/100);
-const currentCandidate=()=>candidates.find(candidate=>!state.decisions.some(item=>item.candidate===candidate));
+const scoreFor=candidate=>{const f=factorsFor(candidate);return Math.round(weightFactors.reduce((sum,[key])=>sum+f[key]*state.weights[key],0)/100)};
+const roleDecisions=()=>state.decisions.filter(d=>d.role===state.roleConfig.title);
+const decidedFor=c=>state.decisions.some(d=>d.candidate.id===c.id&&d.role===state.roleConfig.title);
+const rankedCandidates=()=>candidates.map(c=>({c,score:scoreFor(c)})).sort((a,b)=>b.score-a.score).map(x=>x.c);
+const currentCandidate=()=>rankedCandidates().find(c=>!decidedFor(c));
+// How a resume lines up with the role being reviewed. Every number comes from what the resume shows (skills, AI evidence, signals).
+function factorsFor(c){
+  const role=state.roleConfig,ess=role.essential||[],pref=role.preferred||[];
+  const mine=[...(c.skills||[]),...(c.skillEvidence||[]).map(e=>e.skill)];
+  const find=sk=>mine.some(m=>sameSkill(m,sk));
+  const matched=ess.filter(find);
+  const confidence=sk=>(c.skillEvidence||[]).find(e=>sameSkill(e.skill,sk))?.confidence??40;
+  const essential=ess.length?matched.length/ess.length*100:0;
+  const evidence=matched.length?matched.reduce((a,sk)=>a+confidence(sk),0)/matched.length:0;
+  const nice=pref.length?pref.filter(find).length/pref.length*100:0;
+  const sig=c.signals||{};
+  const city=(role.place||'').split('·')[0].trim().toLowerCase();
+  const preferences=/remote/i.test(role.place||'')?100:!c.location?60:(city&&c.location.toLowerCase().includes(city)?100:50);
+  const r=v=>Math.max(0,Math.min(100,Math.round(v)));
+  return {essential:r(essential),evidence:r(evidence),experience:r(sig.experience??0),transferable:r(((sig.transferable??0)+nice)/2),recency:r(sig.recency??50),preferences:r(preferences)};
+}
+const missingFor=c=>{const mine=[...(c.skills||[]),...(c.skillEvidence||[]).map(e=>e.skill)];return (state.roleConfig.essential||[]).filter(sk=>!mine.some(m=>sameSkill(m,sk)))};
+function confidenceLabel(c){
+  const ess=state.roleConfig.essential||[],ev=c.skillEvidence||[];
+  const hit=ess.map(sk=>ev.find(e=>sameSkill(e.skill,sk))).filter(Boolean);
+  const avg=hit.length?hit.reduce((a,e)=>a+e.confidence,0)/hit.length:0;
+  return avg>=70?'High evidence confidence':avg>=45?'Medium evidence confidence':'Low evidence confidence';
+}
 const deckCard=$('#candidateCard');
 // Counts a percentage up to its value so score changes are noticeable.
 function countUp(el,to){
@@ -2179,25 +2390,118 @@ function countUp(el,to){
   const step=now=>{const t=Math.min(1,(now-start)/duration),eased=1-Math.pow(1-t,3);el.textContent=`${Math.round(from+(to-from)*eased)}%`;if(t<1)requestAnimationFrame(step)};
   requestAnimationFrame(step);
 }
+function deckEmptyHtml(){
+  if(!(state.authenticated&&state.role==='recruiter'))return '<div class="deck-empty"><h2>Sign in as a recruiter</h2><p>Candidate summaries are only shown to signed-in recruiters.</p></div>';
+  if(talentError)return `<div class="deck-empty"><h2>Could not load the talent pool</h2><p>${esc(talentError)}</p></div>`;
+  return '<div class="deck-empty"><h2>No resumes yet</h2><p>Add resumes (PDF, Word or text). The AI reads each one and writes a one-page summary, then candidates are ranked against the role above.</p><button type="button" class="button button-primary" id="deckEmptyAdd">Add resumes</button></div>';
+}
 function renderCandidate(){
   const candidate=currentCandidate();
   // Reset any swipe position without animating the new card back into place.
   deckCard.classList.add('swiping');deckCard.classList.remove('flying');deckCard.style.transform='';deckCard.style.opacity='';deckCard.removeAttribute('data-swipe');
   requestAnimationFrame(()=>requestAnimationFrame(()=>deckCard.classList.remove('swiping')));
-  if(!candidate){deckCard.innerHTML='<div class="empty-state"><h2>Every candidate has been reviewed.</h2><p>Your decisions are saved. Use Undo or open the Decisions tab.</p></div>';$('#factorList').innerHTML='';$('#deckProgress').textContent='Complete';return}
-  $('#deckProgress').textContent=`${state.decisions.length+1} of ${candidates.length}`;
-  const fields=state.summaryFields,essential=state.roleConfig.essential.map(skill=>skill.toLowerCase());
-  const isEssential=skill=>essential.some(item=>skill.toLowerCase().includes(item));
+  $('#openOnePage').disabled=!candidate;
+  if(!candidates.length){
+    deckCard.innerHTML=deckEmptyHtml();$('#factorList').innerHTML='';$('#deckProgress').textContent='0 candidates';
+    $('#deckEmptyAdd')?.addEventListener('click',()=>$('#resumeFiles').click());return;
+  }
+  if(!candidate){deckCard.innerHTML='<div class="empty-state"><h2>Every candidate has been reviewed for this role.</h2><p>Your decisions are saved. Use Undo, open the Decisions tab, or switch the role above.</p></div>';$('#factorList').innerHTML='';$('#deckProgress').textContent='Complete';return}
+  $('#deckProgress').textContent=`${roleDecisions().length+1} of ${candidates.length}`;
+  const fields=state.summaryFields,essential=(state.roleConfig.essential||[]).map(skill=>skill.toLowerCase());
+  const isEssential=skill=>essential.some(item=>sameSkill(item,skill));
   const evidence=summaryFieldDefs.filter(([key])=>fields.has(key)).map(([,label,prop])=>`<div><b>${label}</b><p>${esc(candidate[prop]||'Not provided')}</p></div>`).join('');
-  const score=scoreFor(candidate);
-  deckCard.innerHTML=`<div class="candidate-head"><div class="candidate-avatar">${candidate.initials}</div><div><h2>${esc(candidate.name)}</h2><p>${esc(candidate.headline)}${fields.has('location')?` · ${esc(candidate.location)}`:''}</p></div><div class="fit-score"><strong>${score}%</strong><span>job fit</span></div></div><span class="status-chip">${candidate.confidence}</span><p class="candidate-summary">${esc(candidate.summary)}</p>${fields.has('skills')?`<div class="evidence-tags">${candidate.skills.map(skill=>`<span class="${isEssential(skill)?'essential':''}">${esc(skill)}${isEssential(skill)?' · essential':''}</span>`).join('')}</div>`:''}${evidence?`<div class="summary-evidence">${evidence}</div>`:''}${fields.has('gaps')?`<div class="gap-box"><b>Missing evidence to check</b><p>${esc(candidate.gap)}</p></div>`:''}`;
+  const score=scoreFor(candidate),factors=factorsFor(candidate),missing=missingFor(candidate);
+  const gap=missing.length?`No evidence yet for ${missing.join(', ')}. Ask for a short work sample.`:(candidate.gap||'Every must-have skill appears in the resume.');
+  deckCard.innerHTML=`<div class="candidate-head"><div class="candidate-avatar">${esc(candidate.initials)}</div><div><h2>${esc(candidate.name)}</h2><p>${esc(candidate.headline)}${fields.has('location')&&candidate.location?` · ${esc(candidate.location)}`:''}</p></div><div class="fit-score"><strong>${score}%</strong><span>job fit</span></div></div><span class="status-chip">${confidenceLabel(candidate)}</span><p class="candidate-summary">${esc(candidate.summary)}</p>${fields.has('skills')?`<div class="evidence-tags">${(candidate.skills||[]).slice(0,10).map(skill=>`<span class="${isEssential(skill)?'essential':''}">${esc(skill)}${isEssential(skill)?' · essential':''}</span>`).join('')}</div>`:''}${evidence?`<div class="summary-evidence">${evidence}</div>`:''}${fields.has('gaps')?`<div class="gap-box"><b>Missing evidence to check</b><p>${esc(gap)}</p></div>`:''}${candidate.mode==='keyword_fallback'?'<small class="deck-note">Summary built with keyword matching because the AI was unavailable. Check the resume.</small>':''}`;
   deckCard.classList.remove('entering');void deckCard.offsetWidth;deckCard.classList.add('entering');
   countUp(deckCard.querySelector('.fit-score strong'),score);
-  $('#factorList').innerHTML=weightFactors.map(([key,label])=>`<div class="factor-row"><div><span>${label} · ${state.weights[key]}%</span><b>${candidate.factors[key]}</b></div><div class="factor-bar"><i style="width:${candidate.factors[key]}%"></i></div></div>`).join('')+`<p class="factor-total">Each factor × its weight, added up = <b>${score}% fit</b></p>`;
+  $('#factorList').innerHTML=weightFactors.map(([key,label])=>`<div class="factor-row"><div><span>${label} · ${state.weights[key]}%</span><b>${factors[key]}</b></div><div class="factor-bar"><i style="width:${factors[key]}%"></i></div></div>`).join('')+`<p class="factor-total">Each factor × its weight, added up = <b>${score}% fit</b></p>`;
 }
+
+// ---------- Talent pool: resumes the AI has read and summarised. Stored in SAP HANA, shown only to signed-in recruiters.
+var talentError='',talentBusy=false;
+async function talentApi(path,options={}){
+  const headers=await candidateAuthHeaders(options.headers||{});
+  let response;
+  try{response=await fetch(`${API_BASE}${path}`,{...options,headers})}catch{throw new Error('Could not reach the server. Check your connection and try again.')}
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok){const error=new Error(data.detail||`Request failed (${response.status})`);error.status=response.status;throw error}
+  return data;
+}
+async function loadTalent(){
+  if(!(state.authenticated&&state.role==='recruiter')){candidates=[];talentError=''}
+  else{
+    try{candidates=(await talentApi('/talent')).profiles||[];talentError=''}
+    catch(error){candidates=[];talentError=error.message==='Not Found'?'The server does not have the talent pool yet. Deploy the latest backend and run 004_talent_profiles.sql in SAP HANA.':error.message}
+  }
+  if(deckReady){renderCandidate();renderDecisions()}
+}
+async function addResumes(files){
+  const list=[...files];if(!list.length||talentBusy)return;
+  talentBusy=true;$('#addResumes').disabled=true;
+  const status=$('#deckUploadStatus'),failed=[];let added=0;
+  for(const [i,file] of list.entries()){
+    status.textContent=`Reading ${i+1} of ${list.length}: ${file.name}…`;
+    if(file.size>MAX_FILE_BYTES){failed.push(`${file.name}: over 5 MB`);continue}
+    try{
+      const {profile}=await talentApi('/talent/resumes',{method:'POST',headers:{'X-File-Name':encodeURIComponent(file.name),'Content-Type':file.type||'application/octet-stream'},body:file});
+      const at=candidates.findIndex(c=>c.id===profile.id);if(at>=0)candidates[at]=profile;else candidates.push(profile);
+      added++;renderCandidate();
+    }catch(error){failed.push(`${file.name}: ${error.message}`)}
+  }
+  talentBusy=false;$('#addResumes').disabled=false;$('#resumeFiles').value='';
+  status.textContent=failed.length?`${added} added, ${failed.length} not added. ${failed[0]}`:`${added} resume${added===1?'':'s'} added.`;
+  renderDecisions();toast(failed.length?`${added} added, ${failed.length} could not be read`:`${added} resume${added===1?'':'s'} read and summarised`);
+}
+$('#addResumes').onclick=()=>$('#resumeFiles').click();
+$('#resumeFiles').onchange=e=>addResumes(e.target.files);
+function renderDeckRoles(){
+  const select=$('#deckRole');if(!select)return;
+  select.innerHTML=LISTINGS.length?LISTINGS.map(l=>`<option value="${l.id}">${esc(l.title)} · ${esc(l.place)}</option>`).join(''):'<option value="">No roles yet</option>';
+  if(state.activeListingId)select.value=String(state.activeListingId);
+}
+function setActiveRole(id){
+  const l=LISTINGS.find(x=>x.id===id);if(!l)return;
+  state.activeListingId=id;
+  state.roleConfig={title:l.title,company:l.company,place:l.place,domain:l.domain,essential:l.essential||[],preferred:l.preferred||[]};
+  state.weights={...(l.weights||defaultWeights)};
+  $('#recruiterRoleLabel').textContent=`${l.title} · ${l.place}`;
+  renderDeckRoles();renderCandidate();renderDecisions();
+}
+$('#deckRole').onchange=e=>setActiveRole(Number(e.target.value));
+
+// One-page summary: everything the AI read from the resume, laid out to print on a single page.
+let onePageFor=null;
+function openOnePage(c){
+  if(!c)return;onePageFor=c;
+  const p=c.onePage||{},role=state.roleConfig;
+  const list=(title,items)=>items&&items.length?`<section><h3>${title}</h3><ul>${items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul></section>`:'';
+  const proof=(c.skillEvidence||[]).filter(e=>e.verified&&e.evidence);
+  const essential=(role.essential||[]).map(s=>s.toLowerCase());
+  $('#onePageBody').innerHTML=`<div class="onepage-head"><div class="candidate-avatar">${esc(c.initials)}</div><div><h2 id="onePageTitle">${esc(c.name)}</h2><p>${esc(c.headline)}${c.location?` · ${esc(c.location)}`:''}${c.email?` · ${esc(c.email)}`:''}</p></div><div class="fit-score"><strong>${scoreFor(c)}%</strong><span>fit · ${esc(role.title)}</span></div></div>
+  <section><h3>Summary</h3><p>${esc(c.summary)}</p></section>
+  <section><h3>Skills</h3><div class="evidence-tags">${(c.skills||[]).map(s=>`<span class="${essential.some(e=>sameSkill(e,s))?'essential':''}">${esc(s)}</span>`).join('')}</div></section>
+  ${proof.length?`<section><h3>Evidence quoted from the resume</h3><ul>${[...proof.reduce((m,e)=>{const g=m.get(e.evidence)||{skills:[],type:e.type,confidence:e.confidence,evidence:e.evidence};g.skills.push(e.skill);return m.set(e.evidence,g)},new Map()).values()].map(g=>`<li><b>${esc(g.skills.join(', '))}</b> · ${esc(g.type)} · ${g.confidence}% confidence: “${esc(g.evidence)}”</li>`).join('')}</ul></section>`:''}
+  <div class="onepage-cols"><div>${list('Projects',p.projects)}${list('Internships',p.internships)}${list('Work experience',p.experience)}${list('Hackathons',p.hackathons)}</div><div>${list('Certifications',p.certifications)}${list('Achievements',p.achievements)}${list('Leadership and activities',p.responsibilities)}${list('Strengths',p.strengths)}</div></div>
+  ${(()=>{const missing=missingFor(c);return `<section><h3>Gaps against ${esc(role.title)}</h3><p>${missing.length?`No evidence yet for ${esc(missing.join(', '))}.`:'Every must-have skill appears in the resume.'}${p.gaps&&p.gaps.length?' '+esc(p.gaps.join(' ')):''}</p></section>`})()}
+  ${p.educationField?`<section><h3>Education (field only)</h3><p>${esc(p.educationField)}</p></section>`:''}
+  <div class="onepage-foot">Read by AI from ${esc(c.source||'the resume')}. ${esc(c.note||'')} College name, exam marks, age, gender and other protected details are not part of this summary. A person makes every hiring decision.</div>`;
+  openDialog($('#onePageDialog'));
+}
+$('#openOnePage').onclick=()=>openOnePage(currentCandidate());
+$$('[data-close-onepage]').forEach(b=>b.onclick=()=>closeDialog($('#onePageDialog')));
+$('#onePageDialog').onclick=e=>{if(e.target===e.currentTarget)closeDialog(e.currentTarget)};
+$('#onePagePrint').onclick=()=>window.print();
+$('#onePageRemove').onclick=async()=>{
+  if(!onePageFor||!confirm(`Remove ${onePageFor.name} from the talent pool? This deletes their summary.`))return;
+  try{await talentApi(`/talent/${encodeURIComponent(onePageFor.id)}`,{method:'DELETE'});candidates=candidates.filter(c=>c.id!==onePageFor.id);closeDialog($('#onePageDialog'));renderCandidate();renderDecisions();toast('Removed from the talent pool')}
+  catch(error){toast(error.message)}
+};
+function renderFairness(){setText('auditCriteria',String(inclusionIssues(readRole()).length));setText('auditLow',String(candidates.filter(c=>confidenceLabel(c).startsWith('Low')).length))}
+
 function decide(decision){
   const candidate=currentCandidate();if(!candidate)return;
-  state.decisions.push({candidate,decision});
+  state.decisions.push({candidate,decision,role:state.roleConfig.title});
   addAudit('Human decision',`${candidate.name} ${decision.toLowerCase()} for ${state.roleConfig.title}`);
   renderCandidate();renderDecisions();
   toast(`${candidate.name} ${decision==='Shortlisted'?'shortlisted':'passed for this role'}`);
@@ -2212,8 +2516,9 @@ function flyOut(decision){
   setTimeout(()=>decide(decision),220);
 }
 function undo(){
-  if(!state.decisions.length){toast('No decision to undo');return}
-  const last=state.decisions.pop();
+  const at=state.decisions.map(d=>d.role).lastIndexOf(state.roleConfig.title);
+  if(at<0){toast('No decision to undo');return}
+  const [last]=state.decisions.splice(at,1);
   addAudit('Decision undone',`${last.candidate.name} returned to the Talent Deck`);
   renderCandidate();renderDecisions();
   toast(`${last.candidate.name} returned to the Talent Deck`);
@@ -2234,7 +2539,7 @@ document.addEventListener('keydown',event=>{
   else if(event.key==='ArrowLeft'){event.preventDefault();flyOut('Passed')}
   else if(event.key.toLowerCase()==='u'||(event.key.toLowerCase()==='z'&&(event.ctrlKey||event.metaKey))){event.preventDefault();undo()}
 });
-function renderCounts(){$('#shortlistedCount').textContent=state.decisions.filter(item=>item.decision==='Shortlisted').length;$('#passedCount').textContent=state.decisions.filter(item=>item.decision==='Passed').length;$('#remainingCount').textContent=candidates.length-state.decisions.length}
+function renderCounts(){const mine=roleDecisions();$('#shortlistedCount').textContent=mine.filter(d=>d.decision==='Shortlisted').length;$('#passedCount').textContent=mine.filter(d=>d.decision==='Passed').length;$('#remainingCount').textContent=Math.max(0,candidates.length-mine.length)}
 // Decisions list. The Shortlisted / Passed cards filter it; shortlisted people get a Select button that sends a Round 1 invite.
 state.decisionFilter=null;
 function renderDecisions(){
@@ -2243,8 +2548,8 @@ function renderDecisions(){
   $$('.stat-filter').forEach(card=>card.setAttribute('aria-pressed',String(card.dataset.filter===filter)));
   $('#decisionFilterBar').hidden=!filter;
   if(filter)$('#decisionFilterLabel').textContent=`Showing ${filter==='Shortlisted'?'shortlisted':'passed'} candidates only`;
-  const rows=state.decisions.map((item,index)=>({item,index})).filter(({item})=>!filter||item.decision===filter);
-  if(!state.decisions.length){root.innerHTML='<p class="empty-state">No decisions yet. Review candidates in the Talent Deck.</p>';return}
+  const rows=state.decisions.map((item,index)=>({item,index})).filter(({item})=>item.role===state.roleConfig.title&&(!filter||item.decision===filter));
+  if(!roleDecisions().length){root.innerHTML='<p class="empty-state">No decisions yet for this role. Review candidates in the Talent Deck.</p>';return}
   if(!rows.length){root.innerHTML=`<p class="empty-state">No ${filter==='Shortlisted'?'shortlisted':'passed'} candidates yet.</p>`;return}
   root.innerHTML=rows.map(({item,index})=>{
     const invite=item.decision==='Shortlisted'?findInvite(item.candidate.name):null;
@@ -2253,7 +2558,7 @@ function renderDecisions(){
     return `<article><div><b>${esc(item.candidate.name)}</b><span>${esc(item.candidate.headline)}</span></div><strong>${item.decision}</strong><div class="row-actions">${action}</div><button data-undo-index="${index}">Undo</button></article>`;
   }).join('');
   $$('[data-undo-index]').forEach(button=>button.onclick=()=>{const [removed]=state.decisions.splice(Number(button.dataset.undoIndex),1);addAudit('Decision undone',`${removed.candidate.name} returned to the Talent Deck`);renderCandidate();renderDecisions();toast(`${removed.candidate.name} returned to the Talent Deck`)});
-  $$('[data-select-index]').forEach(button=>button.onclick=()=>{button.disabled=true;selectForInterview(state.decisions[Number(button.dataset.selectIndex)].candidate)});
+  $$('[data-select-index]').forEach(button=>button.onclick=()=>{selectForInterview(state.decisions[Number(button.dataset.selectIndex)].candidate)});
 }
 $$('.stat-filter').forEach(card=>{
   const pick=()=>{state.decisionFilter=state.decisionFilter===card.dataset.filter?null:card.dataset.filter;renderDecisions()};
@@ -2264,19 +2569,34 @@ $('#clearDecisionFilter').onclick=()=>{state.decisionFilter=null;renderDecisions
 // Interview scheduling. When signed in, slots, invites and assistant messages are stored in SAP HANA through the
 // FastAPI backend (/interviews...), so recruiter and candidate can be on different devices. If the backend can't be
 // reached, the same flow keeps working from this browser's storage (one device: switch accounts or use two tabs).
-// Plain function declarations so they work even if the page opens straight onto a recruiter or candidate route.
-var interviewCache=null,interviewMode='local',interviewPoll=null;
+// Every action updates the screen instantly and syncs with the server in the background.
+// Plain function declarations / var so this works even if the page opens straight onto a recruiter or candidate route.
+var interviewCache=null,interviewMode='local',interviewPoll=null,interviewPending=0,interviewEpoch=0,knownBookings=null,slotPick=new Set(),inviteTarget=null,selectionPick={};
+var DAY_START=9*60,DAY_END=18*60;   // interview day: 9:00 am to 6:00 pm
 function localInterviews(){try{const data=JSON.parse(localStorage.getItem('higherupInterviews'));if(data&&Array.isArray(data.slots)&&Array.isArray(data.invites))return data}catch{}return{slots:[],invites:[]}}
 function saveLocalInterviews(data){try{localStorage.setItem('higherupInterviews',JSON.stringify(data))}catch{}}
-function interviewStore(){return interviewMode==='api'&&interviewCache?interviewCache:localInterviews()}
-const sameId=(a,b)=>String(a)===String(b);
+function interviewStore(){
+  const data=interviewMode==='api'&&interviewCache?interviewCache:localInterviews();
+  // The local copy on a shared browser holds every invite: a candidate only ever sees ones addressed to their own email.
+  if(state.role==='candidate'&&interviewMode!=='api'){const me=(state.email||'').toLowerCase();return{...data,invites:data.invites.filter(inv=>(inv.candidateEmail||'').toLowerCase()===me)}}
+  return data;
+}
+function sameId(a,b){return String(a)===String(b)}
 function findInvite(name){return interviewStore().invites.find(inv=>inv.candidate===name&&(!inv.role||inv.role===state.roleConfig?.title))}
-function companyName(){return state.roleConfig?.company||document.getElementById('roleCompany')?.value.trim()||document.querySelector('#recruiterPage .workspace-nav h2')?.textContent||'BrightForge Tools'}
+function companyName(){return state.roleConfig?.company||document.getElementById('roleCompany')?.value.trim()||document.querySelector('#recruiterPage .workspace-nav h2')?.textContent||COMPANY_NAME}
+function localDay(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function toMin(t){const [h,m]=String(t).split(':').map(Number);return h*60+m}
+function hhmm(min){return `${String(Math.floor(min/60)).padStart(2,'0')}:${String(min%60).padStart(2,'0')}`}
+function fmtTime(min){const h=Math.floor(min/60),m=min%60;return `${h%12||12}:${String(m).padStart(2,'0')} ${h<12?'am':'pm'}`}
 function slotLabel(slot){const d=new Date(`${slot.date}T${slot.time}`);return `${d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})}, ${d.toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'})}`}
+function slotRange(slot){const s=toMin(slot.time);return `${fmtTime(s)} – ${fmtTime(s+Number(slot.length))}`}
+function dayLong(date){return new Date(`${date}T00:00`).toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'})}
+function dayShort(date){return new Date(`${date}T00:00`).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})}
+function modeLabel(mode){return mode==='Offline'?'Offline (in person)':mode}
 function nowLabel(){return new Date().toLocaleString('en-IN',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'})}
 // Messages from the API carry an ISO time; local ones are already formatted.
 function msgTime(at){return /^\d{4}-\d{2}-\d{2}T/.test(at||'')?new Date(at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}):(at||'')}
-function rerenderInterviews(){renderSchedule();renderDecisions();updateChatBadge();if(document.getElementById('chatDialog')?.classList.contains('open'))renderChat()}
+function rerenderInterviews(){announceBookings();renderSchedule();renderBooked();renderSelections();renderDecisions();updateChatBadge();if(document.getElementById('chatDialog')?.classList.contains('open'))renderChat()}
 
 async function interviewApi(path,options={}){
   const headers=await candidateAuthHeaders(options.body?{'Content-Type':'application/json'}:{});
@@ -2286,13 +2606,18 @@ async function interviewApi(path,options={}){
   return data;
 }
 // A 4xx with a message (e.g. "slot already taken") is a real answer; anything else means the backend isn't usable.
-const backendDown=error=>!error.status||error.status>=500||error.status===401||error.status===404&&error.message==='Not Found';
+// An old backend without these routes answers {"detail":"Not Found"}: treat that as "backend not ready".
+function backendDown(error){return !error.status||error.status>=500||error.status===401||(error.status===404&&error.message==='Not Found')}
 async function loadInterviews(){
   if(!state.authenticated||!state.role){interviewMode='local';interviewCache=null;rerenderInterviews();return}
+  const epoch=interviewEpoch;
   try{
-    interviewCache=await interviewApi(state.role==='recruiter'?'/interviews':'/interviews/inbox');
-    interviewMode='api';
+    const data=await interviewApi(state.role==='recruiter'?'/interviews':'/interviews/inbox');
+    // An action started while this was loading: its own refresh will follow, so don't overwrite its instant update.
+    if(epoch!==interviewEpoch||interviewPending>0)return;
+    interviewCache=data;interviewMode='api';
   }catch(error){
+    if(epoch!==interviewEpoch||interviewPending>0)return;
     if(interviewMode==='api')console.warn('Interview sync paused:',error.message);
     interviewMode='local';interviewCache=null;
   }
@@ -2300,122 +2625,272 @@ async function loadInterviews(){
 }
 // Keep the inbox and schedule fresh while signed in (picks up invites and bookings made on other devices).
 function startInterviewSync(){
-  clearInterval(interviewPoll);interviewPoll=null;
+  clearInterval(interviewPoll);interviewPoll=null;knownBookings=null;
+  loadTalent();
   loadInterviews();
   if(state.authenticated)interviewPoll=setInterval(()=>{if(!document.hidden)loadInterviews()},8000);
 }
-// Runs an action against the API, falling back to the local version if the backend is unreachable.
-async function interviewAction(apiCall,localCall){
-  if(interviewMode==='api'){
-    try{const result=await apiCall();await loadInterviews();return result}
-    catch(error){if(!backendDown(error)){toast(error.message);await loadInterviews();return null}interviewMode='local';interviewCache=null}
+// Runs an action. `instant(cache)` changes the screen right away; the server call finishes in the background and the
+// screen is rolled back if the server says no. If the backend is unreachable the local version runs instead.
+async function interviewAction(apiCall,localCall,instant){
+  if(interviewMode==='api'&&interviewCache){
+    const snapshot=instant?JSON.stringify(interviewCache):null;
+    interviewPending++;interviewEpoch++;
+    if(instant){instant(interviewCache);rerenderInterviews()}
+    try{
+      const result=await apiCall();
+      interviewPending--;interviewEpoch++;loadInterviews();
+      return result;
+    }catch(error){
+      interviewPending--;interviewEpoch++;
+      if(snapshot)interviewCache=JSON.parse(snapshot);
+      if(!backendDown(error)){toast(error.message);rerenderInterviews();loadInterviews();return null}
+      interviewMode='local';interviewCache=null;
+    }
   }
   const result=localCall();rerenderInterviews();return result;
 }
 
-async function selectForInterview(candidate){
+// Pressing Select asks which candidate account should get the invite; only that account can see it.
+function inviteEmails(){try{return JSON.parse(localStorage.getItem('higherupInviteEmails'))||{}}catch{return{}}}
+function selectForInterview(candidate){
   if(findInvite(candidate.name)){toast(`${candidate.name} has already been invited`);return}
-  const company=companyName(),role=state.roleConfig.title;
-  const result=await interviewAction(
-    ()=>interviewApi('/interviews/invites',{method:'POST',body:JSON.stringify({candidate:candidate.name,candidate_email:candidate.email||null,headline:candidate.headline,company,role})}),
-    ()=>{
-      const data=localInterviews(),first=candidate.name.split(' ')[0],openSlots=data.slots.filter(s=>!s.bookedBy).length;
-      data.invites.push({id:Date.now(),candidate:candidate.name,headline:candidate.headline,company,role,slotId:null,read:false,messages:[
-        {from:'ai',at:nowLabel(),text:`Hi ${first}, congratulations! You have been shortlisted for a Round 1 interview at ${company} for the ${role} role.`},
-        {from:'ai',at:nowLabel(),text:openSlots?'Please pick a time slot that works for you below.':'The hiring team will share interview times soon. You will see them here.',slots:true}
-      ]});
-      saveLocalInterviews(data);return{openSlots};
-    });
-  if(!result)return;
-  addAudit('Interview invite',`${candidate.name} selected for Round 1 at ${company}`);
-  toast(result.openSlots?`Round 1 invite sent to ${candidate.name}`:`Invite sent to ${candidate.name}. Add slots in Schedule so they can pick a time`);
+  const known=inviteEmails();
+  inviteTarget=candidate;
+  document.getElementById('inviteName').textContent=candidate.name;
+  document.getElementById('inviteEmail').value=candidate.email||known[candidate.name]||'';
+  document.getElementById('inviteEmails').innerHTML=[...new Set(Object.values(known))].map(e=>`<option value="${esc(e)}">`).join('');
+  document.getElementById('inviteError').textContent='';
+  openDialog(document.getElementById('inviteDialog'));
+  setTimeout(()=>document.getElementById('inviteEmail').focus(),80);
 }
-
-// Recruiter: Schedule tab
+async function sendInvite(candidate,email){
+  const company=companyName(),role=state.roleConfig.title,first=candidate.name.split(' ')[0];
+  const messages=()=>[
+    {from:'ai',at:new Date().toISOString(),text:`Hi ${first}, congratulations! You have been shortlisted for a Round 1 interview at ${company} for the ${role} role.`},
+    {from:'ai',at:new Date().toISOString(),text:'Go to Selections in your workspace and pick an interview time that works for you.',slots:true}
+  ];
+  toast(`Round 1 invite sent to ${candidate.name}`);
+  const result=await interviewAction(
+    ()=>interviewApi('/interviews/invites',{method:'POST',body:JSON.stringify({candidate:candidate.name,candidate_email:email,headline:candidate.headline,company,role})}),
+    ()=>{const data=localInterviews();data.invites.push({id:Date.now(),candidate:candidate.name,candidateEmail:email,headline:candidate.headline,company,role,slotId:null,read:false,messages:messages()});saveLocalInterviews(data);return true},
+    cache=>cache.invites.push({id:`pending-${Date.now()}`,candidate:candidate.name,headline:candidate.headline,company,role,slotId:null,read:false,recruiter:'',messages:messages()}));
+  if(result)addAudit('Interview invite',`${candidate.name} selected for Round 1 at ${company}`);
+}
+// Recruiter: Schedule tab — pick a day, a duration and a type, then tap the times you're free.
 const slotDate=$('#slotDate');
-const localDay=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 slotDate.min=localDay(new Date());
 if(!slotDate.value){const t=new Date();t.setDate(t.getDate()+1);slotDate.value=localDay(t)}
+function updatePublishButton(){
+  const n=slotPick.size,button=document.getElementById('slotPublish'),clear=document.getElementById('slotClear');
+  if(!button)return;
+  button.disabled=!n;button.textContent=n?`Publish ${n} slot${n>1?'s':''}`:'Select times to publish';
+  if(clear)clear.hidden=!n;
+}
+function renderTimeGrid(){
+  const grid=document.getElementById('timeGrid');if(!grid)return;
+  const date=document.getElementById('slotDate').value,length=Number(document.getElementById('slotLength').value),mode=document.getElementById('slotMode').value;
+  const focused=grid.contains(document.activeElement)?document.activeElement.dataset.time:null;
+  document.getElementById('slotPickerTitle').textContent=date?dayLong(date):'Choose a date';
+  document.getElementById('slotPickerSub').textContent=date?` · ${length} min · ${modeLabel(mode)}`:'';
+  if(!date){grid.innerHTML='<p class="empty-state">Choose a date to see the available times.</p>';slotPick.clear();updatePublishButton();return}
+  const day=interviewStore().slots.filter(s=>s.date===date),now=new Date(),today=localDay(now),nowMin=now.getHours()*60+now.getMinutes();
+  let html='';
+  for(const [name,from,to] of [['Morning',0,720],['Afternoon',720,1020],['Evening',1020,1440]]){
+    let cells='';
+    for(let start=DAY_START;start+length<=DAY_END;start+=length){
+      if(start<from||start>=to)continue;
+      const t=hhmm(start),same=day.find(s=>toMin(s.time)===start&&Number(s.length)===length);
+      let cls='',note='',disabled=false;
+      if(date<today||(date===today&&start<=nowMin)){cls='past';disabled=true}
+      else if(same){cls=same.bookedBy?'booked':'published';note=same.bookedBy?'Booked':'Published';disabled=true}
+      else if(day.some(s=>start<toMin(s.time)+Number(s.length)&&toMin(s.time)<start+length)){cls='taken';note='Unavailable';disabled=true}
+      else if(slotPick.has(t))cls='selected';
+      cells+=`<button type="button" class="time-cell ${cls}" data-time="${t}" aria-pressed="${cls==='selected'}"${disabled?' disabled':''}>${fmtTime(start)}${note?`<small>${note}</small>`:''}</button>`;
+    }
+    if(cells)html+=`<div class="time-group"><h3>${name}</h3><div class="time-row">${cells}</div></div>`;
+  }
+  grid.innerHTML=html||'<p class="empty-state">No times fit in the working day for this duration.</p>';
+  // Drop picks that are no longer open (for example, just published or booked).
+  [...slotPick].forEach(t=>{if(!grid.querySelector(`.time-cell.selected[data-time="${t}"]`))slotPick.delete(t)});
+  if(focused)grid.querySelector(`[data-time="${focused}"]`)?.focus();
+  updatePublishButton();
+}
+document.getElementById('timeGrid').addEventListener('click',e=>{
+  const cell=e.target.closest('.time-cell');if(!cell||cell.disabled)return;
+  const t=cell.dataset.time,on=!slotPick.has(t);
+  if(on)slotPick.add(t);else slotPick.delete(t);
+  cell.classList.toggle('selected',on);cell.setAttribute('aria-pressed',String(on));
+  document.getElementById('slotError').textContent='';updatePublishButton();
+});
+['slotDate','slotLength'].forEach(id=>document.getElementById(id).addEventListener('change',()=>{slotPick.clear();renderTimeGrid()}));
+document.getElementById('slotMode').addEventListener('change',renderTimeGrid);
+document.getElementById('slotClear').onclick=()=>{slotPick.clear();renderTimeGrid()};
 $('#slotForm').addEventListener('submit',async e=>{
   e.preventDefault();
-  const date=slotDate.value,time=$('#slotTime').value,error=$('#slotError'),submit=e.currentTarget.querySelector('[type=submit]');
+  const times=[...slotPick].sort(),error=$('#slotError');
+  if(!times.length)return;
+  const date=slotDate.value,length=Number($('#slotLength').value),mode=$('#slotMode').value,withName=$('#slotWith').value.trim();
   error.textContent='';
-  if(!date||!time){error.textContent='Choose a date and a start time.';return}
-  if(new Date(`${date}T${time}`)<new Date()){error.textContent='That time has already passed. Pick a future slot.';return}
-  if(interviewStore().slots.some(s=>s.date===date&&s.time===time)){error.textContent='You already have a slot at that time.';return}
-  const slot={date,time,length:Number($('#slotLength').value),mode:$('#slotMode').value,with:$('#slotWith').value.trim()};
-  submit.disabled=true;
+  const mk=(t,id)=>({id,date,time:t,length,mode,with:withName,bookedBy:null,recruiter:''});
   const added=await interviewAction(
-    ()=>interviewApi('/interviews/slots',{method:'POST',body:JSON.stringify(slot)}),
-    ()=>{const data=localInterviews();data.slots.push({...slot,id:Date.now(),bookedBy:null});data.slots.sort((a,b)=>`${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`));saveLocalInterviews(data);return slot});
-  submit.disabled=false;
-  if(added)toast(`Slot added: ${slotLabel(slot)}`);
+    ()=>interviewApi('/interviews/slots/bulk',{method:'POST',body:JSON.stringify({date,length,mode,with:withName,times})}),
+    ()=>{const data=localInterviews();times.forEach((t,i)=>data.slots.push(mk(t,Date.now()+i)));data.slots.sort((a,b)=>`${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`));saveLocalInterviews(data);return true},
+    cache=>{times.forEach(t=>cache.slots.push(mk(t,`pending-${t}`)));cache.slots.sort((a,b)=>`${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`))});
+  if(added){slotPick.clear();renderTimeGrid();toast(`${times.length} slot${times.length>1?'s':''} published for ${dayShort(date)}. Candidates can pick them in chat.`)}
+  else error.textContent='Could not publish those slots. Please check the times and try again.';
 });
 async function removeSlot(id){
   const removed=await interviewAction(
     ()=>interviewApi(`/interviews/slots/${encodeURIComponent(id)}`,{method:'DELETE'}),
-    ()=>{const data=localInterviews();data.slots=data.slots.filter(s=>!sameId(s.id,id));saveLocalInterviews(data);return true});
+    ()=>{const data=localInterviews();data.slots=data.slots.filter(s=>!sameId(s.id,id));saveLocalInterviews(data);return true},
+    cache=>{cache.slots=cache.slots.filter(s=>!sameId(s.id,id))});
   if(removed)toast('Slot removed');
 }
 function renderSchedule(){
   const data=interviewStore(),open=data.slots.filter(s=>!s.bookedBy).length;
   $('#slotSummary').textContent=`${open} open slot${open===1?'':'s'}`;
-  $('#slotList').innerHTML=data.slots.length?data.slots.map(s=>`<article class="slot-card"><b>${esc(slotLabel(s))}</b><span>${s.length} min · ${esc(s.mode)}${s.with?` · ${esc(s.with)}`:''}</span><span class="slot-status ${s.bookedBy?'booked':''}">${s.bookedBy?`Booked by ${esc(s.bookedBy)}`:'Open'}</span>${s.bookedBy?'':`<button type="button" data-remove-slot="${esc(String(s.id))}">Remove</button>`}</article>`).join(''):'<p class="empty-state">No slots yet. Add the times your team can interview.</p>';
+  const sorted=[...data.slots].sort((a,b)=>`${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`));
+  $('#slotList').innerHTML=sorted.length?sorted.map(s=>`<article class="slot-card"><b>${esc(dayShort(s.date))}</b><span class="slot-time">${esc(slotRange(s))}</span><span>${s.length} min · ${esc(modeLabel(s.mode))}${s.with?` · ${esc(s.with)}`:''}</span><span class="slot-status ${s.bookedBy?'booked':''}">${s.bookedBy?`Booked by ${esc(s.bookedBy)}`:'Open'}</span>${s.bookedBy||String(s.id).startsWith('pending-')?'':`<button type="button" data-remove-slot="${esc(String(s.id))}">Remove</button>`}</article>`).join(''):'<p class="empty-state">No slots published yet. Pick a day above and tap the times you\'re free.</p>';
   $$('[data-remove-slot]').forEach(b=>b.onclick=()=>removeSlot(b.dataset.removeSlot));
-  $('#inviteList').innerHTML=data.invites.length?data.invites.map(inv=>{const slot=data.slots.find(s=>sameId(s.id,inv.slotId));return `<article><div><b>${esc(inv.candidate)}</b><span>${esc(inv.role)} · ${esc(inv.company)}</span></div><strong>${slot?'Booked':'Invited'}</strong><div class="row-actions"><span class="invite-state ${slot?'booked':''}">${slot?esc(slotLabel(slot)):'Waiting for the candidate to pick a slot'}</span></div><span></span></article>`}).join(''):'<p class="empty-state">No invites yet. Select a shortlisted candidate in Decisions.</p>';
+  const waiting=data.invites.filter(inv=>!inv.slotId);
+  $('#inviteList').innerHTML=waiting.length?waiting.map(inv=>`<article><div><b>${esc(inv.candidate)}</b><span>${esc(inv.role)} · ${esc(inv.company)}</span></div><strong>Invited</strong><div class="row-actions"><span class="invite-state">Waiting for the candidate to pick a time</span></div><span></span></article>`).join(''):'<p class="empty-state">Nobody is waiting. Select a shortlisted candidate in Decisions to invite them.</p>';
+  renderTimeGrid();
 }
 
-// Candidate: chat icon (top right) and inbox where the assistant sends invites and the candidate books a slot
+// Recruiter: Booked tab — every confirmed interview with full details.
+function recruiterBookings(){
+  const data=interviewStore();
+  return data.invites.filter(inv=>inv.slotId).map(inv=>({inv,slot:data.slots.find(s=>sameId(s.id,inv.slotId))})).filter(x=>x.slot).map(x=>({...x,at:Date.parse(x.inv.bookedAt)||0}));
+}
+function renderBooked(){
+  const root=document.getElementById('bookedList');if(!root)return;
+  const booked=recruiterBookings().sort((a,b)=>`${a.slot.date}${a.slot.time}`.localeCompare(`${b.slot.date}${b.slot.time}`));
+  document.getElementById('bookedCount').textContent=`${booked.length} booked`;
+  root.innerHTML=booked.length?booked.map(({inv,slot})=>{
+    const d=new Date(`${slot.date}T00:00`);
+    return `<article class="booked-card"><div class="booked-when"><span>${esc(d.toLocaleDateString('en-IN',{weekday:'short'}))}</span><b>${d.getDate()}</b><span>${esc(d.toLocaleDateString('en-IN',{month:'short'}))}</span></div><div class="booked-main"><h3>${esc(inv.candidate)}${inv.headline?`<small>${esc(inv.headline)}</small>`:''}</h3><p class="booked-role">Round 1 interview · ${esc(inv.role)} at ${esc(inv.company)}</p><dl class="booked-facts"><div><dt>Day</dt><dd>${esc(dayLong(slot.date))}</dd></div><div><dt>Time</dt><dd>${esc(slotRange(slot))}</dd></div><div><dt>Duration</dt><dd>${slot.length} minutes</dd></div><div><dt>Type</dt><dd>${esc(modeLabel(slot.mode))}</dd></div><div><dt>Interviewer</dt><dd>${esc(slot.with||'Not specified')}</dd></div><div><dt>Booked on</dt><dd>${esc(msgTime(inv.bookedAt)||'Just now')}</dd></div></dl></div><span class="slot-status booked">Confirmed</span></article>`;
+  }).join(''):'<p class="empty-state">No interviews booked yet. When a shortlisted candidate picks a slot, it shows up here with all the details.</p>';
+}
+// Candidate: Selections tab — every company that selected them, with the open times to book.
+function openSlotsFor(inv){
+  const now=Date.now();
+  return interviewStore().slots.filter(s=>!s.bookedBy&&(!inv.recruiter||!s.recruiter||s.recruiter===inv.recruiter)&&new Date(`${s.date}T${s.time}`).getTime()>now)
+    .sort((a,b)=>`${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`));
+}
+function selectionCard(inv,data){
+  const initials=(inv.company||'?').replace(/\(.*?\)/g,'').split(/\s+/).filter(w=>/^[A-Za-z0-9]/.test(w)).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  const hue=[...(inv.company||'')].reduce((h,ch)=>(h*31+ch.charCodeAt(0))%360,7);
+  const slot=inv.slotId?data.slots.find(s=>sameId(s.id,inv.slotId)):null;
+  let body;
+  if(slot){
+    body=`<dl class="booked-facts"><div><dt>Day</dt><dd>${esc(dayLong(slot.date))}</dd></div><div><dt>Time</dt><dd>${esc(slotRange(slot))}</dd></div><div><dt>Duration</dt><dd>${slot.length} minutes</dd></div><div><dt>Type</dt><dd>${esc(modeLabel(slot.mode))}</dd></div><div><dt>Interviewer</dt><dd>${esc(slot.with||'Not specified')}</dd></div></dl>`;
+  }else{
+    const open=openSlotsFor(inv);
+    if(selectionPick[inv.id]&&!open.some(s=>sameId(s.id,selectionPick[inv.id])))delete selectionPick[inv.id];
+    const picked=open.find(s=>sameId(s.id,selectionPick[inv.id]));
+    if(!open.length)body='<p class="selection-empty">No interview times are available yet. The hiring team hasn\'t published any. They will appear here as soon as they do.</p>';
+    else{
+      const days=new Map();open.forEach(s=>{if(!days.has(s.date))days.set(s.date,[]);days.get(s.date).push(s)});
+      body=`<p class="selection-help">Pick a time that works for you:</p><div class="sel-days">${[...days].map(([date,list])=>`<div class="sel-day"><b>${esc(dayShort(date))}</b><div class="sel-times">${list.map(s=>{const on=!!picked&&sameId(picked.id,s.id);return `<button type="button" class="sel-time${on?' selected':''}" data-sel-invite="${esc(String(inv.id))}" data-sel-slot="${esc(String(s.id))}" aria-pressed="${on}"><span>${esc(fmtTime(toMin(s.time)))}</span><small>${s.length} min · ${esc(modeLabel(s.mode))}</small></button>`}).join('')}</div></div>`).join('')}</div><div class="selection-confirm"><button type="button" class="button button-primary" data-sel-confirm="${esc(String(inv.id))}"${picked?'':' disabled'}>${picked?`Confirm ${esc(slotLabel(picked))}`:'Choose a time'}</button></div>`;
+    }
+  }
+  return `<article class="selection-card"><header><span class="co-logo" style="--h:${hue}">${esc(initials)}</span><div><h3>${esc(inv.role)}</h3><p>${esc(inv.company)} · Round 1 interview</p></div><span class="slot-status ${slot?'booked':''}">${slot?'Interview booked':'Pick a time'}</span></header>${body}</article>`;
+}
+function renderSelections(){
+  const root=document.getElementById('selectionList');if(!root)return;
+  const data=interviewStore(),invites=state.role==='candidate'?data.invites:[];
+  const pending=invites.filter(inv=>!inv.slotId).length;
+  document.getElementById('selectionsCount').textContent=`${invites.length} selection${invites.length===1?'':'s'}`;
+  const badge=document.getElementById('selectionsBadge');if(badge){badge.hidden=!pending;badge.textContent=pending}
+  const ordered=[...invites].reverse().sort((a,b)=>Number(!!a.slotId)-Number(!!b.slotId));
+  root.innerHTML=ordered.length?ordered.map(inv=>selectionCard(inv,data)).join(''):'<p class="empty-state">No selections yet. When a company selects you for an interview, it shows up here and you can book a time.</p>';
+  $$('[data-sel-slot]').forEach(b=>b.onclick=()=>{selectionPick[b.dataset.selInvite]=b.dataset.selSlot;renderSelections()});
+  $$('[data-sel-confirm]').forEach(b=>b.onclick=()=>{const id=b.dataset.selConfirm,slotId=selectionPick[id];if(!slotId)return;b.disabled=true;delete selectionPick[id];bookSlot(id,slotId)});
+}
+// Toast when a candidate books while the recruiter is signed in.
+function announceBookings(){
+  if(state.role!=='recruiter'||!state.authenticated){knownBookings=null;return}
+  const all=recruiterBookings();
+  if(knownBookings)all.filter(b=>!knownBookings.has(String(b.inv.id))).forEach(b=>toast(`${b.inv.candidate} booked ${slotLabel(b.slot)}`));
+  knownBookings=new Set(all.map(b=>String(b.inv.id)));
+}
+function bookingsSeenKey(){return `higherupBookingsSeen:${state.email||''}`}
+function getBookingsSeen(){try{return Number(localStorage.getItem(bookingsSeenKey()))||0}catch{return 0}}
+function markBookingsSeen(){try{localStorage.setItem(bookingsSeenKey(),String(Math.max(Date.now(),...recruiterBookings().map(b=>b.at))))}catch{}}
+
+// Chat icon (top right): candidates get the assistant's invites and pick a slot; recruiters get booking notifications.
 function updateChatBadge(){
   const button=document.getElementById('chatButton');if(!button)return;
-  button.hidden=!(state.authenticated&&state.role==='candidate');
-  const unread=state.role==='candidate'?interviewStore().invites.filter(inv=>!inv.read).length:0,badge=document.getElementById('chatBadge');
-  const was=Number(badge.textContent)||0;
+  button.hidden=!(state.authenticated&&state.role);
+  let unread=0;
+  if(state.role==='candidate')unread=interviewStore().invites.filter(inv=>!inv.read).length;
+  else if(state.role==='recruiter'){const seen=getBookingsSeen();unread=recruiterBookings().filter(b=>b.at>seen).length}
+  const badge=document.getElementById('chatBadge'),was=Number(badge.textContent)||0;
   badge.hidden=!unread;badge.textContent=unread;
   button.setAttribute('aria-label',unread?`Open messages, ${unread} new`:'Open messages');
   if(unread>was&&!button.hidden){button.classList.remove('ping');void button.offsetWidth;button.classList.add('ping')}
 }
 function renderChat(){
-  const data=interviewStore();
-  $('#chatThread').innerHTML=data.invites.length?data.invites.map(inv=>{
-    // Only this invite's employer's open slots (API data says which recruiter owns each slot).
-    const open=data.slots.filter(s=>!s.bookedBy&&(!inv.recruiter||!s.recruiter||s.recruiter===inv.recruiter));
-    return inv.messages.map(m=>{
-      const picker=m.slots&&!inv.slotId?(open.length?`<div class="chat-slots">${open.map(s=>`<button type="button" data-book-invite="${esc(String(inv.id))}" data-book-slot="${esc(String(s.id))}"><span>${esc(slotLabel(s))}</span><small>${s.length} min · ${esc(s.mode)}</small></button>`).join('')}</div>`:'<p><small>No open slots right now. We will message you when the team adds some.</small></p>'):'';
-      return `<div class="chat-msg ${m.from==='you'?'you':''}">${esc(m.text)}${picker}<time>${esc(msgTime(m.at))}</time></div>`;
-    }).join('');
-  }).join(''):'<p class="chat-empty">No messages yet. When an employer shortlists you, the assistant will message you here.</p>';
-  $$('[data-book-slot]').forEach(b=>b.onclick=()=>{$$('[data-book-slot]').forEach(x=>x.disabled=true);bookSlot(b.dataset.bookInvite,b.dataset.bookSlot)});
-  const thread=$('#chatThread');thread.scrollTop=thread.scrollHeight;
+  const recruiter=state.role==='recruiter',data=interviewStore();
+  document.getElementById('chatSub').textContent=recruiter?'Interview bookings from your candidates':'Updates from employers about your applications';
+  document.getElementById('chatFoot').hidden=!recruiter;
+  const thread=document.getElementById('chatThread');
+  if(recruiter){
+    const items=recruiterBookings().sort((a,b)=>a.at-b.at);
+    thread.innerHTML=items.length?items.map(({inv,slot})=>`<div class="chat-msg"><b>${esc(inv.candidate)}</b> booked <b>${esc(slotLabel(slot))}</b> for the Round 1 interview, ${esc(inv.role)}.<span class="chat-detail">${slot.length} min · ${esc(modeLabel(slot.mode))}${slot.with?` · with ${esc(slot.with)}`:''}</span><time>${esc(msgTime(inv.bookedAt)||'Just now')}</time></div>`).join(''):'<p class="chat-empty">No bookings yet. When a shortlisted candidate picks a slot, you will be notified here.</p>';
+  }else{
+    thread.innerHTML=data.invites.length?data.invites.map(inv=>inv.messages.map(m=>{
+      const link=m.slots&&!inv.slotId?'<div class="chat-link"><button type="button" class="button button-primary" data-open-selections>Go to Selections</button></div>':'';
+      return `<div class="chat-msg ${m.from==='you'?'you':''}">${esc(m.text)}${link}<time>${esc(msgTime(m.at))}</time></div>`;
+    }).join('')).join(''):'<p class="chat-empty">No messages yet. When a company selects you for an interview, the assistant will message you here.</p>';
+    $$('[data-open-selections]').forEach(b=>b.onclick=()=>{closeDialog($('#chatDialog'));showPage('candidate');activateTab('candidate','selections')});
+  }
+  thread.scrollTop=thread.scrollHeight;
 }
 async function bookSlot(inviteId,slotId){
-  const label=(()=>{const s=interviewStore().slots.find(x=>sameId(x.id,slotId));return s?slotLabel(s):''})();
-  const booked=await interviewAction(
+  const slotNow=interviewStore().slots.find(x=>sameId(x.id,slotId)),label=slotNow?slotLabel(slotNow):'';
+  const book=(cache,iso)=>{
+    const inv=cache.invites.find(i=>sameId(i.id,inviteId)),slot=cache.slots.find(s=>sameId(s.id,slotId));
+    if(!inv||!slot||slot.bookedBy)return false;
+    slot.bookedBy=inv.candidate;inv.slotId=slot.id;inv.read=true;inv.bookedAt=iso;
+    inv.messages.push({from:'you',at:iso,text:`I'll take ${slotLabel(slot)}.`});
+    inv.messages.push({from:'ai',at:iso,text:`You're booked! Round 1 interview at ${inv.company} on ${slotLabel(slot)} (${slot.length} min, ${modeLabel(slot.mode)}${slot.with?` with ${slot.with}`:''}). Good luck!`});
+    return true;
+  };
+  if(label)toast(`Interview booked for ${label}`);
+  await interviewAction(
     ()=>interviewApi(`/interviews/invites/${encodeURIComponent(inviteId)}/book`,{method:'POST',body:JSON.stringify({slot_id:String(slotId)})}),
-    ()=>{
-      const data=localInterviews(),inv=data.invites.find(i=>sameId(i.id,inviteId)),slot=data.slots.find(s=>sameId(s.id,slotId));
-      if(!inv||!slot)return null;
-      if(slot.bookedBy){toast('Sorry, that slot was just taken. Please pick another.');return null}
-      slot.bookedBy=inv.candidate;inv.slotId=slot.id;
-      inv.messages.push({from:'you',at:nowLabel(),text:`I'll take ${slotLabel(slot)}.`});
-      inv.messages.push({from:'ai',at:nowLabel(),text:`You're booked! Round 1 interview at ${inv.company} on ${slotLabel(slot)} (${slot.length} min, ${slot.mode}${slot.with?` with ${slot.with}`:''}). Good luck!`});
-      saveLocalInterviews(data);return true;
-    });
+    ()=>{const data=localInterviews();if(!book(data,new Date().toISOString())){toast('Sorry, that slot was just taken. Please pick another.');return null}saveLocalInterviews(data);return true},
+    cache=>book(cache,new Date().toISOString()));
   renderChat();
-  if(booked)toast(`Interview booked for ${label}`);
 }
 $('#chatButton').onclick=()=>{
   renderChat();openDialog($('#chatDialog'));
+  if(state.role==='recruiter'){markBookingsSeen();updateChatBadge();return}
   if(!interviewStore().invites.some(inv=>!inv.read))return;
   interviewAction(
     ()=>interviewApi('/interviews/inbox/read',{method:'POST'}),
-    ()=>{const data=localInterviews();data.invites.forEach(inv=>inv.read=true);saveLocalInterviews(data);return true});
+    ()=>{const data=localInterviews();data.invites.forEach(inv=>inv.read=true);saveLocalInterviews(data);return true},
+    cache=>cache.invites.forEach(inv=>inv.read=true));
 };
+$('#chatOpenBooked').onclick=()=>{closeDialog($('#chatDialog'));activateTab('recruiter','booked')};
 $$('[data-close-chat]').forEach(b=>b.onclick=()=>closeDialog($('#chatDialog')));
 $('#chatDialog').onclick=e=>{if(e.target===e.currentTarget)closeDialog(e.currentTarget)};
 // Another tab on this device changed the local copy: refresh everything that shows it.
 window.addEventListener('storage',e=>{if(e.key==='higherupInterviews'&&interviewMode==='local')rerenderInterviews()});
-renderSchedule();updateChatBadge();
+$('#inviteForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const email=$('#inviteEmail').value.trim().toLowerCase(),error=$('#inviteError'),candidate=inviteTarget;
+  if(!candidate)return;
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){error.textContent='Enter a valid email address.';return}
+  try{const known=inviteEmails();known[candidate.name]=email;localStorage.setItem('higherupInviteEmails',JSON.stringify(known))}catch{}
+  closeDialog($('#inviteDialog'));
+  sendInvite(candidate,email);
+});
+$$('[data-close-invite]').forEach(b=>b.onclick=()=>closeDialog($('#inviteDialog')));
+$('#inviteDialog').onclick=e=>{if(e.target===e.currentTarget)closeDialog(e.currentTarget)};
+renderSchedule();renderBooked();renderSelections();updateChatBadge();
 
 // Role setup ("Post a role"): every field feeds the candidate listing, the Talent Deck ranking and the audit log.
 const RANK_PRESETS={
@@ -2472,7 +2947,7 @@ function readRole(){
 }
 // Company directory for the Company field. A short built-in list of registered companies;
 // a live registry (e.g. MCA21) would replace this through the backend.
-const COMPANIES=[{"name": "BrightForge Tools", "sector": "Your company profile (demo)", "city": "Pune"}, {"name": "Tata Consultancy Services", "sector": "IT services", "city": "Mumbai"}, {"name": "Infosys", "sector": "IT services", "city": "Bengaluru"}, {"name": "Wipro", "sector": "IT services", "city": "Bengaluru"}, {"name": "HCLTech", "sector": "IT services", "city": "Noida"}, {"name": "Tech Mahindra", "sector": "IT services", "city": "Pune"}, {"name": "LTIMindtree", "sector": "IT services", "city": "Mumbai"}, {"name": "Accenture India", "sector": "IT services", "city": "Bengaluru"}, {"name": "Cognizant India", "sector": "IT services", "city": "Chennai"}, {"name": "Capgemini India", "sector": "IT services", "city": "Mumbai"}, {"name": "IBM India", "sector": "Technology", "city": "Bengaluru"}, {"name": "Zoho Corporation", "sector": "Software", "city": "Chennai"}, {"name": "Freshworks", "sector": "Software", "city": "Chennai"}, {"name": "Reliance Industries", "sector": "Conglomerate", "city": "Mumbai"}, {"name": "ITC", "sector": "Conglomerate", "city": "Kolkata"}, {"name": "Larsen & Toubro", "sector": "Engineering & construction", "city": "Mumbai"}, {"name": "Mahindra & Mahindra", "sector": "Automotive", "city": "Mumbai"}, {"name": "Tata Motors", "sector": "Automotive", "city": "Mumbai"}, {"name": "Maruti Suzuki India", "sector": "Automotive", "city": "New Delhi"}, {"name": "Bajaj Auto", "sector": "Automotive", "city": "Pune"}, {"name": "Hero MotoCorp", "sector": "Automotive", "city": "New Delhi"}, {"name": "Ashok Leyland", "sector": "Automotive", "city": "Chennai"}, {"name": "Tata Steel", "sector": "Steel", "city": "Mumbai"}, {"name": "Hindustan Unilever", "sector": "Consumer goods", "city": "Mumbai"}, {"name": "Godrej Consumer Products", "sector": "Consumer goods", "city": "Mumbai"}, {"name": "Dabur India", "sector": "Consumer goods", "city": "Ghaziabad"}, {"name": "Titan Company", "sector": "Consumer goods", "city": "Bengaluru"}, {"name": "Asian Paints", "sector": "Paints", "city": "Mumbai"}, {"name": "Bharti Airtel", "sector": "Telecom", "city": "New Delhi"}, {"name": "HDFC Bank", "sector": "Banking", "city": "Mumbai"}, {"name": "ICICI Bank", "sector": "Banking", "city": "Mumbai"}, {"name": "Axis Bank", "sector": "Banking", "city": "Mumbai"}, {"name": "Kotak Mahindra Bank", "sector": "Banking", "city": "Mumbai"}, {"name": "State Bank of India", "sector": "Banking", "city": "Mumbai"}, {"name": "Bajaj Finance", "sector": "Financial services", "city": "Pune"}, {"name": "Zomato", "sector": "Food delivery", "city": "Gurugram"}, {"name": "Swiggy", "sector": "Food delivery", "city": "Bengaluru"}, {"name": "Flipkart", "sector": "E-commerce", "city": "Bengaluru"}, {"name": "Nykaa", "sector": "E-commerce", "city": "Mumbai"}, {"name": "Paytm (One 97 Communications)", "sector": "Fintech", "city": "Noida"}, {"name": "PhonePe", "sector": "Fintech", "city": "Bengaluru"}, {"name": "Razorpay", "sector": "Fintech", "city": "Bengaluru"}, {"name": "Ola", "sector": "Mobility", "city": "Bengaluru"}, {"name": "MakeMyTrip", "sector": "Travel", "city": "Gurugram"}, {"name": "Dr. Reddy's Laboratories", "sector": "Pharmaceuticals", "city": "Hyderabad"}, {"name": "Sun Pharmaceutical Industries", "sector": "Pharmaceuticals", "city": "Mumbai"}, {"name": "Cipla", "sector": "Pharmaceuticals", "city": "Mumbai"}, {"name": "Apollo Hospitals", "sector": "Healthcare", "city": "Chennai"}, {"name": "Deloitte India", "sector": "Professional services", "city": "Mumbai"}];
+const COMPANIES=[{"name": "Vergemount", "sector": "Technology", "city": "Bengaluru"}];
 const COMPANY_DIRECTORY=COMPANIES.map(c=>c.name);
 // Company picker: the list narrows as you type (names starting with the text first, then word starts, then anywhere).
 const companyInput=$('#roleCompany'),companyList=$('#companyOptions');
@@ -2679,15 +3154,16 @@ if (savePreferencesButton) {
   });
 }
 
-renderCandidate();renderCounts();
+deckReady=true;renderDeckRoles();if(LISTINGS.length)setActiveRole(LISTINGS[0].id);else{renderCandidate();renderCounts()}
+loadTalent();
 // ---------- Domain explorer: a domain button grows into a full-screen page, with a short "zap" sound.
 const DOMAINS={
-  tech:{name:'Technology',color:'#818cf8',lead:'Build and run the software, systems and infrastructure that businesses depend on.',roles:['Junior Software Developer','Web Developer Intern','QA / Test Engineer','IT Support Associate'],skills:['JavaScript','Python','SQL','Git','Cloud basics'],proof:'GitHub projects, hackathon builds, freelance websites and coding assessments all count as evidence.'},
-  data:{name:'Data & Analytics',color:'#67e8f9',lead:'Turn messy data into clear decisions that teams can act on.',roles:['Junior Data Analyst','Business Analyst Intern','Reporting Associate','MIS Executive'],skills:['SQL','Excel','Power BI','Python','Data storytelling'],proof:'Dashboards, analysis projects, notebooks and internship reports show what you can do with real data.'},
-  finance:{name:'Finance',color:'#6ee7b7',lead:'Keep the numbers right, from books and audits to analysis and planning.',roles:['Accounts Executive','Financial Analyst Intern','Audit Associate','Payroll Executive'],skills:['Excel','Tally','GST basics','Reconciliation','Financial modelling'],proof:'Internship work, case competitions, certifications and practical tasks such as a reconciliation or a simple model.'},
-  core:{name:'Core Engineering',color:'#fcd34d',lead:'Design, build and maintain physical products, plants and infrastructure.',roles:['Graduate Engineer Trainee','Production / Quality Engineer','Site Engineer','Maintenance Technician'],skills:['AutoCAD','SolidWorks','Quality control','Safety standards','Lean basics'],proof:'Final-year projects, workshop and shop-floor experience, apprenticeships and design files.'},
-  marketing:{name:'Sales & Marketing',color:'#f9a8d4',lead:'Find customers, tell the story and help the business grow.',roles:['Sales Executive','Digital Marketing Intern','Business Development Associate','Social Media Associate'],skills:['Communication','Social media','SEO basics','CRM tools','Negotiation'],proof:'Campaigns you ran, pages you grew, sales targets you met and sponsorships you secured.'},
-  design:{name:'Design',color:'#fdba74',lead:'Shape how products and brands look, feel and work.',roles:['UI/UX Design Intern','Graphic Designer','Video Editor','Product Design Associate'],skills:['Figma','Visual design','User research','Prototyping','Adobe tools'],proof:'A portfolio, redesign case studies, client work and design challenge entries.'}
+  tech:{name:'Technology',color:'#818cf8',lead:'Build and run the software, systems and infrastructure that businesses depend on.',roles:[],skills:['JavaScript','Python','SQL','Git','Cloud basics'],proof:'GitHub projects, hackathon builds, freelance websites and coding assessments all count as evidence.'},
+  data:{name:'Data & Analytics',color:'#67e8f9',lead:'Turn messy data into clear decisions that teams can act on.',roles:[],skills:['SQL','Excel','Power BI','Python','Data storytelling'],proof:'Dashboards, analysis projects, notebooks and internship reports show what you can do with real data.'},
+  finance:{name:'Finance',color:'#6ee7b7',lead:'Keep the numbers right, from books and audits to analysis and planning.',roles:[],skills:['Excel','Tally','GST basics','Reconciliation','Financial modelling'],proof:'Internship work, case competitions, certifications and practical tasks such as a reconciliation or a simple model.'},
+  core:{name:'Core Engineering',color:'#fcd34d',lead:'Design, build and maintain physical products, plants and infrastructure.',roles:[],skills:['AutoCAD','SolidWorks','Quality control','Safety standards','Lean basics'],proof:'Final-year projects, workshop and shop-floor experience, apprenticeships and design files.'},
+  marketing:{name:'Sales & Marketing',color:'#f9a8d4',lead:'Find customers, tell the story and help the business grow.',roles:[],skills:['Communication','Social media','SEO basics','CRM tools','Negotiation'],proof:'Campaigns you ran, pages you grew, sales targets you met and sponsorships you secured.'},
+  design:{name:'Design',color:'#fdba74',lead:'Shape how products and brands look, feel and work.',roles:[],skills:['Figma','Visual design','User research','Prototyping','Adobe tools'],proof:'A portfolio, redesign case studies, client work and design challenge entries.'}
 };
 const domainOverlay=$('#domainOverlay');
 let activeDomainButton=null,domainAnimating=false,audioCtx=null;
@@ -2719,7 +3195,7 @@ function fillDomain(key){
   domainOverlay.style.setProperty('--c',d.color);
   {const words=d.name.split(' ');const last=words.pop();$('#domainTitle').innerHTML=(words.length?esc(words.join(' '))+' ':'')+`<em>${esc(last)}</em>`}
   $('#domainLead').textContent=d.lead;
-  $('#domainRoles').innerHTML=d.roles.map(r=>`<li>${esc(r)}</li>`).join('');
+  {const open=uniq(LISTINGS.filter(l=>l.domain===key).map(l=>l.title));$('#domainRoles').innerHTML=open.length?open.map(r=>`<li>${esc(r)}</li>`).join(''):'<li class="muted">No open roles yet</li>'}
   $('#domainSkills').innerHTML=d.skills.map(s=>`<li>${esc(s)}</li>`).join('');
   $('#domainProof').textContent=d.proof;
   $('#domainFind').textContent=`Find ${d.name} jobs & internships`;
@@ -2759,7 +3235,9 @@ function closeDomain(after){
   whenDone(slide,800,()=>{finish();slide.cancel()});
 }
 $$('.domain-pill').forEach(button=>button.addEventListener('click',()=>openDomain(button)));
-// Count the open-roles numbers up when the domain tiles appear (sample numbers; replace with real counts later).
+// Open-role counts on the domain tiles come from the open jobs (VERGEMOUNT_JOBS), then count up when the tiles appear.
+function updateDomainCounts(){$$('.domain-pill').forEach(button=>{const n=LISTINGS.filter(l=>l.domain===button.dataset.domain).length,el=button.querySelector('.pill-count');if(!el)return;el.dataset.count=String(n);el.querySelector('b').textContent=n.toLocaleString('en-IN');const label=el.querySelector('i');if(label)label.textContent=n===1?'open role':'open roles'})}
+updateDomainCounts();
 (()=>{
   const els=$$('.pill-count[data-count]');if(!els.length)return;
   const fmt=n=>n.toLocaleString('en-IN');
@@ -2882,32 +3360,6 @@ window.addEventListener('popstate',()=>{if(!domainOverlay.hidden){domainAnimatin
 
 // ---------- Hero search: roles, companies and skills built from the jobs and domains above.
 // Sample job listings (fictional companies and roles) used by Search. Real listings would come from the backend.
-const LISTINGS=[
-  ['tech','Junior Software Developer','BrightForge Tools','Pune · Hybrid','Full-time','₹4–6 LPA',['JavaScript','Git','SQL']],
-  ['tech','Web Developer Intern','LoopLearn','Bengaluru · Remote','Internship','₹15k/month',['JavaScript','Git']],
-  ['tech','QA / Test Engineer','Kavach Fintech','Mumbai · On-site','Full-time','₹4.5–6 LPA',['Python','SQL']],
-  ['tech','IT Support Associate','NorthLoop Logistics','Bengaluru · On-site','Full-time','₹3–4 LPA',['Cloud basics','Communication']],
-  ['data','Junior Data Analyst','BrightForge Tools','Pune · Hybrid','Full-time','₹4.5–6 LPA',['SQL','Excel','Power BI']],
-  ['data','Business Analyst Intern','GreenCart Retail','Mumbai · Hybrid','Internship','₹18k/month',['Excel','SQL','Data storytelling']],
-  ['data','Reporting Associate','GreenCart Retail','Mumbai · On-site','Full-time','₹3.5–5 LPA',['Excel','SQL']],
-  ['data','MIS Executive','NorthLoop Logistics','Remote','Full-time','₹3.5–4.5 LPA',['Excel','Power BI']],
-  ['finance','Accounts Executive','Sproutly Foods','Hyderabad · On-site','Full-time','₹3–4 LPA',['Tally','Excel','GST basics']],
-  ['finance','Financial Analyst Intern','Kavach Fintech','Mumbai · Hybrid','Internship','₹20k/month',['Excel','Financial modelling']],
-  ['finance','Audit Associate','Kavach Fintech','Mumbai · On-site','Full-time','₹4–5 LPA',['Excel','Reconciliation']],
-  ['finance','Payroll Executive','NorthLoop Logistics','Remote','Full-time','₹3–4 LPA',['Excel','Tally']],
-  ['core','Graduate Engineer Trainee','Ferrovia Motors','Chennai · On-site','Full-time','₹3.5–4.5 LPA',['AutoCAD','Quality control']],
-  ['core','Production / Quality Engineer','Ferrovia Motors','Chennai · On-site','Full-time','₹4–5.5 LPA',['Quality control','Lean basics']],
-  ['core','Site Engineer','Sahyadri Infra','Pune · On-site','Full-time','₹3.5–5 LPA',['AutoCAD','Safety standards']],
-  ['core','Maintenance Technician','Sproutly Foods','Hyderabad · On-site','Full-time','₹2.5–3.5 LPA',['Safety standards']],
-  ['marketing','Sales Executive','Sproutly Foods','Hyderabad · On-site','Full-time','₹3–4.5 LPA',['Communication','Negotiation','CRM tools']],
-  ['marketing','Digital Marketing Intern','Pixelnest Studio','Remote','Internship','₹12k/month',['Social media','SEO basics']],
-  ['marketing','Business Development Associate','BrightForge Tools','Pune · Hybrid','Full-time','₹4–5 LPA',['Communication','CRM tools']],
-  ['marketing','Social Media Associate','LoopLearn','Bengaluru · Hybrid','Full-time','₹3–4 LPA',['Social media','Communication']],
-  ['design','UI/UX Design Intern','Pixelnest Studio','Remote','Internship','₹15k/month',['Figma','User research','Prototyping']],
-  ['design','Graphic Designer','GreenCart Retail','Mumbai · Hybrid','Full-time','₹3.5–5 LPA',['Adobe tools','Visual design']],
-  ['design','Video Editor','Pixelnest Studio','Remote','Part-time','₹20k/month',['Adobe tools']],
-  ['design','Product Design Associate','LoopLearn','Bengaluru · Hybrid','Full-time','₹4.5–6 LPA',['Figma','Prototyping','Visual design']]
-].map(([domain,title,company,place,type,pay,skills],i)=>({id:i+1,domain,title,company,place,type,pay,skills}));
 const domainNames=keys=>keys.map(k=>DOMAINS[k].name);
 const listJoin=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a.at(-1);
 const uniq=a=>[...new Set(a)];
@@ -2932,12 +3384,13 @@ function registerDomain(name){
 // The recruiter's saved role is listed for candidates (one listing per role setup, updated on each save).
 function publishRoleListing(cfg){
   const existing=LISTINGS.find(l=>l.fromRoleSetup);
-  const listing={id:existing?.id||LISTINGS.length+1,domain:cfg.domain,title:cfg.title,company:cfg.company||'BrightForge Tools',place:cfg.place||'Location to be confirmed',type:cfg.type||'Full-time',pay:cfg.pay||'Salary on request',skills:[...cfg.essential,...cfg.preferred].slice(0,5),openings:cfg.openings,level:cfg.levelLabel,deadline:cfg.deadline,fromRoleSetup:true};
+  const listing={id:existing?.id||LISTINGS.length+1,domain:cfg.domain,title:cfg.title,company:cfg.company||COMPANY_NAME,place:cfg.place||'Location to be confirmed',type:cfg.type||'Full-time',pay:cfg.pay||'Salary on request',skills:[...cfg.essential,...cfg.preferred].slice(0,5),openings:cfg.openings,level:cfg.levelLabel,deadline:cfg.deadline,essential:cfg.essential,preferred:cfg.preferred,weights:{...state.weights},fromRoleSetup:true};
   if(existing)Object.assign(existing,listing);else LISTINGS.push(listing);
   SEARCH_ITEMS=buildSearchItems();
+  updateDomainCounts();state.activeListingId=(existing||listing).id;renderDeckRoles();renderCandidateDashboard();
 }
 const searchInput=$('#heroSearch'),searchList=$('#searchResults');
-const SEARCH_LABELS={roles:'Search roles, e.g. Data Analyst',companies:'Search companies, e.g. BrightForge',skills:'Search skills, e.g. SQL or Figma'};
+const SEARCH_LABELS={roles:'Search roles, e.g. AI / ML Engineer',companies:'Search companies, e.g. Vergemount',skills:'Search skills, e.g. Python or SQL'};
 let searchMode='roles',searchMatches=[],searchActive=-1;
 const highlight=(text,q)=>{const i=text.toLowerCase().indexOf(q.toLowerCase());return i<0?esc(text):esc(text.slice(0,i))+`<mark>${esc(text.slice(i,i+q.length))}</mark>`+esc(text.slice(i+q.length))};
 function setSearchMode(mode){

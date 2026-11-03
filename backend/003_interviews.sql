@@ -19,7 +19,7 @@ CREATE COLUMN TABLE INTERVIEW_INVITE (
     INVITE_ID NVARCHAR(36) PRIMARY KEY,
     RECRUITER_EMAIL NVARCHAR(255) NOT NULL,
     CANDIDATE_NAME NVARCHAR(120) NOT NULL,
-    CANDIDATE_EMAIL NVARCHAR(255),          -- NULL = demo invite, shown to any signed-in candidate
+    CANDIDATE_EMAIL NVARCHAR(255),          -- login email of the candidate this invite is for; only they can see it
     HEADLINE NVARCHAR(200),
     COMPANY NVARCHAR(120) NOT NULL,
     ROLE_TITLE NVARCHAR(120) NOT NULL,
