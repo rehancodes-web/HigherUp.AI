@@ -8,6 +8,7 @@ from fastapi import FastAPI, HTTPException, Request, Response
 from pydantic import BaseModel, Field
 from hdbcli import dbapi
 from skills_agent import discover
+from pdf_extraction import PDFTextExtractionError, extract_pdf_text
 
 # Load the .env located beside main.py
 load_dotenv(Path(__file__).resolve().parent / ".env")
@@ -440,6 +441,59 @@ def download_candidate_document(email: str, document_id: str, request: Request):
             cursor.close()
         if connection is not None:
             connection.close()
+
+
+@app.get("/candidates/by-email/{email}/documents/{document_id}/text")
+def extract_candidate_document_text(email: str, document_id: str, request: Request):
+    """Extract selectable text from this candidate's PDF stored in HANA."""
+    require_candidate_email(request.headers.get("Authorization"), email)
+    connection = None
+    cursor = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute(
+            """
+            SELECT D.FILE_NAME, D.CONTENT_TYPE, D.FILE_DATA
+            FROM CANDIDATE_DOCUMENT D
+            JOIN CANDIDATE_PROFILE C ON C.CANDIDATE_ID = D.CANDIDATE_ID
+            WHERE LOWER(C.EMAIL) = ? AND D.DOCUMENT_ID = ?
+            """,
+            (email.strip().lower(), document_id),
+        )
+        row = cursor.fetchone()
+        if row is None:
+            raise HTTPException(status_code=404, detail="Document not found")
+        file_name, content_type, file_data = row[0], row[1] or "", bytes(row[2])
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Could not retrieve document for text extraction: {str(exc)[:300]}",
+        )
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if connection is not None:
+            connection.close()
+
+    if not file_name.lower().endswith(".pdf") and content_type.split(";", 1)[0].lower() != "application/pdf":
+        raise HTTPException(status_code=415, detail="Text extraction currently supports PDF files only")
+
+    try:
+        text, page_count = extract_pdf_text(file_data)
+    except PDFTextExtractionError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+    return {
+        "document_id": document_id,
+        "file_name": file_name,
+        "page_count": page_count,
+        "character_count": len(text),
+        "text": text,
+        "needs_ocr": False,
+    }
 
 
 @app.delete("/candidates/by-email/{email}/documents/{document_id}")
