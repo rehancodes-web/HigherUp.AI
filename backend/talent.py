@@ -38,6 +38,12 @@ COURSES = {
     "data analysis": ("Data Cleaning", "Kaggle Learn", "https://www.kaggle.com/learn/data-cleaning"),
 }
 
+SAP_COURSES = {
+    "python": ("Developing AI Models with the Python Machine Learning Client for SAP HANA", "SAP Learning", "https://learning.sap.com/courses/developing-ai-models-with-the-python-machine-learning-client-for-sap-hana-1"),
+    "machine learning": ("Developing AI Models with the Python Machine Learning Client for SAP HANA", "SAP Learning", "https://learning.sap.com/courses/developing-ai-models-with-the-python-machine-learning-client-for-sap-hana-1"),
+    "sql": ("SAP HANA - SQL Script: Basics and Advanced for SAP HANA", "SAP Learning", "https://learning.sap.com/courses/sap-hana-sql-script-basics-and-advanced-for-sap-hana"),
+}
+
 
 def _skill_key(value: str) -> str:
     normalized = " ".join("".join(char.lower() if char.isalnum() or char in "+#." else " " for char in value).split())
@@ -57,6 +63,19 @@ def _course_for(skill: str) -> dict:
     if not course:
         course = (f"{skill} learning resources", "Kaggle Learn", "https://www.kaggle.com/learn")
     return {"skill": skill, "title": course[0], "provider": course[1], "url": course[2]}
+
+
+def _courses_for(skill: str) -> list[dict]:
+    key = _skill_key(skill)
+    sap_course = SAP_COURSES.get(key) or next(
+        (value for name, value in SAP_COURSES.items() if _same_skill(name, key)), None
+    )
+    if not sap_course:
+        sap_course = (f"Search SAP Learning for {skill}", "SAP Learning", "https://learning.sap.com")
+    return [
+        {"skill": skill, "title": sap_course[0], "provider": sap_course[1], "url": sap_course[2]},
+        _course_for(skill),
+    ]
 
 
 def _rejection_feedback(profile: dict, role_title: str, required: list[str]) -> dict:
@@ -111,7 +130,7 @@ def _rejection_feedback(profile: dict, role_title: str, required: list[str]) -> 
         "role_title": role_title,
         "message": message,
         "learning_skills": selected,
-        "courses": [_course_for(skill) for skill in selected],
+        "courses": [course for skill in selected for course in _courses_for(skill)],
         "generated_by": generated_by,
         "notice": "AI learning guidance based on the resume and role skills; it is not the recruiter's stated reason for passing." if generated_by == "ai" else "Rule-based guidance from the resume and role skills because AI feedback could not be generated. This is not the recruiter's stated reason for passing.",
     }

@@ -2368,7 +2368,9 @@ function renderScaleUp(){
   setText('gapFeedback',feedback?.message||'No recruiter feedback yet.');
   if(feedbackPanel){
     feedbackPanel.hidden=!feedback;
-    feedbackPanel.innerHTML=feedback?`<p class="overline dark">${feedback.generated_by==='ai'?'AI learning guidance':'Learning guidance'}</p><h2>Feedback for ${esc(latest.role_title)}</h2><p>${esc(feedback.message)}</p><small>${esc(feedback.notice||'Career guidance based on your resume and the role skills.')}</small>${feedback.courses?.length?`<h3>Suggested learning</h3><div class="course-recommendations">${feedback.courses.map(course=>`<a href="${esc(course.url)}" target="_blank" rel="noopener noreferrer"><b>${esc(course.title)}</b><span>${esc(course.skill)} · ${esc(course.provider)}</span></a>`).join('')}</div>`:''}`:'';
+    const sapCourses=(feedback?.courses||[]).filter(course=>course.provider==='SAP Learning');
+    const otherCourses=(feedback?.courses||[]).filter(course=>course.provider!=='SAP Learning');
+    feedbackPanel.innerHTML=feedback?`<p class="overline dark">${feedback.generated_by==='ai'?'AI learning guidance':'Learning guidance'}</p><h2>Feedback for ${esc(latest.role_title)}</h2><p>${esc(feedback.message)}</p><small>${esc(feedback.notice||'Career guidance based on your resume and the role skills.')}</small>${feedback.courses?.length?`<h3>Suggested learning</h3>${sapCourses.length?`<h4>SAP courses</h4><div class="course-recommendations">${sapCourses.map(course=>`<a href="${esc(course.url)}" target="_blank" rel="noopener noreferrer"><b>${esc(course.title)}</b><span>${esc(course.skill)} · ${esc(course.provider)}</span></a>`).join('')}</div>`:''}${otherCourses.length?`<h4>Courses from other platforms</h4><div class="course-recommendations">${otherCourses.map(course=>`<a href="${esc(course.url)}" target="_blank" rel="noopener noreferrer"><b>${esc(course.title)}</b><span>${esc(course.skill)} · ${esc(course.provider)}</span></a>`).join('')}</div>`:''}`:''}`:'';
   }
   scaleGap=top?top[0]:'';
   setText('gapSkill',top?`${top[0]} evidence`:skills.length||resumeSkillEvidence.length?'No gaps right now':'Nothing to fix yet');
